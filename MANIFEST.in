@@ -1,0 +1,4 @@
+include README.md LICENSE setup.py ez_setup.py
+recursive-include hotspot *
+recursive-include cfg *
+recursive-include tests *

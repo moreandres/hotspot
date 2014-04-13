@@ -1,0 +1,248 @@
+\documentclass[a4paper]{article}
+
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage[utf8]{inputenc}
+\usepackage{tocloft}
+
+\usepackage[margin=0.5in]{geometry}
+
+\setlength\cftbeforesecskip{1pt}
+\setlength\cftaftertoctitleskip{2pt}
+
+\setlist[enumerate]{noitemsep}
+\setlist[itemize]{noitemsep}
+
+\begin{document}
+
+\title{@@PROGRAM@@ Performance Report}
+
+\date{@@TIMESTAMP@@}
+
+\maketitle
+
+\abstract{This performance report is intended to support performance analysis and optimization activities. It includes details on program behavior, system configuration and capabilities, and relevant data from well-known performance analysis tools. This report was generated using {\tt hotspot} version {\tt 0.1}. Homepage \url{http://www.github.com/moreandres/hotspot}. Please report issues to \url{mailto:more.andres@gmail.com}. Full Log: \url{run:@@CWD@@/.bt/@@TIMESTAMP@@/bt.log}.}
+
+\tableofcontents
+
+\section{Program}
+
+This section provides details about the program being analyzed.
+
+\begin{enumerate}
+\item Program: {\tt @@PROGRAM@@}
+\item Timestamp: {\tt @@TIMESTAMP@@}
+\item Parameters Range: {\tt @@RANGE@@}
+\end{enumerate}
+
+Program is the name of the program binary.
+Timestamp is a unique identifier used to store information on disk.
+Parameters Range is the problem size set used to scale the program. 
+
+More: \url{run:@@CWD@@/.bt/@@TIMESTAMP@@/program.log}
+
+\section{System Capabilities}
+
+This section provides details about the system being used for the analysis.
+
+\subsection{System Configuration}
+
+This subsection provides details about the system configuration.
+
+The hardware in the system is summarized using a hardware lister utility.
+
+\begin{verbatim}
+@@HARDWARE@@
+\end{verbatim}
+
+The software in the system is summarized using the GNU/Linux platform.
+
+\begin{verbatim}
+@@PLATFORM@@
+\end{verbatim}
+
+The software toolchain is also detailed.
+
+\begin{enumerate}
+\item Host: {\tt @@HOST@@}
+\item Distribution: {\tt @@DISTRO@@}
+\item Compiler: {\tt @@COMPILER@@}
+\item C Library: {\tt @@LIBC@@}
+\end{enumerate}
+
+More: \url{run:@@CWD@@/.bt/@@TIMESTAMP@@/system.log}
+
+\subsection{System Performance Baseline}
+
+This subsection provides details about the system capabilities.
+
+A set of performance benchmark results is included as a reference.
+
+\begin{table}[H]
+\caption{Benchmarks}
+  \centering
+    \begin{tabular}{|l|l|l|}\hline
+      {\bf Benchmark} & {\bf Value} & {\bf Unit} \\ \hline
+      hpl & @@HPCC-HPL@@ & tflops \\ \hline
+      dgemm & @@HPCC-DGEMM@@ & mflops \\ \hline
+      ptrans & @@HPCC-PTRANS@@ & MB/s \\ \hline
+      random & @@HPCC-RANDOM@@ & MB/s \\ \hline
+      stream & @@HPCC-STREAM@@ & MB/s \\ \hline
+      fft & @@HPCC-FFT@@ & MB/s \\ \hline
+    \end{tabular}
+ \label{table:pruebas}
+\end{table}
+
+More: \url{run:@@CWD@@/.bt/@@TIMESTAMP@@/benchmark.log}
+
+\section{Workload}
+
+This section provides details about the workload behavior.
+
+\begin{enumerate}
+\item Execution time:
+\begin{enumerate}
+\item problem size: {\tt @@FIRST@@ - @@LAST@@} seconds
+\item geomean: {\tt @@GEOMEAN@@} seconds
+\item average: {\tt @@AVERAGE@@} seconds
+\item stddev: {\tt @@STDDEV@@}
+\item min: {\tt @@MIN@@} seconds
+\item max: {\tt @@MAX@@} seconds
+\item repetitions: {\tt @@COUNT@@} times
+%\item outliers: {\tt @@OUTLIERS@@}
+\end{enumerate}
+
+\begin{figure}[H]
+\label{fig:histogram}
+\centering
+\includegraphics[width=8cm]{hist.pdf}
+\caption{Results Distribution}
+\end{figure}
+
+\end{enumerate}
+
+More: \url{run:@@CWD@@/.bt/@@TIMESTAMP@@/histograph.log}
+
+\section{Scalability}
+
+This section provides details about the scaling behavior of the program.
+
+A chart with the execution time when scaling the problem size.
+
+\begin{figure}[H]
+\label{fig:scaling}
+\centering
+\includegraphics[width=8cm]{data.pdf}
+\caption{Problem size times}
+\end{figure}
+
+A chart with the execution time when scaling computation units.
+
+\begin{figure}[H]
+\label{fig:normal}
+\centering
+\includegraphics[width=8cm]{procs.pdf}
+\caption{Thread count times}
+\end{figure}
+
+The parallel and serial fractions of the program can be estimated.
+
+\begin{enumerate}
+\item Parallel Fraction: {\tt @@PARALLEL@@}
+\item Serial: {\tt @@SERIAL@@}
+\end{enumerate}
+
+Optimization limits can be estimated using scaling laws.
+
+\begin{enumerate}
+\item Amdalah Law for 1024 procs: {\tt @@AMDALAH@@ times}
+\item Gustafson Law for 1024 procs: {\tt @@GUSTAFSON@@ times}
+\end{enumerate}
+
+More: \url{run:@@CWD@@/.bt/@@TIMESTAMP@@/scalability.log}
+
+\section{Profile}
+
+This section provides details about the execution profile of the program and the system.
+
+\subsection{Program Profiling}
+
+This subsection provides details about the program execution profile.
+
+\subsubsection{Call Graph}
+
+\begin{verbatim}
+92.6% main -> fft -> _fft -> _muldc3
+\end{verbatim}
+
+More: \url{@@CWD@@/.bt/@@TIMESTAMP@@/callgraph.log}
+
+\subsubsection{Flat Profile}
+
+\begin{verbatim}
+@@PROFILE@@
+\end{verbatim}
+
+More: \url{@@CWD@@/.bt/@@TIMESTAMP@@/profile.log}
+
+Overhead: {\tt @@OVERHEAD@@\%}
+
+\subsection{System Profiling}
+
+This subsection provide details about the system execution profile.
+
+\subsubsection{Bottlenecks}
+
+\begin{verbatim}
+@@ANNOTATION@@
+\end{verbatim}
+
+Overhead: {\tt @@OVERHEAD@@\%}
+
+More: \url{@@CWD@@/.bt/@@TIMESTAMP@@/bottleneck.log}
+
+\subsubsection{System Resources Usage}
+
+\begin{figure}[H]
+\label{fig:normal}
+\centering
+\includegraphics[width=8cm]{CPU.pdf}
+\caption{CPU Usage}
+\end{figure}
+
+\begin{figure}[H]
+\label{fig:normal}
+\centering
+\includegraphics[width=8cm]{MEM.pdf}
+\caption{Memory Usage}
+\end{figure}
+
+More: \url{@@CWD@@/.bt/@@TIMESTAMP@@/resources.log}
+
+\section{Low Level}
+
+This section provide details about low level details such as vectorization and performance counters.
+
+\subsection{Vectorization Report}
+
+This subsection provide details about vectorization status of the program loops.
+
+\begin{verbatim}
+@@VECTORIZER@@
+\end{verbatim}
+
+More: \url{@@CWD@@/.bt/@@TIMESTAMP@@/vectorization.log}
+
+\subsection{Counters Report}
+
+This subsection provides details about software and hardware counters.
+
+\begin{verbatim}
+@@COUNTERS@@
+\end{verbatim}
+
+More: \url{@@CWD@@/.bt/@@TIMESTAMP@@/counters.log}
+
+\end{document}
