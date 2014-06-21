@@ -19,7 +19,7 @@ import os
 
 try:
     import cPickle as pickle
-except:
+except ImportError:
     import pickle
 
 import platform
@@ -46,6 +46,13 @@ class Tags:
     def __init__(self):
         """Tags are empty."""
         self.tags = {}
+    def clear(self):
+        """Clear current tags."""
+        self.tags = {}
+    def show(self):
+        """Show current tags."""
+        print self.tags
+
 
 class Log:
     """Logging interface."""
@@ -88,12 +95,15 @@ class Log:
         self.logger.debug('Logging to {0}'.format(self.logdir))
 
     def debug(self, message):
+        """Print debugging messages."""
         self.logger.debug(message)
 
     def info(self, message):
+        """Print informational messages."""
         self.logger.info(message)
 
     def error(self, message):
+        """Print error messages."""
         self.logger.error(message)
 
     def close(self):
@@ -108,8 +118,8 @@ class Log:
 # TODO: fix logging in unit tests
 
 class Config:
-    __metaclass__ = Singleton
     """ Parse configuration."""
+    __metaclass__ = Singleton
 
     def __init__(self):
 
@@ -128,7 +138,8 @@ class Config:
 
         # TODO: use action to verify that configuration file exists
 
-        configpath = os.path.dirname(os.path.realpath(__file__)) + '/../config/hotspot.cfg'
+        realpath = os.path.dirname(os.path.realpath(__file__))
+        configpath = realpath + '/../config/hotspot.cfg'
 
         self.parser.add_argument('--config', '-c',
                                  help='path to configuration',
@@ -145,7 +156,7 @@ class Config:
             print 'Configuration file not found.'
             raise SystemExit
 
-        # TODO: use $CWD/hotspot.cfg, create it from ~/.hotspot/hotspot.cfg if not there
+        # TODO: use $CWD/hotspot.cfg, create it if not there
 
         self.config.read(path)
         return self
@@ -184,10 +195,11 @@ class Section:
         # keep count to cache multiple executions of the same command
         try:
             self.counter[cmd] += 1
-        except:
+        except KeyError:
             self.counter[cmd] = 0
 
-        temp = '{0}.{1}.cache'.format(self.name, self.counter[cmd])
+        suffix = '/../{0}.{1}.cache'.format(self.name, self.counter[cmd])
+        temp = self.log.logdir + suffix
         output = None
 
         try:
@@ -195,7 +207,8 @@ class Section:
             self.log.debug('Loading ' + temp)
         except IOError:
             self.log.debug('Dumping ' + temp)
-            output = subprocess.check_output(cmd, shell = True).strip()
+            output = subprocess.check_output(cmd, shell = True)
+            output.strip()
             pickle.dump(output, open(temp, "wb"))
 
         with open(self.log.logdir + '/' + self.name + '.log', 'w') as log:
@@ -211,7 +224,8 @@ class Section:
         return self
     def get(self):
         """Return tags."""
-        self.log.debug('Returning tags from section named {0}'.format(self.name))
+        msg = 'Returning tags from section named {0}'
+        self.log.debug(msg.format(self.name))
         return self.tags
     def show(self):
         """Show section name and tags in console."""
@@ -311,12 +325,15 @@ class BenchmarkSection(Section):
                     ('fft', r'StarFFT_Gflops=(\d+.*)', 'GFlops'), ]
 
         for metric in metrics:
-            try:
-                match = re.search(metric[1], output).group(1)
-            except AttributeError:
-                match = 'Unknown'
-        self.tags['hpcc-{0}'.format(metric[0])] = '{0} {1}'.format(match,
-                                                                   metric[2])
+            if metric:
+                try:
+                    match = re.search(metric[1], output).group(1)
+                except AttributeError:
+                    match = 'Unknown'
+
+        if metric:
+            value = '{0} {1}'.format(match, metric[2])
+            self.tags['hpcc-{0}'.format(metric[0])] = value
 
         self.log.debug("System baseline completed")
 
@@ -356,11 +373,13 @@ class WorkloadSection(Section):
             elapsed = end - start
             times.append(elapsed)
             outputs.append(output)
-            self.log.debug("Control {0} took {1:.2f} seconds".format(i, elapsed))
+            msg = "Control {0} took {1:.2f} seconds"
+            self.log.debug(msg.format(i, elapsed))
 
         array = numpy.array(times)
         deviation = "Deviation: gmean {0:.2f} std {1:.2f}"
-        self.log.debug(deviation.format(scipy.stats.gmean(array), numpy.std(array)))
+        dev = deviation.format(scipy.stats.gmean(array))
+        self.log.debug(dev, numpy.std(array))
 
         self.tags['geomean'] = "%.5f" % scipy.stats.gmean(array)
         self.tags['stddev'] = "%.5f" % numpy.std(array)
@@ -424,13 +443,19 @@ class ScalingSection(Section):
         for size in range(int(self.first),
                           int(self.last) + 1,
                           int(self.increment)):
+
+# TODO: include timing inside command method
+
             start = time.time()
-            output = self.command(' && '.join([ 'cd {0}'.format(self.dir), self.run.format(self.cores, self.size, self.program), 'cd -' ]))
+            run = self.run.format(self.cores, self.size, self.program)
+            output = self.command(' && '.join([ 'cd {0}'.format(self.dir),
+                                                run, 'cd -' ]))
             end = time.time()
             outputs.append(output)
             elapsed = end - start
             data[size] = elapsed
-            self.log.debug("Problem at {0} took {1:.2f} seconds".format(self.size, elapsed))
+            msg = "Problem at {0} took {1:.2f} seconds"
+            self.log.debug(msg.format(self.size, elapsed))
         array = numpy.array(data.values())
 
 # TODO: kill execution if time takes more than a limit
@@ -470,6 +495,48 @@ class ResourcesSection(Section):
         Section.__init__(self, 'resources')
     def gather(self):
         """Run program under pidstat."""
+
+        print 'AM: ', self.tags
+
+        cmd = 'pidstat -s -r -d -u -h -p $! 1'
+        pidstat = '& {0} | sed "s| \+|,|g" | grep ^, | cut -b2-'.format(cmd)
+        command = self.tags['run'].format(cores, last, program) + pidstat
+        output = self.command(command)
+
+# TODO: refactor this into resources section
+
+        lines = output.splitlines()
+
+# TODO: this should be parsed from output's header, not hardcoded
+
+        header = 'Time,PID,%usr,%system,%guest,%CPU,CPU,minflt/s,majflt/s,VSZ,RSS,%MEM,StkSize,StkRef,kB_rd/s,kB_wr/s,kB_ccwr/s,Command'
+        fields = header.split(',')
+
+        data = {}
+        for i in range(0, len(fields)):
+            field = fields[i]
+            if field in ['%CPU', '%MEM']:
+
+            # TODO: add disk read/writes plots
+
+                data[field] = []
+                for line in lines:
+                    data[field].append(line.split(',')[i])
+
+                    matplotlib.pyplot.plot(data[field])
+                    matplotlib.pyplot.xlabel('{0} usage rate'.format(field))
+                    matplotlib.pyplot.grid(True)
+                    label = 'percentage of available resources'
+                    matplotlib.pyplot.ylabel(label)
+                    matplotlib.pyplot.title('resource usage')
+                    name = '{0}.pdf'.format(field, bbox_inches=0)
+                    name.replace('%','')
+                    matplotlib.pyplot.savefig(name)
+                    matplotlib.pyplot.clf()
+
+        tags['resources'] = output
+        self.log.debug("Resource usage plotting completed")
+
         return self
 
 class VectorizationSection(Section):
@@ -508,8 +575,15 @@ def main():
     log = Log()
     tags = Tags().tags
 
-# TODO: check why config file cannot be loaded
     tags.update(Config().items())
+
+    tags['count'] = cfg.get('count')
+    tags['build'] = cfg.get('build')
+    tags['run'] = cfg.get('run')
+    
+    tags['first'], tags['last'], tags['increment'] = cfg.get('range').split(',')
+    tags['range'] = str(range(int(first), int(last), int(increment)))
+    tags['cores'] = str(multiprocessing.cpu_count())
 
     tags.update(HardwareSection(tags).gather().show().get())
 
@@ -519,58 +593,13 @@ def main():
 
     tags.update(ProgramSection(tags).gather().show().get())
     tags.update(SoftwareSection(tags).gather().show().get())
+    tags.update(SanitySection(tags).gather().show().get())
+
+    tags.update(ResourcesSection(tags).gather().show().get())
 
 # TODO: program should be read from a tag
 
-    count = CFG.get('count')
-    build = CFG.get('build')
-    run = CFG.get('run')
-    first, last, increment = CFG.get('range', program).split(',')
-
-    tags['range'] = str(range(int(first), int(last), int(increment)))
-
-    cores = str(multiprocessing.cpu_count())
-
 # TODO: get/log human readable output, then process using Python
-
-    pidstat = '& pidstat -s -r -d -u -h -p $! 1 | sed "s| \+|,|g" | grep ^, | cut -b2-'
-    command = run.format(cores, last, program) + pidstat
-    output = subprocess.check_output(command, shell = True)
-
-# TODO: refactor this into resources section
-
-    with open(self.logger.logdir + '/resources.log', 'w') as log:
-        log.write(output)
-
-    lines = output.splitlines()
-
-# TODO: this should be parsed from output's header, not hardcoded
-
-    header = 'Time,PID,%usr,%system,%guest,%CPU,CPU,minflt/s,majflt/s,VSZ,RSS,%MEM,StkSize,StkRef,kB_rd/s,kB_wr/s,kB_ccwr/s,Command'
-    fields = header.split(',')
-
-    data = {}
-    for i in range(0, len(fields)):
-        field = fields[i]
-        if field in ['%CPU', '%MEM']:
-
-            # TODO: add disk read/writes plots
-
-            data[field] = []
-            for line in lines:
-                data[field].append(line.split(',')[i])
-
-            matplotlib.pyplot.plot(data[field])
-            matplotlib.pyplot.xlabel('{0} usage rate'.format(field))
-            matplotlib.pyplot.grid(True)  
-            matplotlib.pyplot.ylabel('percentage of available resources')
-            matplotlib.pyplot.title('resource usage')
-            name = '{0}.pdf'.format(field, bbox_inches=0).replace('%','')
-            matplotlib.pyplot.savefig(name)
-            matplotlib.pyplot.clf()
-
-    tags['resources'] = output
-    logging.getLogger('bottleneck').debug("Resource usage plotting completed")
 
     tags.update(BenchmarkSection().gather().show().get())
     tags.update(WorkloadSection().gather().show.get())
@@ -705,7 +734,8 @@ def main():
 
 # TODO: get .tex file from install path
 
-    filename = os.path.dirname(os.path.realpath(__file__ + '/../config/hotspot.tex'))
+    path = __file__ + '/../config/hotspot.tex'
+    filename = os.path.dirname(os.path.realpath(path))
 
     template = open(filename, 'r').read()
     for key, value in sorted(TAG.iteritems()):
