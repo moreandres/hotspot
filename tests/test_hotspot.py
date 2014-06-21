@@ -169,8 +169,10 @@ class TestCountersSection(unittest.TestCase):
 class TestScript(unittest.TestCase):
     def test_clean(self):
         assert subprocess.check_output('python setup.py clean', shell=True)
-    def test_clean(self):
+    def test_sdist(self):
         assert subprocess.check_output('python setup.py sdist', shell=True)
+    def test_bdist(self):
+        assert subprocess.check_output('python setup.py bdist', shell=True)
     def test_install(self):
         assert subprocess.check_output('sudo python setup.py install', shell=True)
     def test_help(self):

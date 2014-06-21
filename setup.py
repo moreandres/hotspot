@@ -31,6 +31,6 @@ setup(name = 'hotspot',
         ],
       zip_safe = False,
       test_suite = 'tests',
-#      include_package_data = True,
+      include_package_data = True,
 #      install_requires=[ 'numpy', 'scipy', 'matplotlib' ],
       )

@@ -4,6 +4,8 @@
 hotspot - Performance report generator.
 """
 
+# TODO: when used cached information get timing from there
+
 import ConfigParser
 
 import argparse
@@ -119,16 +121,18 @@ class Config:
     def load(self):
         """Load arguments and configuration from file."""
         description = 'Generate performance report for OpenMP programs.'
-        epilog = 'Check github readme for more details.'
+        epilog = 'Check https://github.com/moreandres/hotspot/ for details.'
         self.parser = argparse.ArgumentParser(description=description,
                                               epilog=epilog,
                                               version='0.0.1')
 
         # TODO: use action to verify that configuration file exists
 
+        configpath = os.path.dirname(os.path.realpath(__file__)) + '/../config/hotspot.cfg'
+
         self.parser.add_argument('--config', '-c',
                                  help='path to configuration',
-                                 default= os.path.abspath('.') + '/hotspot.cfg')
+                                 default=configpath)
         self.parser.add_argument('--debug', '-d',
                                  action='store_true',
                                  help='enable verbose logging')
@@ -533,6 +537,8 @@ def main():
     command = run.format(cores, last, program) + pidstat
     output = subprocess.check_output(command, shell = True)
 
+# TODO: refactor this into resources section
+
     with open(self.logger.logdir + '/resources.log', 'w') as log:
         log.write(output)
 
@@ -604,6 +610,8 @@ def main():
     matplotlib.pyplot.clf()
     log.debug("Plotted thread scaling")
 
+# TODO: refactor this into threads section
+
     with open(self.logger.logdir + '/threads.log', 'w') as log:
         log.write("\n".join(outputs))
 
@@ -639,6 +647,8 @@ def main():
     matplotlib.pyplot.clf()
     log.debug("Plotted optimizations")
 
+# TODO: refactor this into an opts section
+
     with open(self.logger.logdir + '/opts.log', 'w') as log:
         log.write("\n".join(outputs))
 
@@ -653,6 +663,8 @@ def main():
                             gprofgrep.format(program) ])
     output = subprocess.check_output(command, shell = True)
 
+# TODO: refactor this into a vectorization section
+
     with open(self.logger.logdir + '/vectorization.log', 'w') as log:
         log.write(output)
 
@@ -661,6 +673,9 @@ def main():
     
     environment = run.format(cores, first, program).split('./')[0]
     record = 'perf record ./{0}'.format(program)
+
+# TODO: use a throw-away temp file
+
     annotate = 'perf annotate > /tmp/test'
     command = ' && '.join([ build.format('"-O3 -g"'),
                            environment + record,
@@ -668,6 +683,8 @@ def main():
     output = subprocess.check_output(command, shell = True)
     cattest = 'cat /tmp/test | grep -v "^\s*:\s*$" | grep -v "0.00"'
     output = subprocess.check_output(cattest, shell = True)
+
+# TODO: refactor into an annotated code section
 
     with open(self.logger.logdir + '/annotation.log', 'w') as log:
         log.write(output)
@@ -679,6 +696,8 @@ def main():
     output = subprocess.check_output(command, shell = True)
     TAG['counters'] = output
 
+# TODO: refactor into a counters section
+
     with open(self.logger.logdir + '/counters.log', 'w') as log:
         log.write(output)
 
@@ -686,7 +705,9 @@ def main():
 
 # TODO: get .tex file from install path
 
-    template = open('/home/amore/tmp/bottleneck/hotspot/hotspot.tex', 'r').read()
+    filename = os.path.dirname(os.path.realpath(__file__ + '/../config/hotspot.tex'))
+
+    template = open(filename, 'r').read()
     for key, value in sorted(TAG.iteritems()):
         log.debug("Replacing macro {0} with {1}".format(key, value))
         template = template.replace('@@' + key.upper() + '@@',
