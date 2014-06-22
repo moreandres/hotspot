@@ -6,6 +6,8 @@ hotspot - Performance report generator.
 
 # TODO: when used cached information get timing from there
 
+# TODO: properly handle missing Linux tooling
+
 import ConfigParser
 
 import argparse
@@ -23,7 +25,6 @@ except ImportError:
     import pickle
 
 import platform
-import pprint
 import re
 import scipy.stats
 import socket
@@ -207,7 +208,7 @@ class Section:
             self.log.debug('Loading ' + temp)
         except IOError:
             self.log.debug('Dumping ' + temp)
-            output = subprocess.check_output(cmd, shell = True)
+            output = subprocess.check_output(cmd, shell = True, stderr=subprocess.STDOUT)
             output.strip()
             pickle.dump(output, open(temp, "wb"))
 
@@ -387,6 +388,8 @@ class WorkloadSection(Section):
         self.tags['max'] = "%.5f" % numpy.max(array)
         self.tags['min'] = "%.5f" % numpy.min(array)
 
+        # TODO: refactor chart-related into its own method
+
         number = math.ceil(math.sqrt(int(self.tags['count'])))
 
         buckets, bins, patches = matplotlib.pyplot.hist(times,
@@ -412,7 +415,7 @@ class WorkloadSection(Section):
 class ScalingSection(Section):
     """Gather scaling information."""
     def __init__(self):
-        """."""
+        """Create scaling section.."""
         # TODO: first, last, increment should be read from self.tags
         Section.__init__(self, 'scaling')
 
@@ -435,7 +438,7 @@ class ScalingSection(Section):
         cleanup = 'cd {0}; {1}; {2}'.format(self.dir,
                                             self.clean,
                                             self.build.format(self.cflags))
-        subprocess.check_output(cleanup, shell = True)
+        subprocess.check_output(cleanup, shell = True, stderr=subprocess.STDOUT)
 
         data = {}
         outputs = []
@@ -456,7 +459,6 @@ class ScalingSection(Section):
             data[size] = elapsed
             msg = "Problem at {0} took {1:.2f} seconds"
             self.log.debug(msg.format(self.size, elapsed))
-        array = numpy.array(data.values())
 
 # TODO: kill execution if time takes more than a limit
 
@@ -478,6 +480,91 @@ class ScalingSection(Section):
         
         return self
         
+class ThreadsSection(Section):
+    """Gather multi-threading information."""
+    def __init__(self):
+        """Create multi-threading section."""
+        Section.__init__(self, 'threading')
+    def gather(self):
+        """Run program using increasing thread count."""
+        outputs = []
+        procs = []
+        for core in range(1, int(self.tags['cores']) + 1):
+            start = time.time()
+            run = self.tags['run'].format(core,
+                                          self.tags['last'],
+                                          self.tags['program'])
+            output = subprocess.check_output(run, shell = True, stderr=subprocess.STDOUT)
+            end = time.time()
+            outputs.append(output)
+            elapsed = end - start
+            procs.append(elapsed)
+            message = "Threads at {0} took {1:.2f} seconds"
+            self.log.debug(message.format(core, elapsed))
+
+        # TODO: procs[1] less than half procs[0] then supralinear then FAIL
+
+        parallel = 2 * (procs[0] - procs[1]) / procs[0]
+        serial = (procs[0] - 2 * (procs[0] - procs[1])) / procs[0]
+        self.tags['serial'] = "%.5f" % serial
+        self.tags['parallel'] = "%.5f" % parallel
+        
+        self.tags['amdalah'] = "%.5f" % ( 1 / (serial + (1/1024) * (1 - serial)) )
+        self.tags['gustafson'] = "%.5f" % ( 1024 - (serial * (1024 - 1)) )
+
+        self.log.debug("Computed scaling laws")
+
+        # TODO: move graph-related to its own method
+
+        matplotlib.pyplot.plot(procs, label="actual")
+        matplotlib.pyplot.grid(True)  
+
+        ideal = [ procs[0] ]
+        for proc in range(1, len(procs)):
+            ideal.append(procs[proc]/proc+1)
+
+        matplotlib.pyplot.plot(ideal, label="ideal")
+
+        matplotlib.pyplot.xlabel('cores in units')
+        matplotlib.pyplot.xticks(range(0, int(self.tags['cores'])),
+                                 range(1, int(self.tags['cores']) + 1))
+        matplotlib.pyplot.ylabel('time in seconds')
+        matplotlib.pyplot.title('thread count scaling')
+        matplotlib.pyplot.savefig('procs.pdf', bbox_inches=0)
+        matplotlib.pyplot.grid(True)
+        matplotlib.pyplot.clf()
+        self.log.debug("Plotted thread scaling")
+
+class OptimizationSection(Section):
+    """Gather optimizations information."""
+    def __init__(self):
+        """Create optimizations section."""
+        Section.__init__(self, 'optimizations')
+    def gather(self):
+        """Run program with increasing optimization levels."""
+        outputs = []
+        opts = []
+        for opt in range(0, 4):
+            start = time.time()
+            build = self.tags['build'].format('-O{0}'.format(opt))
+            run = self.tags['run'].format(self.tags['cores'], self.tags['first'], self.tags['program'])
+            command = ' && '.join([ build, run ])
+            output = subprocess.check_output(command,
+                                             shell = True,
+                                             stderr=subprocess.STDOUT)
+            end = time.time()
+            outputs.append(output)
+            elapsed = end - start
+            opts.append(elapsed)
+            optimizations = "Optimizations at {0} took {1:.2f} seconds"
+            self.log.debug(optimizations.format(opt, elapsed))
+
+        # TODO: refactor graph-related to its own method
+
+        matplotlib.pyplot.plot(opts)
+        matplotlib.pyplot.savefig('opts.pdf', bbox_inches=0)
+        matplotlib.pyplot.clf()
+        self.log.debug("Plotted optimizations")
 
 class ProfileSection(Section):
     """Gather performance profile information."""
@@ -486,7 +573,18 @@ class ProfileSection(Section):
         Section.__init__(self, 'profile')
     def gather(self):
         """Run gprof and gather results."""
-        return self
+
+        gprofgrep = 'gprof -l -b {0} | grep [a-zA-Z0-9]'
+        command = ' && '.join([ self.tags['build'].format('"-O3 -g -pg"'),
+                                self.tags['run'].format(self.tags['cores'],
+                                                        self.tags['first'],
+                                                        self.tags['program']),
+                                gprofgrep.format(self.tags['program']) ])
+        output = subprocess.check_output(command, shell = True,
+                                         stderr=subprocess.STDOUT)
+
+        self.tags['profile'] = output
+        self.log.debug("Profiling report completed")
 
 class ResourcesSection(Section):
     """Gather system resources information."""
@@ -500,7 +598,7 @@ class ResourcesSection(Section):
 
         cmd = 'pidstat -s -r -d -u -h -p $! 1'
         pidstat = '& {0} | sed "s| \+|,|g" | grep ^, | cut -b2-'.format(cmd)
-        command = self.tags['run'].format(cores, last, program) + pidstat
+        command = self.tags['run'].format(self.tags['cores'], self.tags['last'], self.tags['program']) + pidstat
         output = self.command(command)
 
 # TODO: refactor this into resources section
@@ -534,10 +632,33 @@ class ResourcesSection(Section):
                     matplotlib.pyplot.savefig(name)
                     matplotlib.pyplot.clf()
 
-        tags['resources'] = output
+        self.tags['resources'] = output
         self.log.debug("Resource usage plotting completed")
 
         return self
+
+class AnnotatedSection(Section):
+    """Generate annotated source code."""
+    def __init__(self):
+        """Create annotated section."""
+        Section.__init__(self, 'annotated')
+    def gather(self):
+        """Run perf to record execution and then generate annotated source code."""
+        environment = self.tags['run'].format(self.tags['cores'], self.tags['first'], self.tags['program']).split('./')[0]
+        record = 'perf record ./{0}'.format(self.tags['program'])
+
+# TODO: use a throw-away mktemp file
+
+        annotate = 'perf annotate > /tmp/test'
+        command = ' && '.join([ self.tags['build'].format('"-O3 -g"'),
+                                environment + record,
+                                annotate ])
+        output = subprocess.check_output(command, shell = True, stderr=subprocess.STDOUT)
+        cattest = 'cat /tmp/test | grep -v "^\s*:\s*$" | grep -v "0.00"'
+        output = subprocess.check_output(cattest, shell = True, stderr=subprocess.STDOUT)
+
+        self.tags['annotation'] = output
+        self.log.debug("Source annotation completed")
 
 class VectorizationSection(Section):
     """Gather vectorization information."""
@@ -546,7 +667,12 @@ class VectorizationSection(Section):
         Section.__init__(self, 'vectorization')
     def gather(self):
         """Run oprofile."""
-        return self
+        flags = '"-O3 -ftree-vectorizer-verbose=7" 2>&1'
+        command = self.tags['build'].format(flags)
+        output = subprocess.check_output(command, shell = True,
+                                         stderr=subprocess.STDOUT)
+        self.tags['vectorizer'] = output
+        self.log.debug("Vectorization report completed")
 
 class CountersSection(Section):
     """Gather hardware counters information."""
@@ -555,6 +681,13 @@ class CountersSection(Section):
         Section.__init__(self, 'counters')
     def gather(self):
         """Run program and gather counter statistics."""
+
+        counters = 'N={0} perf stat -r 3 ./{1}'.format(self.tags['last'], self.tags['program'])
+        output = subprocess.check_output(counters, shell = True, stderr=subprocess.STDOUT)
+        self.tags['counters'] = output
+
+        self.log.debug("Hardware counters gathering completed")
+
         return self
 
 class ConfigSection(Section):
@@ -582,7 +715,7 @@ def main():
     tags['run'] = cfg.get('run')
     
     tags['first'], tags['last'], tags['increment'] = cfg.get('range').split(',')
-    tags['range'] = str(range(int(first), int(last), int(increment)))
+    tags['range'] = str(range(int(tags['first']), int(tags['last']), int(tags['increment'])))
     tags['cores'] = str(multiprocessing.cpu_count())
 
     tags.update(HardwareSection(tags).gather().show().get())
@@ -605,132 +738,7 @@ def main():
     tags.update(WorkloadSection().gather().show.get())
     tags.update(ScalingSection().gather.show.get())
 
-# TODO: historical comparison
-
-    outputs = []
-    procs = []
-    for core in range(1, int(cores) + 1):
-        start = time.time()
-        output = subprocess.check_output(run.format(core, last, program),
-                                         shell = True)
-        end = time.time()
-        outputs.append(output)
-        elapsed = end - start
-        procs.append(elapsed)
-        log.debug("Threads at {0} took {1:.2f} seconds".format(core, elapsed))
-    array = numpy.array(procs)
-
-    matplotlib.pyplot.plot(procs, label="actual")
-    matplotlib.pyplot.grid(True)  
-
-    ideal = [ procs[0] ]
-    for proc in range(1, len(procs)):
-        ideal.append(procs[proc]/proc+1)
-
-    matplotlib.pyplot.plot(ideal, label="ideal")
-
-    matplotlib.pyplot.xlabel('cores in units')
-    matplotlib.pyplot.xticks(range(0, int(cores)),
-                             range(1, int(cores) + 1))
-    matplotlib.pyplot.ylabel('time in seconds')
-    matplotlib.pyplot.title('thread count scaling')
-    matplotlib.pyplot.savefig('procs.pdf', bbox_inches=0)
-    matplotlib.pyplot.grid(True)  
-    matplotlib.pyplot.clf()
-    log.debug("Plotted thread scaling")
-
-# TODO: refactor this into threads section
-
-    with open(self.logger.logdir + '/threads.log', 'w') as log:
-        log.write("\n".join(outputs))
-
-    # TODO: procs[1] less than half procs[0] then supralinear then FAIL
-
-    parallel = 2 * (procs[0] - procs[1]) / procs[0]
-    serial = (procs[0] - 2 * (procs[0] - procs[1])) / procs[0]
-    tags['serial'] = "%.5f" % serial
-    tags['parallel'] = "%.5f" % parallel
-
-    tags['amdalah'] = "%.5f" % ( 1 / (serial + (1/1024) * (1 - serial)) )
-    tags['gustafson'] = "%.5f" % ( 1024 - (serial * (1024 - 1)) )
-
-    log.debug("Computed scaling laws")
-
-    outputs = []
-    opts = []
-    for opt in range(0, 4):
-        start = time.time()
-        command = ' && '.join([ build.format('-O{0}'.format(opt)),
-                               run.format(cores, first, program) ])
-        output = subprocess.check_output(command, shell = True)
-        end = time.time()
-        outputs.append(output)
-        elapsed = end - start
-        opts.append(elapsed)
-        optimizations = "Optimizations at {0} took {1:.2f} seconds"
-        log.debug(optimizations.format(opt, elapsed))
-    array = numpy.array(opts)
-
-    matplotlib.pyplot.plot(opts)
-    matplotlib.pyplot.savefig('opts.pdf', bbox_inches=0)
-    matplotlib.pyplot.clf()
-    log.debug("Plotted optimizations")
-
-# TODO: refactor this into an opts section
-
-    with open(self.logger.logdir + '/opts.log', 'w') as log:
-        log.write("\n".join(outputs))
-
-    command = build.format('"-O3 -ftree-vectorizer-verbose=7" 2>&1')
-    output = subprocess.check_output(command, shell = True)
-    tags['vectorizer'] = output
-    log.debug("Vectorization report completed")
-
-    gprofgrep = 'gprof -l -b {0} | grep [a-zA-Z0-9]'
-    command = ' && '.join([ build.format('"-O3 -g -pg"'),
-                            run.format(cores, first, program),
-                            gprofgrep.format(program) ])
-    output = subprocess.check_output(command, shell = True)
-
-# TODO: refactor this into a vectorization section
-
-    with open(self.logger.logdir + '/vectorization.log', 'w') as log:
-        log.write(output)
-
-    tags['profile'] = output
-    log.debug("Profiling report completed")
-    
-    environment = run.format(cores, first, program).split('./')[0]
-    record = 'perf record ./{0}'.format(program)
-
-# TODO: use a throw-away temp file
-
-    annotate = 'perf annotate > /tmp/test'
-    command = ' && '.join([ build.format('"-O3 -g"'),
-                           environment + record,
-                           annotate ])
-    output = subprocess.check_output(command, shell = True)
-    cattest = 'cat /tmp/test | grep -v "^\s*:\s*$" | grep -v "0.00"'
-    output = subprocess.check_output(cattest, shell = True)
-
-# TODO: refactor into an annotated code section
-
-    with open(self.logger.logdir + '/annotation.log', 'w') as log:
-        log.write(output)
-
-    tags['annotation'] = output
-    log.debug("Source annotation completed")
-
-    counters = 'N={0} perf stat -r 3 ./{1}'.format(last, program)
-    output = subprocess.check_output(command, shell = True)
-    TAG['counters'] = output
-
-# TODO: refactor into a counters section
-
-    with open(self.logger.logdir + '/counters.log', 'w') as log:
-        log.write(output)
-
-    log.debug("Hardware counters gathering completed")
+# TODO: historical comparison?
 
 # TODO: get .tex file from install path
 
@@ -738,14 +746,14 @@ def main():
     filename = os.path.dirname(os.path.realpath(path))
 
     template = open(filename, 'r').read()
-    for key, value in sorted(TAG.iteritems()):
+    for key, value in sorted(tags.iteritems()):
         log.debug("Replacing macro {0} with {1}".format(key, value))
         template = template.replace('@@' + key.upper() + '@@',
                                     value.replace('%', '?'))
-    open(program + '.tex', 'w').write(template)
+    open(tags['program'] + '.tex', 'w').write(template)
 
     latex = 'pdflatex {0}.tex && pdflatex {0}.tex && pdflatex {0}.tex'
-    command = latex.format(program)
+    command = latex.format(tags['program'])
     subprocess.call(command, shell = True)
 
 if __name__ == "__main__":
