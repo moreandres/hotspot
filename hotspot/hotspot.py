@@ -140,7 +140,7 @@ class Config:
         # TODO: use action to verify that configuration file exists
 
         realpath = os.path.dirname(os.path.realpath(__file__))
-        configpath = realpath + '/../config/hotspot.cfg'
+        configpath = realpath + '/../cfg/hotspot.cfg'
 
         self.parser.add_argument('--config', '-c',
                                  help='path to configuration',
@@ -157,7 +157,7 @@ class Config:
             print 'Configuration file not found.'
             raise SystemExit
 
-        # TODO: use $CWD/hotspot.cfg, create it if not there
+        # TODO: use $CWD/hotspot.cfg, create it if not there?
 
         self.config.read(path)
         return self
@@ -599,7 +599,7 @@ class ResourcesSection(Section):
         cmd = 'pidstat -s -r -d -u -h -p $! 1'
         pidstat = '& {0} | sed "s| \+|,|g" | grep ^, | cut -b2-'.format(cmd)
         command = self.tags['run'].format(self.tags['cores'], self.tags['last'], self.tags['program']) + pidstat
-        output = self.command(command)
+        output = self.command(command).output
 
 # TODO: refactor this into resources section
 
@@ -709,6 +709,8 @@ def main():
     tags = Tags().tags
 
     tags.update(Config().items())
+
+    # TODO: write down default logic
 
     tags['count'] = cfg.get('count')
     tags['build'] = cfg.get('build')
