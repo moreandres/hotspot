@@ -720,17 +720,17 @@ def main():
     tags['range'] = str(range(int(tags['first']), int(tags['last']), int(tags['increment'])))
     tags['cores'] = str(multiprocessing.cpu_count())
 
-    tags.update(HardwareSection(tags).gather().show().get())
+    tags.update(HardwareSection().gather().show().get())
 
 # TODO: check if baseline results are valid
 # TODO: choose size to fit in 1 minute
 # TODO: cli option to not do any smart thing like choosing problem size
 
-    tags.update(ProgramSection(tags).gather().show().get())
-    tags.update(SoftwareSection(tags).gather().show().get())
-    tags.update(SanitySection(tags).gather().show().get())
+    tags.update(ProgramSection().gather().show().get())
+    tags.update(SoftwareSection().gather().show().get())
+    tags.update(SanitySection().gather().show().get())
 
-    tags.update(ResourcesSection(tags).gather().show().get())
+    tags.update(ResourcesSection().gather().show().get())
 
 # TODO: program should be read from a tag
 
