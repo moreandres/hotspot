@@ -200,7 +200,7 @@ class Section:
             self.counter[cmd] = 0
 
         suffix = '/../{0}.{1}.cache'.format(self.name, self.counter[cmd])
-        temp = self.log.logdir + suffix
+        temp = os.path.abspath(self.log.logdir + suffix)
         output = None
 
         try:
@@ -243,7 +243,7 @@ class HardwareSection(Section):
     def gather(self):
         """Gather hardware information."""
 
-        listing = 'lshw -short -sanitize | cut -b25- | '
+        listing = 'sudo lshw -short -sanitize | cut -b25- | '
         grep = 'grep -E "memory|processor|bridge|network|storage"'
         self.tags['hardware'] = self.command(listing + grep).output
 
@@ -288,7 +288,7 @@ class SanitySection(Section):
     def __init__(self):
         """Create sanity section."""
         Section.__init__(self, 'sanity')
-        self.dir = 'cd {0}'.format(self.tags['dir'])
+        self.dir = 'cd {0}'.format(self.tags['cwd'])
         self.build = self.tags['build'].format('-O3')
         self.run = self.tags['run']
         self.cores = self.tags['cores']
@@ -593,8 +593,6 @@ class ResourcesSection(Section):
         Section.__init__(self, 'resources')
     def gather(self):
         """Run program under pidstat."""
-
-        print 'AM: ', self.tags
 
         cmd = 'pidstat -s -r -d -u -h -p $! 1'
         pidstat = '& {0} | sed "s| \+|,|g" | grep ^, | cut -b2-'.format(cmd)
