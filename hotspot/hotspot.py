@@ -109,7 +109,6 @@ class Log:
 
     def close(self):
         """Close logging."""
-
         return self
         
     def get(self):
@@ -171,12 +170,12 @@ class Config:
     def items(self, section='default'):
         """Get tags as a dictionary."""
         Log().debug('Getting all items from config')
-        try:
-            items = dict(zip(self.config.items(section)[0::2],
-                             self.config.items(section)[1::2]))
-        except ConfigParser.NoSectionError:
-            Log().error('No configuration found')
-            items = {}
+
+        items = {}
+
+        for option in self.config.options(section):
+            items[option] = self.config.get(section, option) 
+
         return items
 
 class Section:
@@ -228,6 +227,9 @@ class Section:
         msg = 'Returning tags from section named {0}'
         self.log.debug(msg.format(self.name))
         return self.tags
+    def chart(self):
+        """Generate chart."""
+        return self
     def show(self):
         """Show section name and tags in console."""
         self.log.debug('Showing section named {0}'.format(self.name))
@@ -351,7 +353,7 @@ class WorkloadSection(Section):
         self.cores = self.tags['cores']
         self.first = self.tags['first']
         self.program = self.tags['program']
-        self.dir = self.tags['dir']
+        self.dir = self.tags['cwd']
         
     def gather(self):
         """Run program multiple times, check geomean and deviation."""
@@ -379,11 +381,12 @@ class WorkloadSection(Section):
 
         array = numpy.array(times)
         deviation = "Deviation: gmean {0:.2f} std {1:.2f}"
-        dev = deviation.format(scipy.stats.gmean(array))
-        self.log.debug(dev, numpy.std(array))
+        gmean = scipy.stats.gmean(array)
+        std = numpy.std(array)
+        self.log.debug(deviation.format(gmean, std))
 
-        self.tags['geomean'] = "%.5f" % scipy.stats.gmean(array)
-        self.tags['stddev'] = "%.5f" % numpy.std(array)
+        self.tags['geomean'] = "%.5f" % gmean
+        self.tags['stddev'] = "%.5f" % std
 
         self.tags['max'] = "%.5f" % numpy.max(array)
         self.tags['min'] = "%.5f" % numpy.min(array)
@@ -425,9 +428,8 @@ class ScalingSection(Section):
         self.increment = self.tags['increment']
         self.run = self.tags['run']
         self.cores = self.tags['cores']
-        self.size = self.tags['size']
         self.program = self.tags['program']
-        self.dir = self.tags['dir']
+        self.dir = self.tags['cwd']
         self.cflags = self.tags['cflags']
         self.clean = self.tags['clean']
         self.build = self.tags['build']
@@ -450,7 +452,7 @@ class ScalingSection(Section):
 # TODO: include timing inside command method
 
             start = time.time()
-            run = self.run.format(self.cores, self.size, self.program)
+            run = self.run.format(self.cores, size, self.program)
             output = self.command(' && '.join([ 'cd {0}'.format(self.dir),
                                                 run, 'cd -' ]))
             end = time.time()
@@ -458,7 +460,7 @@ class ScalingSection(Section):
             elapsed = end - start
             data[size] = elapsed
             msg = "Problem at {0} took {1:.2f} seconds"
-            self.log.debug(msg.format(self.size, elapsed))
+            self.log.debug(msg.format(size, elapsed))
 
 # TODO: kill execution if time takes more than a limit
 
@@ -735,15 +737,15 @@ def main():
 # TODO: get/log human readable output, then process using Python
 
     tags.update(BenchmarkSection().gather().show().get())
-    tags.update(WorkloadSection().gather().show.get())
-    tags.update(ScalingSection().gather.show.get())
+    tags.update(WorkloadSection().gather().show().get())
+    tags.update(ScalingSection().gather().show().get())
 
 # TODO: historical comparison?
 
 # TODO: get .tex file from install path
 
-    path = __file__ + '/../config/hotspot.tex'
-    filename = os.path.dirname(os.path.realpath(path))
+    path = __file__ + '/../../cfg/hotspot.tex'
+    filename = os.path.abspath(path)
 
     template = open(filename, 'r').read()
     for key, value in sorted(tags.iteritems()):
@@ -758,7 +760,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-# _ROOT = os.path.abspath(os.path.dirname(__file__))
-# def get_data(path):
-# return os.path.join(_ROOT, 'data', path)
