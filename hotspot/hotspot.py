@@ -187,6 +187,7 @@ class Section:
         self.config = Config()
         self.counter = {}
         self.output = None
+        self.elapsed = -1
         self.log = Log()
         self.log.debug('Creating section named {0}'.format(self.name))
     def command(self, cmd):
@@ -198,23 +199,37 @@ class Section:
         except KeyError:
             self.counter[cmd] = 0
 
-        suffix = '/../{0}.{1}.cache'.format(self.name, self.counter[cmd])
-        temp = os.path.abspath(self.log.logdir + suffix)
         output = None
+        elapsed = -1
+
+        output_suffix = '/../{0}.{1}.output'.format(self.name,
+                                                    self.counter[cmd])
+        elapsed_suffix = '/../{0}.{1}.elapsed'.format(self.name,
+                                                      self.counter[cmd])
+
+        output_file = os.path.abspath(self.log.logdir + output_suffix)
+        elapsed_file = os.path.abspath(self.log.logdir + elapsed_suffix)
 
         try:
-            output = pickle.load(open(temp, "rb"))
-            self.log.debug('Loading ' + temp)
+            output = pickle.load(open(output_file, "rb"))
+            elapsed = pickle.load(open(elapsed_file, "rb"))
+            self.log.debug('Loading ' + output_file)
         except IOError:
-            self.log.debug('Dumping ' + temp)
+            self.log.debug('Dumping ' + output_file)
+            start = time.time()
             output = subprocess.check_output(cmd, shell = True, stderr=subprocess.STDOUT)
+            elapsed = time.time() - start
             output.strip()
-            pickle.dump(output, open(temp, "wb"))
+            pickle.dump(output, open(output_file, "wb"))
+            pickle.dump(elapsed, open(elapsed_file, "wb"))
 
-        with open(self.log.logdir + '/' + self.name + '.log', 'w') as log:
+        logfile = self.log.logdir + '/' + self.name + '.log'
+        with open(logfile, 'w') as log:
             log.write(output)
+            log.write('{0}'.format(elapsed))
 
         self.output = output
+        self.elapsed = elapsed
 
         return self
 
@@ -245,7 +260,7 @@ class HardwareSection(Section):
     def gather(self):
         """Gather hardware information."""
 
-        listing = 'sudo lshw -short -sanitize | cut -b25- | '
+        listing = 'lshw -short -sanitize | cut -b25- | '
         grep = 'grep -E "memory|processor|bridge|network|storage"'
         self.tags['hardware'] = self.command(listing + grep).output
 
@@ -256,7 +271,6 @@ class ProgramSection(Section):
     def __init__(self):
         """Create program section."""
         Section.__init__(self, 'program')
-        self.log = Log()
     def gather(self):
         """Gather program information."""
         self.tags['timestamp'] = self.log.timestamp
@@ -304,7 +318,7 @@ class SanitySection(Section):
                                              self.first,
                                              self.program),
                              'cd -'])
-        self.command(test)
+        self.command(test).output
         return self
 
 class BenchmarkSection(Section):
@@ -370,7 +384,7 @@ class WorkloadSection(Section):
                                                 self.program),
                                 'cd -' ])
 
-            output = self.command(cmd)
+            output = self.command(cmd).output
 
             end = time.time()
             elapsed = end - start
@@ -440,7 +454,7 @@ class ScalingSection(Section):
         cleanup = 'cd {0}; {1}; {2}'.format(self.dir,
                                             self.clean,
                                             self.build.format(self.cflags))
-        subprocess.check_output(cleanup, shell = True, stderr=subprocess.STDOUT)
+        self.command(cleanup).output
 
         data = {}
         outputs = []
@@ -454,7 +468,7 @@ class ScalingSection(Section):
             start = time.time()
             run = self.run.format(self.cores, size, self.program)
             output = self.command(' && '.join([ 'cd {0}'.format(self.dir),
-                                                run, 'cd -' ]))
+                                                run, 'cd -' ])).output
             end = time.time()
             outputs.append(output)
             elapsed = end - start
@@ -496,7 +510,7 @@ class ThreadsSection(Section):
             run = self.tags['run'].format(core,
                                           self.tags['last'],
                                           self.tags['program'])
-            output = subprocess.check_output(run, shell = True, stderr=subprocess.STDOUT)
+            output = self.command(run).output
             end = time.time()
             outputs.append(output)
             elapsed = end - start
@@ -536,6 +550,7 @@ class ThreadsSection(Section):
         matplotlib.pyplot.grid(True)
         matplotlib.pyplot.clf()
         self.log.debug("Plotted thread scaling")
+        return self
 
 class OptimizationSection(Section):
     """Gather optimizations information."""
@@ -551,9 +566,7 @@ class OptimizationSection(Section):
             build = self.tags['build'].format('-O{0}'.format(opt))
             run = self.tags['run'].format(self.tags['cores'], self.tags['first'], self.tags['program'])
             command = ' && '.join([ build, run ])
-            output = subprocess.check_output(command,
-                                             shell = True,
-                                             stderr=subprocess.STDOUT)
+            output = self.command(command).output
             end = time.time()
             outputs.append(output)
             elapsed = end - start
@@ -567,6 +580,7 @@ class OptimizationSection(Section):
         matplotlib.pyplot.savefig('opts.pdf', bbox_inches=0)
         matplotlib.pyplot.clf()
         self.log.debug("Plotted optimizations")
+        return self
 
 class ProfileSection(Section):
     """Gather performance profile information."""
@@ -577,16 +591,16 @@ class ProfileSection(Section):
         """Run gprof and gather results."""
 
         gprofgrep = 'gprof -l -b {0} | grep [a-zA-Z0-9]'
-        command = ' && '.join([ self.tags['build'].format('"-O3 -g -pg"'),
+        command = ' && '.join([ self.tags['build'].format('-O3 -g -pg'),
                                 self.tags['run'].format(self.tags['cores'],
                                                         self.tags['first'],
                                                         self.tags['program']),
                                 gprofgrep.format(self.tags['program']) ])
-        output = subprocess.check_output(command, shell = True,
-                                         stderr=subprocess.STDOUT)
+        output = self.command(command).output
 
         self.tags['profile'] = output
         self.log.debug("Profiling report completed")
+        return self
 
 class ResourcesSection(Section):
     """Gather system resources information."""
@@ -650,15 +664,16 @@ class AnnotatedSection(Section):
 # TODO: use a throw-away mktemp file
 
         annotate = 'perf annotate > /tmp/test'
-        command = ' && '.join([ self.tags['build'].format('"-O3 -g"'),
+        command = ' && '.join([ self.tags['build'].format('-O3 -g'),
                                 environment + record,
                                 annotate ])
-        output = subprocess.check_output(command, shell = True, stderr=subprocess.STDOUT)
+        output = self.command(command).output
         cattest = 'cat /tmp/test | grep -v "^\s*:\s*$" | grep -v "0.00"'
-        output = subprocess.check_output(cattest, shell = True, stderr=subprocess.STDOUT)
+        output = self.command(cattest).output
 
         self.tags['annotation'] = output
         self.log.debug("Source annotation completed")
+        return self
 
 class VectorizationSection(Section):
     """Gather vectorization information."""
@@ -667,12 +682,12 @@ class VectorizationSection(Section):
         Section.__init__(self, 'vectorization')
     def gather(self):
         """Run oprofile."""
-        flags = '"-O3 -ftree-vectorizer-verbose=7" 2>&1'
-        command = self.tags['build'].format(flags)
-        output = subprocess.check_output(command, shell = True,
-                                         stderr=subprocess.STDOUT)
+        flags = '-O3 -ftree-vectorizer-verbose=7'
+        command = self.tags['build'].format(flags) + ' 2>&1'
+        output = self.command(command).output
         self.tags['vectorizer'] = output
         self.log.debug("Vectorization report completed")
+        return self
 
 class CountersSection(Section):
     """Gather hardware counters information."""
@@ -683,7 +698,7 @@ class CountersSection(Section):
         """Run program and gather counter statistics."""
 
         counters = 'N={0} perf stat -r 3 ./{1}'.format(self.tags['last'], self.tags['program'])
-        output = subprocess.check_output(counters, shell = True, stderr=subprocess.STDOUT)
+        output = self.command(counters).output
         self.tags['counters'] = output
 
         self.log.debug("Hardware counters gathering completed")
@@ -712,6 +727,8 @@ def main():
 
     # TODO: write down default logic
 
+    # TODO: these tags should be moved to ConfigurationSection
+
     tags['count'] = cfg.get('count')
     tags['build'] = cfg.get('build')
     tags['run'] = cfg.get('run')
@@ -732,13 +749,18 @@ def main():
 
     tags.update(ResourcesSection().gather().show().get())
 
-# TODO: program should be read from a tag
-
 # TODO: get/log human readable output, then process using Python
 
     tags.update(BenchmarkSection().gather().show().get())
     tags.update(WorkloadSection().gather().show().get())
     tags.update(ScalingSection().gather().show().get())
+    tags.update(ThreadsSection().gather().show().get())
+    tags.update(OptimizationSection().gather().show().get())
+    tags.update(ProfileSection().gather().show().get())
+    tags.update(ResourcesSection().gather().show().get())
+    tags.update(AnnotatedSection().gather().show().get())
+    tags.update(VectorizationSection().gather().show().get())
+    tags.update(CountersSection().gather().show().get())
 
 # TODO: historical comparison?
 
