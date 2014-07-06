@@ -4,8 +4,6 @@
 hotspot - Performance report generator.
 """
 
-# TODO: when used cached information get timing from there
-
 # TODO: properly handle missing Linux tooling
 
 import ConfigParser
@@ -115,8 +113,6 @@ class Log:
         """Get logger instance."""
         return self.logger
 
-# TODO: fix logging in unit tests
-
 class Config:
     """ Parse configuration."""
     __metaclass__ = Singleton
@@ -155,8 +151,6 @@ class Config:
         if not os.path.exists(path):
             print 'Configuration file not found.'
             raise SystemExit
-
-        # TODO: use $CWD/hotspot.cfg, create it if not there?
 
         self.config.read(path)
         return self
@@ -260,7 +254,7 @@ class HardwareSection(Section):
     def gather(self):
         """Gather hardware information."""
 
-        listing = 'lshw -short -sanitize | cut -b25- | '
+        listing = 'lshw -short -sanitize 2>/dev/null | cut -b25- | '
         grep = 'grep -E "memory|processor|bridge|network|storage"'
         self.tags['hardware'] = self.command(listing + grep).output
 
@@ -377,17 +371,16 @@ class WorkloadSection(Section):
         outputs = []
         times = []
         for i in range(0, int(self.count)):
-            start = time.time()
             cmd = ' && '.join([ 'cd {0}'.format(self.dir),
                                 self.run.format(self.cores,
                                                 self.first,
                                                 self.program),
                                 'cd -' ])
 
-            output = self.command(cmd).output
+            command = self.command(cmd)
+            output = command.output
+            elapsed = command.elapsed
 
-            end = time.time()
-            elapsed = end - start
             times.append(elapsed)
             outputs.append(output)
             msg = "Control {0} took {1:.2f} seconds"
@@ -465,13 +458,13 @@ class ScalingSection(Section):
 
 # TODO: include timing inside command method
 
-            start = time.time()
             run = self.run.format(self.cores, size, self.program)
-            output = self.command(' && '.join([ 'cd {0}'.format(self.dir),
-                                                run, 'cd -' ])).output
-            end = time.time()
+            command = self.command(' && '.join([ 'cd {0}'.format(self.dir),
+                                                run, 'cd -' ]))
+            output = command.output
+            elapsed = command.elapsed
             outputs.append(output)
-            elapsed = end - start
+
             data[size] = elapsed
             msg = "Problem at {0} took {1:.2f} seconds"
             self.log.debug(msg.format(size, elapsed))
@@ -506,15 +499,16 @@ class ThreadsSection(Section):
         outputs = []
         procs = []
         for core in range(1, int(self.tags['cores']) + 1):
-            start = time.time()
+
             run = self.tags['run'].format(core,
                                           self.tags['last'],
                                           self.tags['program'])
-            output = self.command(run).output
-            end = time.time()
+            command = self.command(run)
+            output = command.output
+            elapsed = command.elapsed
             outputs.append(output)
-            elapsed = end - start
             procs.append(elapsed)
+
             message = "Threads at {0} took {1:.2f} seconds"
             self.log.debug(message.format(core, elapsed))
 
@@ -627,24 +621,22 @@ class ResourcesSection(Section):
         data = {}
         for i in range(0, len(fields)):
             field = fields[i]
-            if field in ['%CPU', '%MEM']:
-
-            # TODO: add disk read/writes plots
+            if field in [ '%CPU', '%MEM', 'kB_rd/s', 'kB_wr/s' ]:
 
                 data[field] = []
                 for line in lines:
                     data[field].append(line.split(',')[i])
-
                     matplotlib.pyplot.plot(data[field])
-                    matplotlib.pyplot.xlabel('{0} usage rate'.format(field))
-                    matplotlib.pyplot.grid(True)
-                    label = 'percentage of available resources'
-                    matplotlib.pyplot.ylabel(label)
-                    matplotlib.pyplot.title('resource usage')
-                    name = '{0}.pdf'.format(field, bbox_inches=0)
-                    name.replace('%','')
-                    matplotlib.pyplot.savefig(name)
-                    matplotlib.pyplot.clf()
+
+                matplotlib.pyplot.xlabel('{0} usage rate'.format(field))
+                matplotlib.pyplot.grid(True)
+                label = 'percentage of available resources'
+                matplotlib.pyplot.ylabel(label)
+                matplotlib.pyplot.title('resource usage')
+                name = '{0}.pdf'.format(field, bbox_inches=0)
+                name = name.replace('%','').replace('_','').replace('/','')
+                matplotlib.pyplot.savefig(name)
+                matplotlib.pyplot.clf()
 
         self.tags['resources'] = output
         self.log.debug("Resource usage plotting completed")
@@ -659,17 +651,21 @@ class AnnotatedSection(Section):
     def gather(self):
         """Run perf to record execution and then generate annotated source code."""
         environment = self.tags['run'].format(self.tags['cores'], self.tags['first'], self.tags['program']).split('./')[0]
-        record = 'perf record ./{0}'.format(self.tags['program'])
+        record = 'perf record -- ./{0}'.format(self.tags['program'])
 
 # TODO: use a throw-away mktemp file
 
-        annotate = 'perf annotate > /tmp/test'
-        command = ' && '.join([ self.tags['build'].format('-O3 -g'),
+# TODO: use long options everywhere
+
+        annotate = 'perf annotate --stdio > /tmp/test'
+        command = ' && '.join([ 'make clean', self.tags['build'].format('-O3 -g'),
                                 environment + record,
                                 annotate ])
-        output = self.command(command).output
-        cattest = 'cat /tmp/test | grep -v "^\s*:\s*$" | grep -v "0.00"'
-        output = self.command(cattest).output
+
+#        self.command(command)
+        cattest = 'cat /tmp/test' # | grep -v "^\s*:\s*$" | grep -v "0.00"'
+#        output = self.command(cattest).output
+        output = 'NOTHING'
 
         self.tags['annotation'] = output
         self.log.debug("Source annotation completed")
@@ -742,29 +738,26 @@ def main():
 # TODO: check if baseline results are valid
 # TODO: choose size to fit in 1 minute
 # TODO: cli option to not do any smart thing like choosing problem size
+# TODO: get/log human readable output, then process using Python
 
     tags.update(ProgramSection().gather().show().get())
     tags.update(SoftwareSection().gather().show().get())
     tags.update(SanitySection().gather().show().get())
-
-    tags.update(ResourcesSection().gather().show().get())
-
-# TODO: get/log human readable output, then process using Python
-
     tags.update(BenchmarkSection().gather().show().get())
     tags.update(WorkloadSection().gather().show().get())
     tags.update(ScalingSection().gather().show().get())
     tags.update(ThreadsSection().gather().show().get())
     tags.update(OptimizationSection().gather().show().get())
     tags.update(ProfileSection().gather().show().get())
+
+# TODO: findout why resources section is taking so long
+
     tags.update(ResourcesSection().gather().show().get())
     tags.update(AnnotatedSection().gather().show().get())
     tags.update(VectorizationSection().gather().show().get())
     tags.update(CountersSection().gather().show().get())
 
 # TODO: historical comparison?
-
-# TODO: get .tex file from install path
 
     path = __file__ + '/../../cfg/hotspot.tex'
     filename = os.path.abspath(path)
