@@ -5,6 +5,7 @@ hotspot - Performance report generator.
 """
 
 # TODO: properly handle missing Linux tooling
+# TODO: replace all hotspot with filename
 
 import ConfigParser
 
@@ -78,7 +79,7 @@ class Log:
 
         self.logger.setLevel(logging.DEBUG)
 
-        fileh = logging.FileHandler(self.logdir + '/full.log')
+        fileh = logging.FileHandler(self.logdir + '/hotspot.log')
         fileh.setLevel(logging.DEBUG)
         consoleh = logging.StreamHandler()
         consoleh.setLevel(logging.DEBUG)
@@ -123,6 +124,7 @@ class Config:
         self.config = None
         self.parser = None
         self.args = None
+        self.log = Log()
 
     def load(self):
         """Load arguments and configuration from file."""
@@ -158,15 +160,14 @@ class Config:
     def get(self, key, section='default'):
         """Get configuration attribute."""
         value = self.config.get(section, key)
-        Log().debug('Getting {0} from config: {1}'.format(key, value))
+        self.log.debug('Getting {0} from config: {1}'.format(key, value))
         return value
 
     def items(self, section='default'):
         """Get tags as a dictionary."""
-        Log().debug('Getting all items from config')
+        self.log.debug('Getting all items from config')
 
         items = {}
-
         for option in self.config.options(section):
             items[option] = self.config.get(section, option) 
 
@@ -216,11 +217,6 @@ class Section:
             output.strip()
             pickle.dump(output, open(output_file, "wb"))
             pickle.dump(elapsed, open(elapsed_file, "wb"))
-
-        logfile = self.log.logdir + '/' + self.name + '.log'
-        with open(logfile, 'w') as log:
-            log.write(output)
-            log.write('{0}'.format(elapsed))
 
         self.output = output
         self.elapsed = elapsed
@@ -336,13 +332,11 @@ class BenchmarkSection(Section):
                     ('fft', r'StarFFT_Gflops=(\d+.*)', 'GFlops'), ]
 
         for metric in metrics:
-            if metric:
-                try:
-                    match = re.search(metric[1], output).group(1)
-                except AttributeError:
-                    match = 'Unknown'
-
-        if metric:
+            try:
+                match = re.search(metric[1], output).group(1)
+            except AttributeError:
+                match = 'Unknown'
+            
             value = '{0} {1}'.format(match, metric[2])
             self.tags['hpcc-{0}'.format(metric[0])] = value
 
@@ -390,9 +384,11 @@ class WorkloadSection(Section):
         deviation = "Deviation: gmean {0:.2f} std {1:.2f}"
         gmean = scipy.stats.gmean(array)
         std = numpy.std(array)
+        average = numpy.average(array)
         self.log.debug(deviation.format(gmean, std))
 
         self.tags['geomean'] = "%.5f" % gmean
+        self.tags['average'] = "%.5f" % average
         self.tags['stddev'] = "%.5f" % std
 
         self.tags['max'] = "%.5f" % numpy.max(array)
@@ -416,7 +412,7 @@ class WorkloadSection(Section):
         matplotlib.pyplot.grid(True)  
         matplotlib.pyplot.savefig('hist.pdf', bbox_inches=0)
         matplotlib.pyplot.clf()
-        Log().debug("Plotted histogram")
+        self.log.debug("Plotted histogram")
 
         return self
 
@@ -626,7 +622,8 @@ class ResourcesSection(Section):
                 data[field] = []
                 for line in lines:
                     data[field].append(line.split(',')[i])
-                    matplotlib.pyplot.plot(data[field])
+
+                matplotlib.pyplot.plot(data[field])
 
                 matplotlib.pyplot.xlabel('{0} usage rate'.format(field))
                 matplotlib.pyplot.grid(True)

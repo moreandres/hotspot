@@ -17,14 +17,14 @@
 
 \begin{document}
 
-\title{@@PROGRAM@@ Performance Report}
+\title{{\tt @@PROGRAM@@} Performance Report}
 
 \date{@@TIMESTAMP@@}
 \author{}
 
 \maketitle
 
-\abstract{This performance report is intended to support performance analysis and optimization activities. It includes details on program behavior, system configuration and capabilities, and relevant data from well-known performance analysis tools. This report was generated using {\tt hotspot} version {\tt 0.1}. Homepage \url{http://www.github.com/moreandres/hotspot}. Please report issues to \url{mailto:more.andres@gmail.com}. Full Log: \url{run:@@CWD@@/.bt/@@TIMESTAMP@@/bt.log}.}
+\abstract{This performance report is intended to support performance analysis and optimization activities. It includes details on program behavior, system configuration and capabilities, and of course relevant data from well-known performance analysis tools. This report was generated using {\tt hotspot} version {\tt 0.1}. Homepage \url{http://www.github.com/moreandres/hotspot}. Please report issues to \url{mailto:more.andres@gmail.com}. Full Log: \url{~/.hotspot/@@PROGRAM@@/@@TIMESTAMP@@/hotspot.log}.}
 
 \tableofcontents
 
@@ -42,7 +42,7 @@ Program is the name of the program binary.
 Timestamp is a unique identifier used to store information on disk.
 Parameters Range is the problem size set used to scale the program. 
 
-More: \url{run:@@CWD@@/.bt/@@TIMESTAMP@@/program.log}
+More: \url{~/.hotspot/@@PROGRAM@@/@@TIMESTAMP@@/program.log}
 
 \section{System Capabilities}
 
@@ -73,7 +73,7 @@ The software toolchain is also detailed.
 \item C Library: {\tt @@LIBC@@}
 \end{enumerate}
 
-More: \url{run:@@CWD@@/.bt/@@TIMESTAMP@@/system.log}
+More: \url{~/.hotspot/@@PROGRAM@@/@@TIMESTAMP@@/system.log}
 
 \subsection{System Performance Baseline}
 
@@ -96,7 +96,7 @@ A set of performance benchmark results is included as a reference.
  \label{table:pruebas}
 \end{table}
 
-More: \url{run:@@CWD@@/.bt/@@TIMESTAMP@@/benchmark.log}
+More: \url{~/.hotspot/@@PROGRAM@@/@@TIMESTAMP@@/benchmark.log}
 
 \section{Workload}
 
@@ -124,7 +124,7 @@ This section provides details about the workload behavior.
 
 \end{enumerate}
 
-More: \url{run:@@CWD@@/.bt/@@TIMESTAMP@@/histograph.log}
+More: \url{~/.hotspot/@@PROGRAM@@/@@TIMESTAMP@@/histogram.log}
 
 \section{Scalability}
 
@@ -162,7 +162,7 @@ Optimization limits can be estimated using scaling laws.
 \item Gustafson Law for 1024 procs: {\tt @@GUSTAFSON@@ times}
 \end{enumerate}
 
-More: \url{run:@@CWD@@/.bt/@@TIMESTAMP@@/scalability.log}
+More: \url{~/.hotspot/@@PROGRAM@@/@@TIMESTAMP@@/scalability.log}
 
 \section{Profile}
 
@@ -178,7 +178,7 @@ This subsection provides details about the program execution profile.
 92.6% main -> fft -> _fft -> _muldc3
 \end{verbatim}
 
-More: \url{@@CWD@@/.bt/@@TIMESTAMP@@/callgraph.log}
+More: \url{~/.hotspot/@@PROGRAM@@/@@TIMESTAMP@@/callgraph.log}
 
 \subsubsection{Flat Profile}
 
@@ -186,7 +186,7 @@ More: \url{@@CWD@@/.bt/@@TIMESTAMP@@/callgraph.log}
 @@PROFILE@@
 \end{verbatim}
 
-More: \url{@@CWD@@/.bt/@@TIMESTAMP@@/profile.log}
+More: \url{~/.hotspot/@@PROGRAM@@/@@TIMESTAMP@@/profile.log}
 
 Overhead: {\tt @@OVERHEAD@@\%}
 
@@ -202,7 +202,7 @@ This subsection provide details about the system execution profile.
 
 Overhead: {\tt @@OVERHEAD@@\%}
 
-More: \url{@@CWD@@/.bt/@@TIMESTAMP@@/bottleneck.log}
+More: \url{~/.hotspot/@@PROGRAM@@/@@TIMESTAMP@@/bottleneck.log}
 
 \subsubsection{System Resources Usage}
 
@@ -234,7 +234,7 @@ More: \url{@@CWD@@/.bt/@@TIMESTAMP@@/bottleneck.log}
 \caption{Writes to Disk}
 \end{figure}
 
-More: \url{@@CWD@@/.bt/@@TIMESTAMP@@/resources.log}
+More: \url{~/.hotspot/@@PROGRAM@@/@@TIMESTAMP@@/resources.log}
 
 \section{Low Level}
 
@@ -248,7 +248,7 @@ This subsection provide details about vectorization status of the program loops.
 @@VECTORIZER@@
 \end{verbatim}
 
-More: \url{@@CWD@@/.bt/@@TIMESTAMP@@/vectorization.log}
+More: \url{~/.hotspot/@@PROGRAM@@/@@TIMESTAMP@@/vectorization.log}
 
 \subsection{Counters Report}
 
@@ -258,6 +258,6 @@ This subsection provides details about software and hardware counters.
 @@COUNTERS@@
 \end{verbatim}
 
-More: \url{@@CWD@@/.bt/@@TIMESTAMP@@/counters.log}
+More: \url{~/.hotspot/@@PROGRAM@@/@@TIMESTAMP@@/counters.log}
 
 \end{document}
