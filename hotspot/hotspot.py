@@ -190,17 +190,17 @@ class Section:
 
         # keep count to cache multiple executions of the same command
         try:
-            self.counter[cmd] += 1
+            self.counter[self.name] += 1
         except KeyError:
-            self.counter[cmd] = 0
+            self.counter[self.name] = 0
 
         output = None
         elapsed = -1
 
         output_suffix = '/../{0}.{1}.output'.format(self.name,
-                                                    self.counter[cmd])
+                                                    self.counter[self.name])
         elapsed_suffix = '/../{0}.{1}.elapsed'.format(self.name,
-                                                      self.counter[cmd])
+                                                      self.counter[self.name])
 
         output_file = os.path.abspath(self.log.logdir + output_suffix)
         elapsed_file = os.path.abspath(self.log.logdir + elapsed_suffix)
@@ -219,6 +219,8 @@ class Section:
             output.strip()
             pickle.dump(output, open(output_file, "wb"))
             pickle.dump(elapsed, open(elapsed_file, "wb"))
+
+# TODO: log.debug here about cmd, output and elapsed
 
         self.output = output
         self.elapsed = elapsed
@@ -255,6 +257,7 @@ class HardwareSection(Section):
         listing = 'lshw -short -sanitize 2>/dev/null | cut -b25- | '
         grep = 'grep -E "memory|processor|bridge|network|storage"'
         self.tags['hardware'] = self.command(listing + grep).output
+        self.tags['cores'] = str(multiprocessing.cpu_count())
 
         return self
 
@@ -321,9 +324,9 @@ class BenchmarkSection(Section):
     def gather(self):
         """Run HPCC and gather metrics."""
         # TBD: make this a tag
-        cores = str(multiprocessing.cpu_count())
+
         mpirun = 'mpirun -np {0} `which hpcc` && cat hpccoutf.txt'
-        output = self.command(mpirun.format(cores)).output
+        output = self.command(mpirun.format(self.tags['cores'])).output
 
         metrics = [ ('success', r'Success=(\d+.*)', None),
                     ('hpl', r'HPL_Tflops=(\d+.*)', 'TFlops'),
@@ -398,8 +401,9 @@ class WorkloadSection(Section):
 
         # TODO: refactor chart-related into its own method
 
-        number = math.ceil(math.sqrt(int(self.tags['count'])))
+        number = 2 * math.ceil(math.sqrt(int(self.tags['count'])))
 
+        matplotlib.pyplot.gcf().set_size_inches(12,4)
         buckets, bins, patches = matplotlib.pyplot.hist(times,
                                                         bins=number,
                                                         normed=True)
@@ -472,6 +476,7 @@ class ScalingSection(Section):
         xvalues = data.keys()
         xvalues.sort()
 
+        matplotlib.pyplot.gcf().set_size_inches(12,4)
         matplotlib.pyplot.plot(data.values())
         matplotlib.pyplot.xlabel('problem size in bytes')
         matplotlib.pyplot.xticks(range(0, len(data.values())), xvalues)
@@ -501,6 +506,9 @@ class ThreadsSection(Section):
             run = self.tags['run'].format(core,
                                           self.tags['last'],
                                           self.tags['program'])
+
+            print 'AM', run
+
             command = self.command(run)
             output = command.output
             elapsed = command.elapsed
@@ -522,8 +530,11 @@ class ThreadsSection(Section):
 
         self.log.debug("Computed scaling laws")
 
+        raise SystemExit
+        
         # TODO: move graph-related to its own method
 
+        matplotlib.pyplot.gcf().set_size_inches(12,4)
         matplotlib.pyplot.plot(procs, label="actual")
         matplotlib.pyplot.grid(True)  
 
@@ -625,6 +636,7 @@ class ResourcesSection(Section):
                 for line in lines:
                     data[field].append(line.split(',')[i])
 
+                matplotlib.pyplot.gcf().set_size_inches(12,4)
                 matplotlib.pyplot.plot(data[field])
 
                 matplotlib.pyplot.xlabel('{0} usage rate'.format(field))

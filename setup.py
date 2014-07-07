@@ -6,7 +6,7 @@ from setuptools import setup
 readme = os.path.join(os.path.dirname(__file__), 'README.md')
 
 setup(name = 'hotspot',
-      version = '0.0.1',
+      version = '0.0.2',
       description = 'Performance report generator for OpenMP programs in GNU/Linux',
       long_description = open(readme).read(),
       author = 'Andres More',
