@@ -184,7 +184,7 @@ class Section:
         self.output = None
         self.elapsed = -1
         self.log = Log()
-        self.log.debug('Creating section named {0}'.format(self.name))
+        self.log.info('Creating section named {0}'.format(self.name))
     def command(self, cmd):
         """Run command keeping logs and caching output."""
 
@@ -225,7 +225,7 @@ class Section:
 
     def gather(self):
         """Populate section contents."""
-        self.log.debug('Empty gather in section named {0}'.format(self.name))
+        self.error.debug('Empty gather in section named {0}'.format(self.name))
         return self
     def get(self):
         """Return tags."""
