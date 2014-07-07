@@ -212,7 +212,9 @@ class Section:
         except IOError:
             self.log.debug('Dumping ' + output_file)
             start = time.time()
-            output = subprocess.check_output(cmd, shell = True, stderr=subprocess.STDOUT)
+            output = subprocess.check_output(cmd,
+                                             shell = True,
+                                             stderr=subprocess.STDOUT)
             elapsed = time.time() - start
             output.strip()
             pickle.dump(output, open(output_file, "wb"))
@@ -640,6 +642,13 @@ class ResourcesSection(Section):
 
         return self
 
+# TODO: use a throw-away mktemp file
+# TODO: use long options everywhere
+
+# perf stat -e cpu-cycles,cpu-clock,task-clock python mypythonscript.py
+# perf stat -e cache-misses python mypythonscript.py
+# perf script | gprof2dot.py -f perf | dot -Tpng -o output.png
+
 class AnnotatedSection(Section):
     """Generate annotated source code."""
     def __init__(self):
@@ -648,22 +657,14 @@ class AnnotatedSection(Section):
     def gather(self):
         """Run perf to record execution and then generate annotated source code."""
         environment = self.tags['run'].format(self.tags['cores'], self.tags['first'], self.tags['program']).split('./')[0]
-        record = 'perf record -- ./{0}'.format(self.tags['program'])
-
-# TODO: use a throw-away mktemp file
-
-# TODO: use long options everywhere
-
-        annotate = 'perf annotate --stdio > /tmp/test'
-        command = ' && '.join([ 'make clean', self.tags['build'].format('-O3 -g'),
+        record = 'echo "perf record -q -- ./{0}" > /tmp/test; bash -i /tmp/test >/dev/null 2>/dev/null'.format(self.tags['program'])
+        annotate = "perf annotate --stdio | grep -v '^\s*:\s*$' | grep -v '0.00'"
+        command = ' && '.join([ self.tags['build'].format('-O3 -g'),
                                 environment + record,
                                 annotate ])
 
-#        self.command(command)
-        cattest = 'cat /tmp/test' # | grep -v "^\s*:\s*$" | grep -v "0.00"'
-#        output = self.command(cattest).output
-        output = 'NOTHING'
-
+        output = self.command(command).output
+        
         self.tags['annotation'] = output
         self.log.debug("Source annotation completed")
         return self
@@ -763,7 +764,7 @@ def main():
     for key, value in sorted(tags.iteritems()):
         log.debug("Replacing macro {0} with {1}".format(key, value))
         template = template.replace('@@' + key.upper() + '@@',
-                                    value.replace('%', '?'))
+                                    value.replace('%', ''))
     open(tags['program'] + '.tex', 'w').write(template)
 
     latex = 'pdflatex {0}.tex && pdflatex {0}.tex && pdflatex {0}.tex'

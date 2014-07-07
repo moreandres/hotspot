@@ -12,13 +12,13 @@ A toolchain is used to build the program for optimization or profiling.
 ### Ubuntu
 
 ```
-$ sudo apt-get install texlive openmpi-bin linux-tools hpcc gcc gfortran build-essential git python-pip libpng3 libfreetype6 python-matplotlib python-numpy python-dateutil python-scipy ispell htop emacs sysstat texlive-latex-extra linux-tools-3.11.0-23-generic
+$ sudo apt-get install texlive openmpi-bin linux-tools hpcc gcc gfortran build-essential git python-pip libpng3 libfreetype6 python-matplotlib python-numpy python-dateutil python-scipy ispell htop emacs sysstat texlive-latex-extra linux-tools-3.11.0-23-generic python graphviz firefox mupdf
 $ sudo pip install hotspot
 ```
 
 Note: The linux-tools-*-generic package should match the available kernel.
 
-Note: Usual Ubuntu default PDF readers SIGFAULTS somehow, use mupdf or Adobe.
+Note: Most Ubuntu default PDF readers SIGFAULTS somehow, use mupdf or Adobe.
 
 $ sudo apt-get install gdebi libgtk2.0-0:i386 libnss3-1d:i386 libnspr4-0d:i386 lib32nss-mdns* libxml2:i386 libxslt1.1:i386 libstdc++6:i386
 $ wget http://ardownload.adobe.com/pub/adobe/reader/unix/9.x/9.5.5/enu/AdbeRdr9.5.5-1_i386linux_enu.deb
