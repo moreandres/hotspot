@@ -692,7 +692,7 @@ class VectorizationSection(Section):
         Section.__init__(self, 'vectorization')
     def gather(self):
         """Run oprofile."""
-        flags = '-O3 -ftree-vectorizer-verbose=7'
+        flags = '-O3 -ftree-vectorizer-verbose=2'
         command = self.tags['build'].format(flags) + ' 2>&1'
         output = self.command(command).output
         self.tags['vectorizer'] = output
