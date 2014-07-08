@@ -6,6 +6,7 @@ hotspot - Performance report generator.
 
 # TODO: properly handle missing Linux tooling
 # TODO: replace all hotspot with filename
+# TODO: only print tags increments not all
 
 import ConfigParser
 
@@ -52,7 +53,6 @@ class Tags:
     def show(self):
         """Show current tags."""
         print self.tags
-
 
 class Log:
     """Logging interface."""
@@ -145,6 +145,9 @@ class Config:
         self.parser.add_argument('--debug', '-d',
                                  action='store_true',
                                  help='enable verbose logging')
+        self.parser.add_argument('--force', '-f',
+                                 action='store_true',
+                                 help='do not reuse cache')
 
         self.args = self.parser.parse_args()
         self.config = ConfigParser.ConfigParser()
@@ -206,6 +209,8 @@ class Section:
         elapsed_file = os.path.abspath(self.log.logdir + elapsed_suffix)
 
         try:
+            if self.config.args.force:
+                raise IOError
             output = pickle.load(open(output_file, "rb"))
             elapsed = pickle.load(open(elapsed_file, "rb"))
             self.log.debug('Loading ' + output_file)
