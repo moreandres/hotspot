@@ -248,7 +248,10 @@ class Section:
         """Show section name and tags in console."""
         self.log.debug('Showing section named {0}'.format(self.name))
         for key, value in sorted(self.tags.iteritems()):
-            self.log.debug('Tag {0} is {1}'.format(key, value))
+            if len(value) > 40:
+                self.log.debug('Tag {0} is\n{1}'.format(key, value))
+            else:
+                self.log.debug('Tag {0} is {1}'.format(key, value))
         return self
 
 class HardwareSection(Section):
@@ -388,14 +391,14 @@ class WorkloadSection(Section):
             times.append(elapsed)
             outputs.append(output)
             msg = "Control {0} took {1:.2f} seconds"
-            self.log.debug(msg.format(i, elapsed))
+            self.log.info(msg.format(i, elapsed))
 
         array = numpy.array(times)
         deviation = "Deviation: gmean {0:.2f} std {1:.2f}"
         gmean = scipy.stats.gmean(array)
         std = numpy.std(array)
         average = numpy.average(array)
-        self.log.debug(deviation.format(gmean, std))
+        self.log.info(deviation.format(gmean, std))
 
         self.tags['geomean'] = "%.5f" % gmean
         self.tags['average'] = "%.5f" % average
@@ -474,7 +477,7 @@ class ScalingSection(Section):
 
             data[size] = elapsed
             msg = "Problem at {0} took {1:.2f} seconds"
-            self.log.debug(msg.format(size, elapsed))
+            self.log.info(msg.format(size, elapsed))
 
 # TODO: kill execution if time takes more than a limit
 
@@ -512,8 +515,6 @@ class ThreadsSection(Section):
                                           self.tags['last'],
                                           self.tags['program'])
 
-            print 'AM', run
-
             command = self.command(run)
             output = command.output
             elapsed = command.elapsed
@@ -521,7 +522,7 @@ class ThreadsSection(Section):
             procs.append(elapsed)
 
             message = "Threads at {0} took {1:.2f} seconds"
-            self.log.debug(message.format(core, elapsed))
+            self.log.info(message.format(core, elapsed))
 
         # TODO: procs[1] less than half procs[0] then supralinear then FAIL
 
@@ -534,8 +535,6 @@ class ThreadsSection(Section):
         self.tags['gustafson'] = "%.5f" % ( 1024 - (serial * (1024 - 1)) )
 
         self.log.debug("Computed scaling laws")
-
-        raise SystemExit
         
         # TODO: move graph-related to its own method
 
@@ -721,6 +720,9 @@ class ConfigSection(Section):
     def __init__(self):
         """Create configuration section."""
         Section.__init__(self, 'config')
+        self.log = Log()
+        self.config = Config()
+        self.tags = Tags()
     def gather(self):
         """Load configuration and update tags."""
         return self
@@ -748,28 +750,28 @@ def main():
     tags['range'] = str(range(int(tags['first']), int(tags['last']), int(tags['increment'])))
     tags['cores'] = str(multiprocessing.cpu_count())
 
-    tags.update(HardwareSection().gather().show().get())
+    tags.update(HardwareSection().gather().get())
 
 # TODO: check if baseline results are valid
 # TODO: choose size to fit in 1 minute
 # TODO: cli option to not do any smart thing like choosing problem size
 # TODO: get/log human readable output, then process using Python
 
-    tags.update(ProgramSection().gather().show().get())
-    tags.update(SoftwareSection().gather().show().get())
-    tags.update(SanitySection().gather().show().get())
-    tags.update(BenchmarkSection().gather().show().get())
-    tags.update(WorkloadSection().gather().show().get())
-    tags.update(ScalingSection().gather().show().get())
-    tags.update(ThreadsSection().gather().show().get())
-    tags.update(OptimizationSection().gather().show().get())
-    tags.update(ProfileSection().gather().show().get())
+    tags.update(ProgramSection().gather().get())
+    tags.update(SoftwareSection().gather().get())
+    tags.update(SanitySection().gather().get())
+    tags.update(BenchmarkSection().gather().get())
+    tags.update(WorkloadSection().gather().get())
+    tags.update(ScalingSection().gather().get())
+    tags.update(ThreadsSection().gather().get())
+    tags.update(OptimizationSection().gather().get())
+    tags.update(ProfileSection().gather().get())
 
 # TODO: findout why resources section is taking so long
 
-    tags.update(ResourcesSection().gather().show().get())
-    tags.update(AnnotatedSection().gather().show().get())
-    tags.update(VectorizationSection().gather().show().get())
+    tags.update(ResourcesSection().gather().get())
+    tags.update(AnnotatedSection().gather().get())
+    tags.update(VectorizationSection().gather().get())
     tags.update(CountersSection().gather().show().get())
 
 # TODO: historical comparison?
