@@ -6,6 +6,7 @@
 \usepackage{enumitem}
 \usepackage[utf8]{inputenc}
 \usepackage{tocloft}
+\usepackage{multicol}
 
 \usepackage[margin=0.5in]{geometry}
 
@@ -26,7 +27,9 @@
 
 \abstract{This performance report is intended to support performance analysis and optimization activities. It includes details on program behavior, system configuration and capabilities, and of course relevant data from well-known performance analysis tools. This report was generated using {\tt hotspot} version {\tt 0.1}. Homepage \url{http://www.github.com/moreandres/hotspot}. Please report issues to \url{mailto:more.andres@gmail.com}. Full Log: \url{~/.hotspot/@@PROGRAM@@/@@TIMESTAMP@@/hotspot.log}.}
 
-\tableofcontents
+\begin{multicols}{2}
+  \tableofcontents
+\end{multicols}
 
 \section{Program}
 
@@ -41,8 +44,6 @@ This section provides details about the program being analyzed.
 Program is the name of the program binary.
 Timestamp is a unique identifier used to store information on disk.
 Parameters Range is the problem size set used to scale the program. 
-
-More: \url{~/.hotspot/@@PROGRAM@@/@@TIMESTAMP@@/program.log}
 
 \section{System Capabilities}
 
@@ -73,8 +74,6 @@ The software toolchain is also detailed.
 \item C Library: {\tt @@LIBC@@}
 \end{enumerate}
 
-More: \url{~/.hotspot/@@PROGRAM@@/@@TIMESTAMP@@/system.log}
-
 \subsection{System Performance Baseline}
 
 This subsection provides details about the system capabilities.
@@ -95,8 +94,6 @@ A set of performance benchmark results is included as a reference.
     \end{tabular}
  \label{table:pruebas}
 \end{table}
-
-More: \url{~/.hotspot/@@PROGRAM@@/@@TIMESTAMP@@/benchmark.log}
 
 \section{Workload}
 
@@ -123,8 +120,6 @@ This section provides details about the workload behavior.
 \end{figure}
 
 \end{enumerate}
-
-More: \url{~/.hotspot/@@PROGRAM@@/@@TIMESTAMP@@/histogram.log}
 
 \section{Scalability}
 
@@ -162,8 +157,6 @@ Optimization limits can be estimated using scaling laws.
 \item Gustafson Law for 1024 procs: {\tt @@GUSTAFSON@@ times}
 \end{enumerate}
 
-More: \url{~/.hotspot/@@PROGRAM@@/@@TIMESTAMP@@/scalability.log}
-
 \section{Profile}
 
 This section provides details about the execution profile of the program and the system.
@@ -178,15 +171,11 @@ This subsection provides details about the program execution profile.
 92.6% main -> fft -> _fft -> _muldc3
 \end{verbatim}
 
-More: \url{~/.hotspot/@@PROGRAM@@/@@TIMESTAMP@@/callgraph.log}
-
 \subsubsection{Flat Profile}
 
 \begin{verbatim}
 @@PROFILE@@
 \end{verbatim}
-
-More: \url{~/.hotspot/@@PROGRAM@@/@@TIMESTAMP@@/profile.log}
 
 \subsection{System Profiling}
 
@@ -222,15 +211,11 @@ This subsection provide details about the system execution profile.
 \caption{Writes to Disk}
 \end{figure}
 
-More: \url{~/.hotspot/@@PROGRAM@@/@@TIMESTAMP@@/resources.log}
-
 \subsubsection{Bottlenecks}
 
 \begin{verbatim}
 @@ANNOTATION@@
 \end{verbatim}
-
-More: \url{~/.hotspot/@@PROGRAM@@/@@TIMESTAMP@@/bottleneck.log}
 
 \section{Low Level}
 
@@ -244,8 +229,6 @@ This subsection provide details about vectorization status of the program loops.
 @@VECTORIZER@@
 \end{verbatim}
 
-More: \url{~/.hotspot/@@PROGRAM@@/@@TIMESTAMP@@/vectorization.log}
-
 \subsection{Counters Report}
 
 This subsection provides details about software and hardware counters.
@@ -253,7 +236,5 @@ This subsection provides details about software and hardware counters.
 \begin{verbatim}
 @@COUNTERS@@
 \end{verbatim}
-
-More: \url{~/.hotspot/@@PROGRAM@@/@@TIMESTAMP@@/counters.log}
 
 \end{document}
