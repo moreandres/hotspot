@@ -82,7 +82,13 @@ class Log:
         fileh = logging.FileHandler(self.logdir + '/hotspot.log')
         fileh.setLevel(logging.DEBUG)
         consoleh = logging.StreamHandler()
-        consoleh.setLevel(logging.DEBUG)
+
+        self.config = Config()
+        consoleh.setLevel(logging.INFO)
+
+        if self.config.args.debug:
+            consoleh.setLevel(logging.DEBUG)
+        
         fmt = '%(asctime)s: %(levelname)s: %(message)s'
         formatter = logging.Formatter(fmt, datefmt="%Y%m%d-%H%M%S")
 
@@ -124,9 +130,9 @@ class Config:
         self.config = None
         self.parser = None
         self.args = None
-        self.log = Log()
 
     def load(self):
+
         """Load arguments and configuration from file."""
         description = 'Generate performance report for OpenMP programs.'
         epilog = 'Check https://github.com/moreandres/hotspot/ for details.'
@@ -163,12 +169,10 @@ class Config:
     def get(self, key, section='default'):
         """Get configuration attribute."""
         value = self.config.get(section, key)
-        self.log.debug('Getting {0} from config: {1}'.format(key, value))
         return value
 
     def items(self, section='default'):
         """Get tags as a dictionary."""
-        self.log.debug('Getting all items from config')
 
         items = {}
         for option in self.config.options(section):
@@ -411,7 +415,7 @@ class WorkloadSection(Section):
 
         number = 2 * math.ceil(math.sqrt(int(self.tags['count'])))
 
-        matplotlib.pyplot.gcf().set_size_inches(12,4)
+        matplotlib.pyplot.gcf().set_size_inches(12, 4)
         buckets, bins, patches = matplotlib.pyplot.hist(times,
                                                         bins=number,
                                                         normed=True)
@@ -484,7 +488,7 @@ class ScalingSection(Section):
         xvalues = data.keys()
         xvalues.sort()
 
-        matplotlib.pyplot.gcf().set_size_inches(12,4)
+        matplotlib.pyplot.gcf().set_size_inches(12, 4)
         matplotlib.pyplot.plot(data.values())
         matplotlib.pyplot.xlabel('problem size in bytes')
         matplotlib.pyplot.xticks(range(0, len(data.values())), xvalues)
@@ -538,7 +542,7 @@ class ThreadsSection(Section):
         
         # TODO: move graph-related to its own method
 
-        matplotlib.pyplot.gcf().set_size_inches(12,4)
+        matplotlib.pyplot.gcf().set_size_inches(12, 4)
         matplotlib.pyplot.plot(procs, label="actual")
         matplotlib.pyplot.grid(True)  
 
@@ -640,7 +644,7 @@ class ResourcesSection(Section):
                 for line in lines:
                     data[field].append(line.split(',')[i])
 
-                matplotlib.pyplot.gcf().set_size_inches(12,4)
+                matplotlib.pyplot.gcf().set_size_inches(12, 4)
                 matplotlib.pyplot.plot(data[field])
 
                 matplotlib.pyplot.xlabel('{0} usage rate'.format(field))
@@ -736,7 +740,8 @@ def main():
 
     tags.update(Config().items())
 
-    # TODO: write down default logic
+    # TODO: document write down default logic
+    # TODO: document configuration file examples
 
     # TODO: these tags should be moved to ConfigurationSection
 
@@ -764,9 +769,6 @@ def main():
     tags.update(ThreadsSection().gather().get())
     tags.update(OptimizationSection().gather().get())
     tags.update(ProfileSection().gather().get())
-
-# TODO: findout why resources section is taking so long
-
     tags.update(ResourcesSection().gather().get())
     tags.update(AnnotatedSection().gather().get())
     tags.update(VectorizationSection().gather().get())
