@@ -25,7 +25,7 @@
 
 \maketitle
 
-\abstract{This performance report is intended to support performance analysis and optimization activities. It includes details on program behavior, system configuration and capabilities, and of course relevant data from well-known performance analysis tools. This report was generated using {\tt hotspot} version {\tt 0.1}. Homepage \url{http://www.github.com/moreandres/hotspot}. Please report issues to \url{mailto:more.andres@gmail.com}. Full Log: \url{~/.hotspot/@@PROGRAM@@/@@TIMESTAMP@@/hotspot.log}.}
+\abstract{This performance report is intended to support performance analysis and optimization activities. It includes details on program behavior, system configuration and capabilities, including support data from well-known performance analysis tools.\\This report was generated using {\tt hotspot} version {\tt 0.1}. Homepage \url{http://www.github.com/moreandres/hotspot}. Full execution log can be found at \url{~/.hotspot/@@PROGRAM@@/@@TIMESTAMP@@/hotspot.log}.}
 
 \begin{multicols}{2}
   \tableofcontents
@@ -36,14 +36,11 @@
 This section provides details about the program being analyzed.
 
 \begin{enumerate}
-\item Program: {\tt @@PROGRAM@@}
-\item Timestamp: {\tt @@TIMESTAMP@@}
-\item Parameters Range: {\tt @@RANGE@@}
+\item Program: {\tt @@PROGRAM@@}. \\Program is the name of the program.
+\item Timestamp: {\tt @@TIMESTAMP@@}. \\Timestamp is a unique identifier used to store information on disk.
+\item Parameters Range: {\tt @@RANGE@@}. \\Parameters range is the problem size set used to scale the program. 
+\item Build and Execution: {\tt @@BUILD@@, @@RUN@@ }. \\Build and execution commands for the program. Placeholder 0 is for special runtime flags, 1 for problem size and 2 for program binary name.
 \end{enumerate}
-
-Program is the name of the program binary.
-Timestamp is a unique identifier used to store information on disk.
-Parameters Range is the problem size set used to scale the program. 
 
 \section{System Capabilities}
 
@@ -54,31 +51,47 @@ This section provides details about the system being used for the analysis.
 This subsection provides details about the system configuration.
 
 The hardware in the system is summarized using a hardware lister utility.
+It reports exact memory configuration, firmware version, mainboard configuration, CPU version and speed, cache configuration, bus speed and others.
 
 \begin{verbatim}
 @@HARDWARE@@
 \end{verbatim}
 
-The software in the system is summarized using the GNU/Linux platform.
+The software in the system is summarized using the GNU/Linux platform string.
 
 \begin{verbatim}
 @@PLATFORM@@
 \end{verbatim}
 
-The software toolchain is also detailed.
+The software toolchain is built upon the following components.
 
 \begin{enumerate}
 \item Host: {\tt @@HOST@@}
-\item Distribution: {\tt @@DISTRO@@}
-\item Compiler: {\tt @@COMPILER@@}
-\item C Library: {\tt @@LIBC@@}
+\item Distribution: {\tt @@DISTRO@@}. \\This codename provides certain LSB (Linux Standard Base) and distribution-specific information.
+\item Compiler: {\tt @@COMPILER@@}. \\Version number of the compiler program.
+\item C Library: {\tt @@LIBC@@}. \\Version number of the C library.
 \end{enumerate}
 
 \subsection{System Performance Baseline}
 
 This subsection provides details about the system capabilities.
 
-A set of performance benchmark results is included as a reference.
+\smallskip
+
+A set of performance results is included as a reference to contrast systems and to verify hardware capabilities using well-known synthetic benchmarks.
+
+\smallskip
+
+The HPC Challenge benchmark consists of different tests:
+
+\begin{enumerate}
+\item{HPL}: the Linpack TPP benchmark which measures the floating point rate of execution for solving a linear system of equations.
+\item{DGEMM}: measures the floating point rate of execution of double precision real matrix-matrix multiplication.
+\item{PTRANS (parallel matrix transpose)}: exercises the communications where pairs of processors communicate with each other simultaneously.
+\item{RandomAccess}: measures the rate of integer random updates of memory (GUPS).
+\item{STREAM}: a simple synthetic benchmark program that measures sustainable memory bandwidth (in GB/s).
+\item{FFT}: measures the floating point rate of execution of double precision complex one-dimensional Discrete Fourier Transform (DFT).
+\end{enumerate}
 
 \begin{table}[H]
 \caption{Benchmarks}
@@ -99,6 +112,10 @@ A set of performance benchmark results is included as a reference.
 
 This section provides details about the workload behavior.
 
+\subsection{Workload Stability}
+
+This subsection provides details about workload stability. The execution time of the workload should be stable and the standard deviation less than 3 units.
+
 \begin{enumerate}
 \item Execution time:
 \begin{enumerate}
@@ -109,8 +126,9 @@ This section provides details about the workload behavior.
 \item min: {\tt @@MIN@@} seconds
 \item max: {\tt @@MAX@@} seconds
 \item repetitions: {\tt @@COUNT@@} times
-%\item outliers: {\tt @@OUTLIERS@@}
 \end{enumerate}
+
+The histogram plots the elapsed times and shows how they fit in a normal distribution sample.
 
 \begin{figure}[H]
 \label{fig:histogram}
@@ -121,9 +139,22 @@ This section provides details about the workload behavior.
 
 \end{enumerate}
 
+\subsection{Workload Optimization}
+
+This section shows how the program reacts to different optimization levels.
+
+\begin{figure}[H]
+\label{fig:optimizations}
+\centering
+\includegraphics[width=\textwidth]{opts.pdf}
+\caption{Optimization Levels}
+\end{figure}
+
 \section{Scalability}
 
 This section provides details about the scaling behavior of the program.
+
+\subsection{Problem Size Scalability}
 
 A chart with the execution time when scaling the problem size.
 
@@ -133,6 +164,8 @@ A chart with the execution time when scaling the problem size.
 \includegraphics[width=\textwidth]{data.pdf}
 \caption{Problem size times}
 \end{figure}
+
+\subsection{Computing Scalability}
 
 A chart with the execution time when scaling computation units.
 
@@ -165,13 +198,11 @@ This section provides details about the execution profile of the program and the
 
 This subsection provides details about the program execution profile.
 
-\subsubsection{Call Graph}
-
-\begin{verbatim}
-92.6% main -> fft -> _fft -> _muldc3
-\end{verbatim}
+% TODO: call graph?
 
 \subsubsection{Flat Profile}
+
+The flat profile shows how much time your program spent in each function, and how many times that function was called.
 
 \begin{verbatim}
 @@PROFILE@@
@@ -211,7 +242,9 @@ This subsection provide details about the system execution profile.
 \caption{Writes to Disk}
 \end{figure}
 
-\subsubsection{Bottlenecks}
+\subsection{Hotspots}
+
+This subsection shows annotated code guiding the optimization efforts.
 
 \begin{verbatim}
 @@ANNOTATION@@

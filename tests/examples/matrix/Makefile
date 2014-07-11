@@ -2,7 +2,7 @@ CC ?= gcc
 CFLAGS ?= -Wall -Wextra -O3
 
 all:
-	$(CC) $(CFLAGS) matrix.c -o matrix -fopenmp
+	@$(CC) $(CFLAGS) matrix.c -o matrix -fopenmp
 
 clean:
-	rm -fr *~ *.o matrix
+	@rm -fr *~ *.o matrix

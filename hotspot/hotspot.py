@@ -263,7 +263,7 @@ class HardwareSection(Section):
         """Gather hardware information."""
 
         listing = 'lshw -short -sanitize 2>/dev/null | cut -b25- | '
-        grep = 'grep -E "memory|processor|bridge|network|storage"'
+        grep = 'grep -E "memory|processor|bridge|network|storage" | grep -v "^storage\s*$"'
         self.tags['hardware'] = self.command(listing + grep).output
         self.tags['cores'] = str(multiprocessing.cpu_count())
 
@@ -298,7 +298,7 @@ class SoftwareSection(Section):
         self.tags['compiler'] = re.split('\n', self.command(compiler).output)[0]
 
         libc = '/lib/x86_64-linux-gnu/libc.so.6'
-        self.tags['libc'] = re.split('\n', self.command(libc).output)[0]
+        self.tags['libc'] = re.split(',', re.split('\n', self.command(libc).output)[0])[0]
 
         return self
 
@@ -647,7 +647,7 @@ class ResourcesSection(Section):
                 matplotlib.pyplot.grid(True)
                 label = 'percentage of available resources'
                 matplotlib.pyplot.ylabel(label)
-                matplotlib.pyplot.title('resource usage')
+                matplotlib.pyplot.title('{0} usage'.format(field))
                 name = '{0}.pdf'.format(field, bbox_inches=0)
                 name = name.replace('%','').replace('_','').replace('/','')
                 matplotlib.pyplot.savefig(name)
@@ -661,8 +661,6 @@ class ResourcesSection(Section):
 # TODO: use a throw-away mktemp file
 # TODO: use long options everywhere
 
-# perf stat -e cpu-cycles,cpu-clock,task-clock python mypythonscript.py
-# perf stat -e cache-misses python mypythonscript.py
 # perf script | gprof2dot.py -f perf | dot -Tpng -o output.png
 
 class AnnotatedSection(Section):
@@ -674,7 +672,7 @@ class AnnotatedSection(Section):
         """Run perf to record execution and then generate annotated source code."""
         environment = self.tags['run'].format(self.tags['cores'], self.tags['first'], self.tags['program']).split('./')[0]
         record = 'echo "perf record -q -- ./{0}" > /tmp/test; bash -i /tmp/test >/dev/null 2>/dev/null'.format(self.tags['program'])
-        annotate = "perf annotate --stdio | grep -v '^\s*:\s*$' | grep -v '0.00'"
+        annotate = "perf annotate --stdio | grep -v '^\s*:\s*$' | grep -v '0.0' | grep -C 5 '\s*[0-9].*:'"
         command = ' && '.join([ self.tags['build'].format('-O3 -g'),
                                 environment + record,
                                 annotate ])
@@ -693,7 +691,7 @@ class VectorizationSection(Section):
     def gather(self):
         """Run oprofile."""
         flags = '-O3 -ftree-vectorizer-verbose=2'
-        command = self.tags['build'].format(flags) + ' 2>&1'
+        command = self.tags['build'].format(flags) + ' 2>&1 | grep -v "^$"'
         output = self.command(command).output
         self.tags['vectorizer'] = output
         self.log.debug("Vectorization report completed")
@@ -783,7 +781,7 @@ def main():
     for key, value in sorted(tags.iteritems()):
         log.debug("Replacing macro {0} with {1}".format(key, value))
         template = template.replace('@@' + key.upper() + '@@',
-                                    value.replace('%', ''))
+                                    value.replace('%', '').replace('_', '\_').replace('{', '\{').replace('}', '\}'))
     open(tags['program'] + '.tex', 'w').write(template)
 
     latex = 'pdflatex {0}.tex && pdflatex {0}.tex && pdflatex {0}.tex'
