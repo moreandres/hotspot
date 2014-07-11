@@ -53,6 +53,10 @@ This subsection provides details about the system configuration.
 The hardware in the system is summarized using a hardware lister utility.
 It reports exact memory configuration, firmware version, mainboard configuration, CPU version and speed, cache configuration, bus speed and others.
 
+\smallskip
+
+The hardware configuration can be used to contrast the system capabilities to well-known benchmarks results on similar systems.
+
 \begin{verbatim}
 @@HARDWARE@@
 \end{verbatim}
@@ -71,6 +75,10 @@ The software toolchain is built upon the following components.
 \item Compiler: {\tt @@COMPILER@@}. \\Version number of the compiler program.
 \item C Library: {\tt @@LIBC@@}. \\Version number of the C library.
 \end{enumerate}
+
+\smallskip
+
+The software configuration can be used to contrast the system capabilities to well-known benchmark results on similar systems.
 
 \subsection{System Performance Baseline}
 
@@ -108,13 +116,17 @@ The HPC Challenge benchmark consists of different tests:
  \label{table:pruebas}
 \end{table}
 
+\smallskip
+
+Most program will have a dominant compute kernel that can be approximated by the ones above, the results helps to understand the available capacity.
+
 \section{Workload}
 
 This section provides details about the workload behavior.
 
 \subsection{Workload Stability}
 
-This subsection provides details about workload stability. The execution time of the workload should be stable and the standard deviation less than 3 units.
+This subsection provides details about workload stability.
 
 \begin{enumerate}
 \item Execution time:
@@ -127,6 +139,7 @@ This subsection provides details about workload stability. The execution time of
 \item max: {\tt @@MAX@@} seconds
 \item repetitions: {\tt @@COUNT@@} times
 \end{enumerate}
+\end{enumerate}
 
 The histogram plots the elapsed times and shows how they fit in a normal distribution sample.
 
@@ -137,7 +150,7 @@ The histogram plots the elapsed times and shows how they fit in a normal distrib
 \caption{Results Distribution}
 \end{figure}
 
-\end{enumerate}
+The workload should run for at least one minute to fully utilize system resources. The execution time of the workload should be stable and the standard deviation less than 3 units.
 
 \subsection{Workload Optimization}
 
@@ -165,6 +178,8 @@ A chart with the execution time when scaling the problem size.
 \caption{Problem size times}
 \end{figure}
 
+The chart will show how computing time increases when increasing problem size.
+
 \subsection{Computing Scalability}
 
 A chart with the execution time when scaling computation units.
@@ -176,18 +191,20 @@ A chart with the execution time when scaling computation units.
 \caption{Thread count times}
 \end{figure}
 
-The parallel and serial fractions of the program can be estimated.
+The chart will show how copmuting time decreases when increasing processing units.
+
+The parallel and serial fractions of the program can be estimated using the information above.
 
 \begin{enumerate}
-\item Parallel Fraction: {\tt @@PARALLEL@@}
-\item Serial: {\tt @@SERIAL@@}
+\item Parallel Fraction: {\tt @@PARALLEL@@}.\\Portion of the program doing parallel work.
+\item Serial: {\tt @@SERIAL@@}.\\Portion of the program doing serial work.
 \end{enumerate}
 
 Optimization limits can be estimated using scaling laws.
 
 \begin{enumerate}
-\item Amdalah Law for 1024 procs: {\tt @@AMDALAH@@ times}
-\item Gustafson Law for 1024 procs: {\tt @@GUSTAFSON@@ times}
+\item Amdalah Law for 1024 procs: {\tt @@AMDALAH@@ times}.\\ Optimizations are limited up to this point when scaling problem size. 
+\item Gustafson Law for 1024 procs: {\tt @@GUSTAFSON@@ times}.\\ Optimizations are limited up to this point when not scaling problem size.
 \end{enumerate}
 
 \section{Profile}
@@ -208,11 +225,15 @@ The flat profile shows how much time your program spent in each function, and ho
 @@PROFILE@@
 \end{verbatim}
 
+The table shows where to focus optimization efforts to maximize impact.
+
 \subsection{System Profiling}
 
 This subsection provide details about the system execution profile.
 
 \subsubsection{System Resources Usage}
+
+The following charts shows the state of system resources during the execution of the program.
 
 \begin{figure}[H]
 \label{fig:cpu}

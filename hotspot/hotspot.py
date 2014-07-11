@@ -7,6 +7,7 @@ hotspot - Performance report generator.
 # TODO: properly handle missing Linux tooling
 # TODO: replace all hotspot with filename
 # TODO: only print tags increments not all
+# TODO: add headers and footers to INFO logging
 
 import ConfigParser
 
@@ -325,7 +326,7 @@ class SanitySection(Section):
                                              self.first,
                                              self.program),
                              'cd -'])
-        self.command(test).output
+        self.command(test)
         return self
 
 class BenchmarkSection(Section):
@@ -461,7 +462,7 @@ class ScalingSection(Section):
         cleanup = 'cd {0}; {1}; {2}'.format(self.dir,
                                             self.clean,
                                             self.build.format(self.cflags))
-        self.command(cleanup).output
+        self.command(cleanup)
 
         data = {}
         outputs = []
@@ -782,8 +783,8 @@ def main():
     template = open(filename, 'r').read()
     for key, value in sorted(tags.iteritems()):
         log.debug("Replacing macro {0} with {1}".format(key, value))
-        template = template.replace('@@' + key.upper() + '@@',
-                                    value.replace('%', '').replace('_', '\_').replace('{', '\{').replace('}', '\}'))
+        sanity = value.replace('%', '').replace('_', '\_').replace('{', '\{').replace('}', '\}')
+        template = template.replace('@@' + key.upper() + '@@', sanity )
     open(tags['program'] + '.tex', 'w').write(template)
 
     latex = 'pdflatex {0}.tex && pdflatex {0}.tex && pdflatex {0}.tex'
