@@ -6,8 +6,6 @@ hotspot - Performance report generator.
 
 # TODO: properly handle missing Linux tooling
 # TODO: replace all hotspot with filename
-# TODO: only print tags increments not all
-# TODO: add headers and footers to INFO logging
 
 import ConfigParser
 
@@ -19,6 +17,7 @@ import matplotlib.pyplot
 import multiprocessing
 import numpy
 import os
+# import sys
 
 try:
     import cPickle as pickle
@@ -35,12 +34,12 @@ import time
 class Singleton(type):
     """Singleton metaclass."""
     _instances = {}
-    def __call__(cls, *args, **kwargs):
+    def __call__(mcs, *args, **kwargs):
         """Return singleton if already there, otherwise create it."""
-        if cls not in cls._instances:
-            instance = super(Singleton, cls).__call__(*args, **kwargs)
-            cls._instances[cls] = instance
-        return cls._instances[cls]
+        if mcs not in mcs._instances:
+            instance = super(Singleton, mcs).__call__(*args, **kwargs)
+            mcs._instances[mcs] = instance
+        return mcs._instances[mcs]
 
 class Tags:
     """Tags to be replaced at the report."""
@@ -61,9 +60,6 @@ class Log:
     def __init__(self):
         """Store all logs in file, show also in console."""
 
-# TODO: cli option to select log level in console
-
-        # logs are hidden in ~/.hotspot/PROGRAM/TIMESTAMP
         cwd = os.path.abspath('.')
         program = os.path.basename(cwd)
     
@@ -167,12 +163,12 @@ class Config:
         self.config.read(path)
         return self
 
-    def get(self, key, section='default'):
+    def get(self, key, section='hotspot'):
         """Get configuration attribute."""
         value = self.config.get(section, key)
         return value
 
-    def items(self, section='default'):
+    def items(self, section='hotspot'):
         """Get tags as a dictionary."""
 
         items = {}
@@ -192,11 +188,10 @@ class Section:
         self.output = None
         self.elapsed = -1
         self.log = Log()
-        self.log.info('Creating section named {0}'.format(self.name))
+        self.log.info('Creating {0} section'.format(self.name))
     def command(self, cmd):
         """Run command keeping logs and caching output."""
 
-        # keep count to cache multiple executions of the same command
         try:
             self.counter[self.name] += 1
         except KeyError:
@@ -239,11 +234,11 @@ class Section:
 
     def gather(self):
         """Populate section contents."""
-        self.error.debug('Empty gather in section named {0}'.format(self.name))
+        self.error.debug('Empty gather in {0} section'.format(self.name))
         return self
     def get(self):
         """Return tags."""
-        msg = 'Returning tags from section named {0}'
+        msg = 'Returning tags from {0} section'
         self.log.debug(msg.format(self.name))
         return self.tags
     def chart(self):
@@ -251,7 +246,7 @@ class Section:
         return self
     def show(self):
         """Show section name and tags in console."""
-        self.log.debug('Showing section named {0}'.format(self.name))
+        self.log.debug('Showing {0} section'.format(self.name))
         for key, value in sorted(self.tags.iteritems()):
             if len(value) > 40:
                 self.log.debug('Tag {0} is\n{1}'.format(key, value))
@@ -441,41 +436,30 @@ class ScalingSection(Section):
     """Gather scaling information."""
     def __init__(self):
         """Create scaling section.."""
-        # TODO: first, last, increment should be read from self.tags
-        Section.__init__(self, 'scaling')
 
+        Section.__init__(self, 'scaling')
         self.tags = Tags().tags
-        self.first = self.tags['first']
-        self.last = self.tags['last']
-        self.increment = self.tags['increment']
-        self.run = self.tags['run']
-        self.cores = self.tags['cores']
-        self.program = self.tags['program']
-        self.dir = self.tags['cwd']
-        self.cflags = self.tags['cflags']
-        self.clean = self.tags['clean']
-        self.build = self.tags['build']
 
     def gather(self):
         """Run program."""
 
-        cleanup = 'cd {0}; {1}; {2}'.format(self.dir,
-                                            self.clean,
-                                            self.build.format(self.cflags))
+        build = self.tags['build'].format(self.tags['cflags'])
+        cleanup = 'cd {0}; {1}; {2}'.format(self.tags['cwd'],
+                                            self.tags['clean'],
+                                            build)
         self.command(cleanup)
 
         data = {}
         outputs = []
 
-        for size in range(int(self.first),
-                          int(self.last) + 1,
-                          int(self.increment)):
+        for size in range(int(self.tags['first']),
+                          int(self.tags['last']) + 1,
+                          int(self.tags['increment'])):
 
-# TODO: include timing inside command method
-
-            run = self.run.format(self.cores, size, self.program)
-            command = self.command(' && '.join([ 'cd {0}'.format(self.dir),
-                                                run, 'cd -' ]))
+            run = self.tags['run'].format(self.tags['cores'],
+                                          size, self.tags['program'])
+            chdir = 'cd {0}'.format(self.tags['cwd'])
+            command = self.command(' && '.join([ chdir, run, 'cd -' ]))
             output = command.output
             elapsed = command.elapsed
             outputs.append(output)
@@ -676,10 +660,13 @@ class AnnotatedSection(Section):
     def gather(self):
         """Run perf to record execution and then generate annotated source code."""
         environment = self.tags['run'].format(self.tags['cores'], self.tags['first'], self.tags['program']).split('./')[0]
-        record = 'echo "perf record -q -- ./{0}" > /tmp/test; bash -i /tmp/test >/dev/null 2>/dev/null'.format(self.tags['program'])
+        record = 'echo "{0} perf record -q -- ./{1}" > /tmp/test; bash -i /tmp/test >/dev/null 2>/dev/null'.format(environment, self.tags['program'])
         annotate = "perf annotate --stdio | grep -v '^\s*:\s*$' | grep -v '0.0' | grep -C 5 '\s*[0-9].*:'"
+
+# TODO: use cflags tag here instead of -O3
+
         command = ' && '.join([ self.tags['build'].format('-O3 -g'),
-                                environment + record,
+                                record,
                                 annotate ])
 
         output = self.command(command).output
@@ -710,7 +697,8 @@ class CountersSection(Section):
     def gather(self):
         """Run program and gather counter statistics."""
 
-        counters = 'N={0} perf stat -r 3 ./{1}'.format(self.tags['last'], self.tags['program'])
+        counters = 'N={0} perf stat -r 3 ./{1}'.format(self.tags['last'],
+                                                       self.tags['program'])
         output = self.command(counters).output
         self.tags['counters'] = output
 
@@ -733,11 +721,15 @@ class ConfigSection(Section):
 def main():
     """Gather information into tags, replace on a .tex file and compile."""
 
+    # sys.tracebacklimit = 0
+
     Config().load()
 
     cfg = Config()
     log = Log()
     tags = Tags().tags
+
+    log.info('Starting hotspot')
 
     tags.update(Config().items())
 
@@ -777,6 +769,8 @@ def main():
 
 # TODO: historical comparison?
 
+    log.info('Generating report')
+
     path = __file__ + '/../../cfg/hotspot.tex'
     filename = os.path.abspath(path)
 
@@ -790,6 +784,9 @@ def main():
     latex = 'pdflatex {0}.tex && pdflatex {0}.tex && pdflatex {0}.tex'
     command = latex.format(tags['program'])
     subprocess.call(command, shell = True)
+    log.info('Completed execution')
 
 if __name__ == "__main__":
     main()
+
+# TODO: add timestamp to PDF filename

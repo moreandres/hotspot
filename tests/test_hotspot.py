@@ -1,8 +1,10 @@
-import random
 import unittest
-import hotspot.hotspot as hotspot
 import subprocess
 import os
+
+"""
+test_hotspot.py - Test performance report generator.
+"""
 
 dirname = os.path.dirname(__file__)
 program = os.path.realpath(dirname + '/../hotspot/hotspot.py')
@@ -28,12 +30,12 @@ class TestHotspot(unittest.TestCase):
         assert 'Output written' in output
     def test_mandel(self):
         """Check that mandel example works."""
-        command = 'cd {0}/examples/matrix; {1} --config hotspot.cfg'.format(dirname, program)
+        command = 'cd {0}/examples/mendel; {1} --config hotspot.cfg'.format(dirname, program)
         output = subprocess.check_output(command, shell=True, stderr=subprocess.STDOUT)
         assert 'Output written' in output
     def test_heat2d(self):
         """Check that heat2d example works."""
-        command = 'cd {0}/examples/matrix; {1} --config hotspot.cfg'.format(dirname, program)
+        command = 'cd {0}/examples/heat2d; {1} --config hotspot.cfg'.format(dirname, program)
         output = subprocess.check_output(command, shell=True, stderr=subprocess.STDOUT)
         assert 'Output written' in output
 
