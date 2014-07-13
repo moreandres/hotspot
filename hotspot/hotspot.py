@@ -248,10 +248,7 @@ class Section:
         """Show section name and tags in console."""
         self.log.debug('Showing {0} section'.format(self.name))
         for key, value in sorted(self.tags.iteritems()):
-            if len(value) > 40:
-                self.log.debug('Tag {0} is\n{1}'.format(key, value))
-            else:
-                self.log.debug('Tag {0} is {1}'.format(key, value))
+            self.log.debug('Tag {0} is {1}'.format(key, value))
         return self
 
 class HardwareSection(Section):
@@ -598,12 +595,15 @@ class ProfileSection(Section):
 
         # TODO: add configured CFLAGS as prefix to this set
 
+        run = self.tags['run'].format(self.tags['cores'],
+                                      self.tags['first'],
+                                      self.tags['program'])
         command = ' && '.join([ self.tags['build'].format('-O3 -g -pg'),
-                                self.tags['run'].format(self.tags['cores'],
-                                                        self.tags['first'],
-                                                        self.tags['program']),
+                                run,
                                 gprofgrep.format(self.tags['program']) ])
-        output = self.command(command).output
+
+        output = re.split('Index by function name',
+                          self.command(command).output)[0]
 
         self.tags['profile'] = output
         self.log.debug("Profiling report completed")
@@ -643,7 +643,7 @@ class ResourcesSection(Section):
                 matplotlib.pyplot.gcf().set_size_inches(12, 4)
                 matplotlib.pyplot.plot(data[field])
 
-                matplotlib.pyplot.xlabel('{0} usage rate'.format(field))
+                matplotlib.pyplot.xlabel('runtime in seconds'.format(field))
                 matplotlib.pyplot.grid(True)
                 label = 'percentage of available resources'
                 matplotlib.pyplot.ylabel(label)
@@ -672,7 +672,7 @@ class AnnotatedSection(Section):
         """Run perf to record execution and then generate annotated source code."""
         environment = self.tags['run'].format(self.tags['cores'], self.tags['first'], self.tags['program']).split('./')[0]
         record = 'echo "{0} perf record -q -- ./{1}" > /tmp/test; bash -i /tmp/test >/dev/null 2>/dev/null'.format(environment, self.tags['program'])
-        annotate = "perf annotate --stdio | grep -v '^\s*:\s*$' | grep -v '0.0' | grep -C 5 '\s*[0-9].*:'"
+        annotate = "perf annotate --stdio | grep -v '^\s*:\s*$' | grep -v '0.' | grep -C 5 '\s*[0-9].*:'"
 
 # TODO: use cflags tag here instead of -O3
 
