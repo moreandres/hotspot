@@ -558,21 +558,29 @@ class OptimizationSection(Section):
         outputs = []
         opts = []
         for opt in range(0, 4):
-            start = time.time()
+
+            # TODO: add configured cflags as a prefix here
+            
             build = self.tags['build'].format('-O{0}'.format(opt))
             run = self.tags['run'].format(self.tags['cores'], self.tags['first'], self.tags['program'])
             command = ' && '.join([ build, run ])
-            output = self.command(command).output
-            end = time.time()
+
+            cmd = self.command(command)
+            output = cmd.output
+            elapsed = cmd.elapsed
             outputs.append(output)
-            elapsed = end - start
             opts.append(elapsed)
             optimizations = "Optimizations at {0} took {1:.2f} seconds"
             self.log.debug(optimizations.format(opt, elapsed))
 
         # TODO: refactor graph-related to its own method
 
-        matplotlib.pyplot.plot(opts)
+        matplotlib.pyplot.xticks(range(0, 4), [0,1,2,3])
+        matplotlib.pyplot.bar([0, 1, 2, 3 ], opts)
+        matplotlib.pyplot.ylabel('time in seconds')
+        matplotlib.pyplot.xlabel('optimization level')
+        matplotlib.pyplot.title('compiler optimizations')
+        matplotlib.pyplot.grid(True)  
         matplotlib.pyplot.savefig('opts.pdf', bbox_inches=0)
         matplotlib.pyplot.clf()
         self.log.debug("Plotted optimizations")
@@ -587,6 +595,9 @@ class ProfileSection(Section):
         """Run gprof and gather results."""
 
         gprofgrep = 'gprof -l -b {0} | grep [a-zA-Z0-9]'
+
+        # TODO: add configured CFLAGS as prefix to this set
+
         command = ' && '.join([ self.tags['build'].format('-O3 -g -pg'),
                                 self.tags['run'].format(self.tags['cores'],
                                                         self.tags['first'],
@@ -682,6 +693,9 @@ class VectorizationSection(Section):
         Section.__init__(self, 'vectorization')
     def gather(self):
         """Run oprofile."""
+
+        # TODO: add configured cflags as a prefix to this set
+
         flags = '-O3 -ftree-vectorizer-verbose=2'
         command = self.tags['build'].format(flags) + ' 2>&1 | grep -v "^$"'
         output = self.command(command).output
@@ -777,13 +791,13 @@ def main():
     template = open(filename, 'r').read()
     for key, value in sorted(tags.iteritems()):
         log.debug("Replacing macro {0} with {1}".format(key, value))
-        sanity = value.replace('%', '').replace('_', '\_').replace('{', '\{').replace('}', '\}')
+        sanity = value.replace('%', '')
         template = template.replace('@@' + key.upper() + '@@', sanity )
     open(tags['program'] + '.tex', 'w').write(template)
 
     latex = 'pdflatex {0}.tex && pdflatex {0}.tex && pdflatex {0}.tex'
     command = latex.format(tags['program'])
-    subprocess.call(command, shell = True)
+    subprocess.check_output(command, shell = True)
     log.info('Completed execution')
 
 if __name__ == "__main__":

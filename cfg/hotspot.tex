@@ -25,7 +25,11 @@
 
 \maketitle
 
-\abstract{This performance report is intended to support performance analysis and optimization activities. It includes details on program behavior, system configuration and capabilities, including support data from well-known performance analysis tools.\\This report was generated using {\tt hotspot} version {\tt 0.1}. Homepage \url{http://www.github.com/moreandres/hotspot}. Full execution log can be found at \url{~/.hotspot/@@PROGRAM@@/@@TIMESTAMP@@/hotspot.log}.}
+\abstract{This performance report is intended to support performance analysis and optimization activities. It includes details on program behavior, system configuration and capabilities, including support data from well-known performance analysis tools.
+
+\smallskip
+
+This report was generated using {\tt hotspot} version {\tt 0.1}. Homepage \url{http://www.github.com/moreandres/hotspot}. Full execution log can be found at \url{~/.hotspot/@@PROGRAM@@/@@TIMESTAMP@@/hotspot.log}.}
 
 \begin{multicols}{2}
   \tableofcontents
@@ -39,7 +43,6 @@ This section provides details about the program being analyzed.
 \item Program: {\tt @@PROGRAM@@}. \\Program is the name of the program.
 \item Timestamp: {\tt @@TIMESTAMP@@}. \\Timestamp is a unique identifier used to store information on disk.
 \item Parameters Range: {\tt @@RANGE@@}. \\Parameters range is the problem size set used to scale the program. 
-\item Build and Execution: {\tt @@BUILD@@, @@RUN@@ }. \\Build and execution commands for the program. Placeholder 0 is for special runtime flags, 1 for problem size and 2 for program binary name.
 \end{enumerate}
 
 \section{System Capabilities}
@@ -118,7 +121,7 @@ The HPC Challenge benchmark consists of different tests:
 
 \smallskip
 
-Most program will have a dominant compute kernel that can be approximated by the ones above, the results helps to understand the available capacity.
+Most programs will have a dominant compute kernel that can be approximated by the ones above, the results helps to understand the available capacity.
 
 \section{Workload}
 
