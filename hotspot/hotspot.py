@@ -4,7 +4,6 @@
 hotspot - Performance report generator.
 """
 
-# TODO: properly handle missing Linux tooling
 # TODO: replace all hotspot with filename
 
 import ConfigParser
@@ -260,7 +259,7 @@ class HardwareSection(Section):
     def gather(self):
         """Gather hardware information."""
 
-        listing = 'lshw -short -sanitize 2>/dev/null | cut -b25- | '
+        listing = 'which lshw >/dev/null && lshw -short -sanitize 2>/dev/null | cut -b25- | '
         items = 'memory|processor|bridge|network|storage'
         grep = 'grep -E "{0}" | grep -v "^storage\s*$"'.format(items)
         self.tags['hardware'] = self.command(listing + grep).output
@@ -293,7 +292,7 @@ class SoftwareSection(Section):
     def gather(self):
         """Get compiler and C library version."""
 
-        compiler = 'gcc --version'
+        compiler = 'which gcc >/dev/null && gcc --version'
         self.tags['compiler'] = re.split('\n', self.command(compiler).output)[0]
 
         libc = '/lib/x86_64-linux-gnu/libc.so.6'
@@ -333,7 +332,7 @@ class BenchmarkSection(Section):
         """Run HPCC and gather metrics."""
         # TBD: make this a tag
 
-        mpirun = 'mpirun -np {0} `which hpcc` && cat hpccoutf.txt'
+        mpirun = 'which mpirun >/dev/null && which hpcc >/dev/null && mpirun -np {0} `which hpcc` && cat hpccoutf.txt'
         output = self.command(mpirun.format(self.tags['cores'])).output
 
         metrics = [ ('success', r'Success=(\d+.*)', None),
@@ -599,7 +598,7 @@ class ProfileSection(Section):
     def gather(self):
         """Run gprof and gather results."""
 
-        gprofgrep = 'gprof -l -b {0} | grep [a-zA-Z0-9] | grep -v "^\s*0.[0-9]"'
+        gprofgrep = 'which gprof >/dev/null && gprof -l -b {0} | grep [a-zA-Z0-9] | grep -v "^\s*0.[0-9]"'
 
         # TODO: add configured CFLAGS as prefix to this set
 
@@ -625,7 +624,7 @@ class ResourcesSection(Section):
     def gather(self):
         """Run program under pidstat."""
 
-        cmd = 'pidstat -s -r -d -u -h -p $! 1'
+        cmd = 'which pidstat >/dev/null && pidstat -s -r -d -u -h -p $! 1'
         pidstat = '& {0} | sed "s| \+|,|g" | grep ^, | cut -b2-'.format(cmd)
         cores = self.tags['cores']
         last = self.tags['last']
@@ -685,7 +684,7 @@ class AnnotatedSection(Section):
         environment = self.tags['run'].format(self.tags['cores'],
                                               self.tags['last'],
                                               self.tags['program']).split('./')[0]
-        record = 'echo "{0} perf record -q -- ./{1}" > /tmp/test; bash -i /tmp/test >/dev/null 2>/dev/null'.format(environment, self.tags['program'])
+        record = 'which perf >/dev/null && echo "{0} perf record -q -- ./{1}" > /tmp/test; bash -i /tmp/test >/dev/null 2>/dev/null'.format(environment, self.tags['program'])
         annotate = "perf annotate --stdio | grep -v '^\s*:\s*$' | grep -v '0.' | grep -C 5 '\s*[0-9].*:'"
 
 # TODO: use cflags tag here instead of -O3
@@ -725,8 +724,8 @@ class CountersSection(Section):
     def gather(self):
         """Run program and gather counter statistics."""
 
-        counters = 'N={0} perf stat -r 3 ./{1}'.format(self.tags['last'],
-                                                       self.tags['program'])
+        counters = 'which perf >/dev/null && N={0} perf stat -r 3 ./{1}'.format(self.tags['last'],
+                                                                                self.tags['program'])
         output = self.command(counters).output
         self.tags['counters'] = output
 
