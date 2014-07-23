@@ -27,17 +27,17 @@ class TestHotspot(unittest.TestCase):
         """Check that matrix example works."""
         command = 'cd {0}/examples/matrix; {1} --config hotspot.cfg'.format(dirname, program)
         output = subprocess.check_output(command, shell=True, stderr=subprocess.STDOUT)
-        assert 'Output written' in output
+        assert 'Completed execution' in output
     def test_mandel(self):
         """Check that mandel example works."""
         command = 'cd {0}/examples/mendel; {1} --config hotspot.cfg'.format(dirname, program)
         output = subprocess.check_output(command, shell=True, stderr=subprocess.STDOUT)
-        assert 'Output written' in output
+        assert 'Completed execution' in output
     def test_heat2d(self):
         """Check that heat2d example works."""
         command = 'cd {0}/examples/heat2d; {1} --config hotspot.cfg'.format(dirname, program)
         output = subprocess.check_output(command, shell=True, stderr=subprocess.STDOUT)
-        assert 'Output written' in output
+        assert 'Completed execution' in output
 
 if __name__ == '__main__':
     unittest.main()

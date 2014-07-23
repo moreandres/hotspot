@@ -559,7 +559,7 @@ class OptimizationSection(Section):
             # TODO: add configured cflags as a prefix here
             
             build = self.tags['build'].format('-O{0}'.format(opt))
-            run = self.tags['run'].format(self.tags['cores'], self.tags['first'], self.tags['program'])
+            run = self.tags['run'].format(self.tags['cores'], self.tags['last'], self.tags['program'])
             command = ' && '.join([ build, run ])
 
             cmd = self.command(command)
@@ -591,12 +591,12 @@ class ProfileSection(Section):
     def gather(self):
         """Run gprof and gather results."""
 
-        gprofgrep = 'gprof -l -b {0} | grep [a-zA-Z0-9]'
+        gprofgrep = 'gprof -l -b {0} | grep [a-zA-Z0-9] | grep -v "^\s*0.[0-9]"'
 
         # TODO: add configured CFLAGS as prefix to this set
 
         run = self.tags['run'].format(self.tags['cores'],
-                                      self.tags['first'],
+                                      self.tags['last'],
                                       self.tags['program'])
         command = ' && '.join([ self.tags['build'].format('-O3 -g -pg'),
                                 run,
@@ -670,7 +670,7 @@ class AnnotatedSection(Section):
         Section.__init__(self, 'annotated')
     def gather(self):
         """Run perf to record execution and then generate annotated source code."""
-        environment = self.tags['run'].format(self.tags['cores'], self.tags['first'], self.tags['program']).split('./')[0]
+        environment = self.tags['run'].format(self.tags['cores'], self.tags['last'], self.tags['program']).split('./')[0]
         record = 'echo "{0} perf record -q -- ./{1}" > /tmp/test; bash -i /tmp/test >/dev/null 2>/dev/null'.format(environment, self.tags['program'])
         annotate = "perf annotate --stdio | grep -v '^\s*:\s*$' | grep -v '0.' | grep -C 5 '\s*[0-9].*:'"
 

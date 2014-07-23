@@ -16,6 +16,8 @@
 \setlist[enumerate]{noitemsep}
 \setlist[itemize]{noitemsep}
 
+\pagenumbering{arabic}
+
 \begin{document}
 
 \title{{\tt @@PROGRAM@@} Performance Report}
@@ -26,6 +28,8 @@
 \maketitle
 
 \abstract{This performance report is intended to support performance analysis and optimization activities. It includes details on program behavior, system configuration and capabilities, including support data from well-known performance analysis tools.
+
+% \cite{openmp}
 
 \smallskip
 
@@ -74,7 +78,7 @@ The software toolchain is built upon the following components.
 
 \begin{enumerate}
 \item Host: {\tt @@HOST@@}
-\item Distribution: {\tt @@DISTRO@@}. \\This codename provides certain LSB (Linux Standard Base) and distribution-specific information.
+\item Distribution: {\tt @@DISTRO@@}. \\This codename provides LSB (Linux Standard Base) and distribution-specific information.
 \item Compiler: {\tt @@COMPILER@@}. \\Version number of the compiler program.
 \item C Library: {\tt @@LIBC@@}. \\Version number of the C library.
 \end{enumerate}
@@ -93,7 +97,7 @@ A set of performance results is included as a reference to contrast systems and 
 
 \smallskip
 
-The HPC Challenge benchmark consists of different tests:
+The HPC Challenge benchmark \cite{hpcc} consists of different tests:
 
 \begin{enumerate}
 \item{HPL}: the Linpack TPP benchmark which measures the floating point rate of execution for solving a linear system of equations.
@@ -134,7 +138,7 @@ This subsection provides details about workload stability.
 \begin{enumerate}
 \item Execution time:
 \begin{enumerate}
-\item problem size: {\tt @@FIRST@@ - @@LAST@@} seconds
+\item problem size range: {\tt @@FIRST@@ - @@LAST@@}
 \item geomean: {\tt @@GEOMEAN@@} seconds
 \item average: {\tt @@AVERAGE@@} seconds
 \item stddev: {\tt @@STDDEV@@}
@@ -182,6 +186,7 @@ A chart with the execution time when scaling the problem size.
 \end{figure}
 
 The chart will show how computing time increases when increasing problem size.
+There should be no valleys or bumps if processing properly balanced across computational units.
 
 \subsection{Computing Scalability}
 
@@ -194,7 +199,8 @@ A chart with the execution time when scaling computation units.
 \caption{Thread count times}
 \end{figure}
 
-The chart will show how copmuting time decreases when increasing processing units.
+The chart will show how computing time decreases when increasing processing units.
+An ideal scaling line is provided for comparison.
 
 The parallel and serial fractions of the program can be estimated using the information above.
 
@@ -206,8 +212,8 @@ The parallel and serial fractions of the program can be estimated using the info
 Optimization limits can be estimated using scaling laws.
 
 \begin{enumerate}
-\item Amdalah Law for 1024 procs: {\tt @@AMDALAH@@ times}.\\ Optimizations are limited up to this point when scaling problem size. 
-\item Gustafson Law for 1024 procs: {\tt @@GUSTAFSON@@ times}.\\ Optimizations are limited up to this point when not scaling problem size.
+\item Amdalah Law for 1024 procs: {\tt @@AMDALAH@@ times}.\\ Optimizations are limited up to this point when scaling problem size. \cite{amdalah}
+\item Gustafson Law for 1024 procs: {\tt @@GUSTAFSON@@ times}.\\ Optimizations are limited up to this point when not scaling problem size. \cite{gustafson}
 \end{enumerate}
 
 \section{Profile}
@@ -244,6 +250,8 @@ The following charts shows the state of system resources during the execution of
 \includegraphics[width=\textwidth]{CPU.pdf}
 \caption{CPU Usage}
 \end{figure}
+
+Note that this chart is likely to show as upper limit a multiple of 100\% in case a multicore system is being used.
 
 \begin{figure}[H]
 \label{fig:memory}
@@ -286,6 +294,10 @@ This subsection provide details about vectorization status of the program loops.
 @@VECTORIZER@@
 \end{verbatim}
 
+The details above shows the list of loops in the program and if they are being vectorized or not.
+These reports can pinpoint areas where the compiler cannot apply vectorization and related optimizations.
+It may be possible to modify your code or communicate additional information to the compiler to guide the vectorization and/or optimizations.
+
 \subsection{Counters Report}
 
 This subsection provides details about software and hardware counters.
@@ -293,5 +305,38 @@ This subsection provides details about software and hardware counters.
 \begin{verbatim}
 @@COUNTERS@@
 \end{verbatim}
+
+The details above shows counters that provide low-overhead access to detailed performance information using internal registers of the CPU.
+
+\begin{thebibliography}{9}
+
+\bibitem{hpcc}
+  {Piotr Luszczek and Jack J. Dongarra and David Koester and Rolf Rabenseifner and Bob Lucas and Jeremy Kepner and John Mccalpin and David Bailey and Daisuke Takahashi},
+  \emph{Introduction to the HPC Challenge Benchmark Suite}.
+  Technical Report,
+  2005.
+
+\bibitem{amdahl}
+  {Amdahl, Gene M.},
+  \emph{Validity of the single processor approach to achieving large scale computing capabilities}.
+  Communications of the ACM,
+  {Proceedings of the April 18-20, 1967, spring joint computer conference Pages 483-485},
+  1967.
+
+\bibitem{gustafson}
+  John L. Gustafson,
+  \emph{Reevaluating Amdahl's Law}.
+  Communications of the ACM,
+  Volume 31 Pages 532-533,
+  1988.
+
+\bibitem{openmp}
+  OpenMP Architecture Review Board,
+  \emph{OpenMP Application Program Interface}.
+  {\it http://www.openmp.org},
+  3.0,
+  May 2008.
+
+\end{thebibliography}
 
 \end{document}
