@@ -87,7 +87,8 @@ class Log:
             consoleh.setLevel(logging.DEBUG)
         
         fmt = '%(asctime)s: %(levelname)s: %(message)s'
-        formatter = logging.Formatter(fmt, datefmt="%Y%m%d-%H%M%S")
+        formatter = logging.Formatter(fmt,
+                                      datefmt="%Y%m%d-%H%M%S")
 
         fileh.setFormatter(formatter)
         consoleh.setFormatter(formatter)
@@ -260,7 +261,8 @@ class HardwareSection(Section):
         """Gather hardware information."""
 
         listing = 'lshw -short -sanitize 2>/dev/null | cut -b25- | '
-        grep = 'grep -E "memory|processor|bridge|network|storage" | grep -v "^storage\s*$"'
+        items = 'memory|processor|bridge|network|storage'
+        grep = 'grep -E "{0}" | grep -v "^storage\s*$"'.format(items)
         self.tags['hardware'] = self.command(listing + grep).output
         self.tags['cores'] = str(multiprocessing.cpu_count())
 
@@ -295,7 +297,8 @@ class SoftwareSection(Section):
         self.tags['compiler'] = re.split('\n', self.command(compiler).output)[0]
 
         libc = '/lib/x86_64-linux-gnu/libc.so.6'
-        self.tags['libc'] = re.split(',', re.split('\n', self.command(libc).output)[0])[0]
+        version = re.split('\n', self.command(libc).output)[0]
+        self.tags['libc'] = re.split(',', version)[0]
 
         return self
 
@@ -517,8 +520,10 @@ class ThreadsSection(Section):
         self.tags['serial'] = "%.5f" % serial
         self.tags['parallel'] = "%.5f" % parallel
         
-        self.tags['amdalah'] = "%.5f" % ( 1 / (serial + (1/1024) * (1 - serial)) )
-        self.tags['gustafson'] = "%.5f" % ( 1024 - (serial * (1024 - 1)) )
+        amdalah = ( 1 / (serial + (1/1024) * (1 - serial)) )
+        self.tags['amdalah'] = "%.5f" % amdalah
+        gustafson = ( 1024 - (serial * (1024 - 1)) )
+        self.tags['gustafson'] = "%.5f" % gustafson
 
         self.log.debug("Computed scaling laws")
         
@@ -559,7 +564,10 @@ class OptimizationSection(Section):
             # TODO: add configured cflags as a prefix here
             
             build = self.tags['build'].format('-O{0}'.format(opt))
-            run = self.tags['run'].format(self.tags['cores'], self.tags['last'], self.tags['program'])
+            cores = self.tags['cores']
+            last = self.tags['last']
+            program = self.tags['program']
+            run = self.tags['run'].format(cores, last, program)
             command = ' && '.join([ build, run ])
 
             cmd = self.command(command)
@@ -619,7 +627,10 @@ class ResourcesSection(Section):
 
         cmd = 'pidstat -s -r -d -u -h -p $! 1'
         pidstat = '& {0} | sed "s| \+|,|g" | grep ^, | cut -b2-'.format(cmd)
-        command = self.tags['run'].format(self.tags['cores'], self.tags['last'], self.tags['program']) + pidstat
+        cores = self.tags['cores']
+        last = self.tags['last']
+        program = self.tags['program']
+        command = self.tags['run'].format(cores, last, program) + pidstat
         output = self.command(command).output
 
 # TODO: refactor this into resources section
@@ -628,7 +639,8 @@ class ResourcesSection(Section):
 
 # TODO: this should be parsed from output's header, not hardcoded
 
-        header = 'Time,PID,%usr,%system,%guest,%CPU,CPU,minflt/s,majflt/s,VSZ,RSS,%MEM,StkSize,StkRef,kB_rd/s,kB_wr/s,kB_ccwr/s,Command'
+        header = """Time,PID,%usr,%system,%guest,%CPU,CPU,minflt/s,
+majflt/s,VSZ,RSS,%MEM,StkSize,StkRef,kB_rd/s,kB_wr/s,kB_ccwr/s,Command"""
         fields = header.split(',')
 
         data = {}
@@ -669,8 +681,10 @@ class AnnotatedSection(Section):
         """Create annotated section."""
         Section.__init__(self, 'annotated')
     def gather(self):
-        """Run perf to record execution and then generate annotated source code."""
-        environment = self.tags['run'].format(self.tags['cores'], self.tags['last'], self.tags['program']).split('./')[0]
+        """Run perf to record execution and generate annotated source code."""
+        environment = self.tags['run'].format(self.tags['cores'],
+                                              self.tags['last'],
+                                              self.tags['program']).split('./')[0]
         record = 'echo "{0} perf record -q -- ./{1}" > /tmp/test; bash -i /tmp/test >/dev/null 2>/dev/null'.format(environment, self.tags['program'])
         annotate = "perf annotate --stdio | grep -v '^\s*:\s*$' | grep -v '0.' | grep -C 5 '\s*[0-9].*:'"
 
