@@ -225,10 +225,10 @@ class Section:
             pickle.dump(output, open(output_file, "wb"))
             pickle.dump(elapsed, open(elapsed_file, "wb"))
 
-# TODO: log.debug here about cmd, output and elapsed
-
         self.output = output
         self.elapsed = elapsed
+
+        self.log.debug('Run {0} for {1} in {2}'.format(cmd, output, elapsed))
 
         return self
 
@@ -575,7 +575,7 @@ class OptimizationSection(Section):
             outputs.append(output)
             opts.append(elapsed)
             optimizations = "Optimizations at {0} took {1:.2f} seconds"
-            self.log.debug(optimizations.format(opt, elapsed))
+            self.log.info(optimizations.format(opt, elapsed))
 
         # TODO: refactor graph-related to its own method
 
@@ -748,6 +748,8 @@ class ConfigSection(Section):
 def main():
     """Gather information into tags, replace on a .tex file and compile."""
 
+    start = time.time()
+
     # sys.tracebacklimit = 0
 
     Config().load()
@@ -806,14 +808,14 @@ def main():
         log.debug("Replacing macro {0} with {1}".format(key, value))
         sanity = value.replace('%', '')
         template = template.replace('@@' + key.upper() + '@@', sanity )
-    open(tags['program'] + '.tex', 'w').write(template)
 
-    latex = 'pdflatex {0}.tex && pdflatex {0}.tex && pdflatex {0}.tex'
-    command = latex.format(tags['program'])
+    name = tags['program'] + '-' + log.timestamp + '.tex'
+    open(name, 'w').write(template)
+
+    latex = 'pdflatex {0} && pdflatex {0} && pdflatex {0}'
+    command = latex.format(name)
     subprocess.check_output(command, shell = True)
-    log.info('Completed execution')
+    log.info('Completed execution in {0:.2f} seconds'.format(time.time() - start))
 
 if __name__ == "__main__":
     main()
-
-# TODO: add timestamp to PDF filename
