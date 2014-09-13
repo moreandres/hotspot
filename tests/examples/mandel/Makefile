@@ -1,5 +1,5 @@
 CC ?= gcc
-CFLAGS ?= -Wall -Wextra -O3
+CFLAGS ?= -Wall -Wextra -O3 -g
 
 all:
 	@$(CC) $(CFLAGS) mandel.c -o mandel -fopenmp

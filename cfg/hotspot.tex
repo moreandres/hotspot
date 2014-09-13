@@ -131,6 +131,26 @@ Most programs will have a dominant compute kernel that can be approximated by th
 
 This section provides details about the workload behavior.
 
+\subsection{Workload Footprint}
+
+The workload footprint impacts on memory hierarchy usage.
+
+\begin{verbatim}
+@@STRIP@@
+\end{verbatim}
+
+Binaries should be stripped to better fit inside cache.
+
+\begin{verbatim}
+@@PAHOLE@@
+\end{verbatim}
+
+Showing layout of data structures.
+Reorganizing such data to remove alignment holes.
+Improve CPU cache utilization.
+
+More information \url{seven dwarves}{https://www.kernel.org/doc/ols/2007/ols2007v2-pages-35-44.pdf}
+
 \subsection{Workload Stability}
 
 This subsection provides details about workload stability.

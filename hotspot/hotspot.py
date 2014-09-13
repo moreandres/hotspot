@@ -34,7 +34,7 @@ class Singleton(type):
     """Singleton metaclass."""
     _instances = {}
     def __call__(mcs, *args, **kwargs):
-        """Return singleton if already there, otherwise create it."""
+        """Return singleton if exists, otherwise create it."""
         if mcs not in mcs._instances:
             instance = super(Singleton, mcs).__call__(*args, **kwargs)
             mcs._instances[mcs] = instance
@@ -372,7 +372,7 @@ class WorkloadSection(Section):
     def gather(self):
         """Run program multiple times, check geomean and deviation."""
 
-        # TODO: compile before running
+        # TODO: clean/compile before running
 
         outputs = []
         times = []
@@ -685,7 +685,7 @@ class AnnotatedSection(Section):
                                               self.tags['last'],
                                               self.tags['program']).split('./')[0]
         record = 'which perf >/dev/null && echo "{0} perf record -q -- ./{1}" > /tmp/test; bash -i /tmp/test >/dev/null 2>/dev/null'.format(environment, self.tags['program'])
-        annotate = "perf annotate --stdio | grep -v '^\s*:\s*$' | grep -v '0.' | grep -C 5 '\s*[0-9].*:'"
+        annotate = "perf annotate --stdio | grep -v '^\s*:\s*$' | grep -v '0.0' | grep -C 5 '\s*[0-9].*:'"
 
 # TODO: use cflags tag here instead of -O3
 
@@ -714,6 +714,28 @@ class VectorizationSection(Section):
         output = self.command(command).output
         self.tags['vectorizer'] = output
         self.log.debug("Vectorization report completed")
+        return self
+
+class FootprintSection(Section):
+    """Gather footprint information."""
+    def __init__(self):
+        """Create footprint section."""
+        Section.__init__(self, 'footprint')
+    def gather(self):
+        """Get binary size, check if stripped and run pahole."""
+
+        flags = '-O3 -g'
+        command = self.tags['clean'] + ' && ' + self.tags['build'].format(flags)
+        self.command(command)
+
+        output = self.command('file {0}'.format(self.tags['program'])).output
+        self.tags['strip'] = output
+
+        pahole = 'which pahole >/dev/null && pahole {0}'
+        output = self.command(pahole.format(self.tags['program'])).output
+        self.tags['pahole'] = output
+
+        self.log.debug("Footprint report completed")
         return self
 
 class CountersSection(Section):
@@ -785,6 +807,7 @@ def main():
     tags.update(ProgramSection().gather().get())
     tags.update(SoftwareSection().gather().get())
     tags.update(SanitySection().gather().get())
+    tags.update(FootprintSection().gather().get())
     tags.update(BenchmarkSection().gather().get())
     tags.update(WorkloadSection().gather().get())
     tags.update(ScalingSection().gather().get())
