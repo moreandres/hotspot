@@ -61,7 +61,6 @@ class Log:
 
         cwd = os.path.abspath('.')
         program = os.path.basename(cwd)
-    
         timestamp = datetime.datetime.now().strftime('%Y%m%d-%H%M%S')
 
         self.logger = logging.getLogger('hotspot')
@@ -84,7 +83,7 @@ class Log:
 
         if self.config.args.debug:
             consoleh.setLevel(logging.DEBUG)
-        
+
         fmt = '%(asctime)s: %(levelname)s: %(message)s'
         formatter = logging.Formatter(fmt,
                                       datefmt="%Y%m%d-%H%M%S")
@@ -112,7 +111,7 @@ class Log:
     def close(self):
         """Close logging."""
         return self
-        
+
     def get(self):
         """Get logger instance."""
         return self.logger
@@ -173,7 +172,7 @@ class Config:
 
         items = {}
         for option in self.config.options(section):
-            items[option] = self.config.get(section, option) 
+            items[option] = self.config.get(section, option)
 
         return items
 
@@ -218,7 +217,7 @@ class Section:
             self.log.debug('Dumping ' + output_file)
             start = time.time()
             output = subprocess.check_output(cmd,
-                                             shell = True,
+                                             shell=True,
                                              stderr=subprocess.STDOUT)
             elapsed = time.time() - start
             output.strip()
@@ -288,7 +287,7 @@ class SoftwareSection(Section):
     """Gather software information."""
     def __init__(self):
         """Create program section."""
-        Section.__init__(self, 'software')        
+        Section.__init__(self, 'software')
     def gather(self):
         """Get compiler and C library version."""
 
@@ -314,11 +313,11 @@ class SanitySection(Section):
         self.program = self.tags['program']
     def gather(self):
         """Build and run the program using a small input size."""
-        test = ' && '.join([ self.dir,
-                             self.build,
-                             self.run.format(self.cores,
-                                             self.first,
-                                             self.program),
+        test = ' && '.join([self.dir,
+                            self.build,
+                            self.run.format(self.cores,
+                                            self.first,
+                                            self.program),
                              'cd -'])
         self.command(test)
         return self
@@ -335,20 +334,20 @@ class BenchmarkSection(Section):
         mpirun = 'which mpirun >/dev/null && which hpcc >/dev/null && mpirun -np {0} `which hpcc` && cat hpccoutf.txt'
         output = self.command(mpirun.format(self.tags['cores'])).output
 
-        metrics = [ ('success', r'Success=(\d+.*)', None),
-                    ('hpl', r'HPL_Tflops=(\d+.*)', 'TFlops'),
-                    ('dgemm', r'StarDGEMM_Gflops=(\d+.*)', 'GFlops'),
-                    ('ptrans', r'PTRANS_GBs=(\d+.*)', 'GBs'),
-                    ('random', r'StarRandomAccess_GUPs=(\d+.*)', 'GUPs'),
-                    ('stream', r'StarSTREAM_Triad=(\d+.*)', 'MBs'),
-                    ('fft', r'StarFFT_Gflops=(\d+.*)', 'GFlops'), ]
+        metrics = [('success', r'Success=(\d+.*)', None),
+                   ('hpl', r'HPL_Tflops=(\d+.*)', 'TFlops'),
+                   ('dgemm', r'StarDGEMM_Gflops=(\d+.*)', 'GFlops'),
+                   ('ptrans', r'PTRANS_GBs=(\d+.*)', 'GBs'),
+                   ('random', r'StarRandomAccess_GUPs=(\d+.*)', 'GUPs'),
+                   ('stream', r'StarSTREAM_Triad=(\d+.*)', 'MBs'),
+                   ('fft', r'StarFFT_Gflops=(\d+.*)', 'GFlops'), ]
 
         for metric in metrics:
             try:
                 match = re.search(metric[1], output).group(1)
             except AttributeError:
                 match = 'Unknown'
-            
+
             value = '{0} {1}'.format(match, metric[2])
             self.tags['hpcc-{0}'.format(metric[0])] = value
 
@@ -368,7 +367,7 @@ class WorkloadSection(Section):
         self.first = self.tags['first']
         self.program = self.tags['program']
         self.dir = self.tags['cwd']
-        
+
     def gather(self):
         """Run program multiple times, check geomean and deviation."""
 
@@ -377,11 +376,11 @@ class WorkloadSection(Section):
         outputs = []
         times = []
         for i in range(0, int(self.count)):
-            cmd = ' && '.join([ 'cd {0}'.format(self.dir),
-                                self.run.format(self.cores,
-                                                self.first,
-                                                self.program),
-                                'cd -' ])
+            cmd = ' && '.join(['cd {0}'.format(self.dir),
+                               self.run.format(self.cores,
+                                               self.first,
+                                               self.program),
+                               'cd -'])
 
             command = self.command(cmd)
             output = command.output
@@ -414,15 +413,15 @@ class WorkloadSection(Section):
         buckets, bins, patches = matplotlib.pyplot.hist(times,
                                                         bins=number,
                                                         normed=True)
-        matplotlib.pyplot.plot(bins, 
+        matplotlib.pyplot.plot(bins,
                                scipy.stats.norm.pdf(bins,
-                                                    loc = numpy.mean(array),
-                                                    scale = array.std()),
+                                                    loc=numpy.mean(array),
+                                                    scale=array.std()),
                                'r--')
         matplotlib.pyplot.xlabel('time in seconds')
         matplotlib.pyplot.ylabel('ocurrences in units')
         matplotlib.pyplot.title('histogram')
-        matplotlib.pyplot.grid(True)  
+        matplotlib.pyplot.grid(True)
         matplotlib.pyplot.savefig('hist.pdf', bbox_inches=0)
         matplotlib.pyplot.clf()
         self.log.debug("Plotted histogram")
@@ -458,7 +457,7 @@ class ScalingSection(Section):
             run = self.tags['run'].format(self.tags['cores'],
                                           size, self.tags['program'])
             chdir = 'cd {0}'.format(self.tags['cwd'])
-            command = self.command(' && '.join([ chdir, run, 'cd -' ]))
+            command = self.command(' && '.join([chdir, run, 'cd -']))
             output = command.output
             elapsed = command.elapsed
             outputs.append(output)
@@ -476,7 +475,7 @@ class ScalingSection(Section):
         matplotlib.pyplot.plot(data.values())
         matplotlib.pyplot.xlabel('problem size in bytes')
         matplotlib.pyplot.xticks(range(0, len(data.values())), xvalues)
-        matplotlib.pyplot.grid(True)  
+        matplotlib.pyplot.grid(True)
 
 # TODO: add problem size as labels in X axis
 
@@ -485,9 +484,9 @@ class ScalingSection(Section):
         matplotlib.pyplot.savefig('data.pdf', bbox_inches=0)
         matplotlib.pyplot.clf()
         self.log.debug("Plotted problem scaling")
-        
+
         return self
-        
+
 class ThreadsSection(Section):
     """Gather multi-threading information."""
     def __init__(self):
@@ -518,21 +517,21 @@ class ThreadsSection(Section):
         serial = (procs[0] - 2 * (procs[0] - procs[1])) / procs[0]
         self.tags['serial'] = "%.5f" % serial
         self.tags['parallel'] = "%.5f" % parallel
-        
-        amdalah = ( 1 / (serial + (1/1024) * (1 - serial)) )
+
+        amdalah = (1 / (serial + (1/1024) * (1 - serial)))
         self.tags['amdalah'] = "%.5f" % amdalah
-        gustafson = ( 1024 - (serial * (1024 - 1)) )
+        gustafson = (1024 - (serial * (1024 - 1)))
         self.tags['gustafson'] = "%.5f" % gustafson
 
         self.log.debug("Computed scaling laws")
-        
+
         # TODO: move graph-related to its own method
 
         matplotlib.pyplot.gcf().set_size_inches(12, 4)
         matplotlib.pyplot.plot(procs, label="actual")
-        matplotlib.pyplot.grid(True)  
+        matplotlib.pyplot.grid(True)
 
-        ideal = [ procs[0] ]
+        ideal = [procs[0]]
         for proc in range(1, len(procs)):
             ideal.append(procs[proc]/proc+1)
 
@@ -561,13 +560,13 @@ class OptimizationSection(Section):
         for opt in range(0, 4):
 
             # TODO: add configured cflags as a prefix here
-            
+
             build = self.tags['build'].format('-O{0}'.format(opt))
             cores = self.tags['cores']
             last = self.tags['last']
             program = self.tags['program']
             run = self.tags['run'].format(cores, last, program)
-            command = ' && '.join([ build, run ])
+            command = ' && '.join([build, run])
 
             cmd = self.command(command)
             output = cmd.output
@@ -579,12 +578,12 @@ class OptimizationSection(Section):
 
         # TODO: refactor graph-related to its own method
 
-        matplotlib.pyplot.xticks(range(0, 4), [0,1,2,3])
-        matplotlib.pyplot.bar([0, 1, 2, 3 ], opts)
+        matplotlib.pyplot.xticks(range(0, 4), [0, 1, 2, 3])
+        matplotlib.pyplot.bar([0, 1, 2, 3], opts)
         matplotlib.pyplot.ylabel('time in seconds')
         matplotlib.pyplot.xlabel('optimization level')
         matplotlib.pyplot.title('compiler optimizations')
-        matplotlib.pyplot.grid(True)  
+        matplotlib.pyplot.grid(True)
         matplotlib.pyplot.savefig('opts.pdf', bbox_inches=0)
         matplotlib.pyplot.clf()
         self.log.debug("Plotted optimizations")
@@ -605,9 +604,9 @@ class ProfileSection(Section):
         run = self.tags['run'].format(self.tags['cores'],
                                       self.tags['last'],
                                       self.tags['program'])
-        command = ' && '.join([ self.tags['build'].format('-O3 -g -pg'),
-                                run,
-                                gprofgrep.format(self.tags['program']) ])
+        command = ' && '.join([self.tags['build'].format('-O3 -g -pg'),
+                               run,
+                               gprofgrep.format(self.tags['program'])])
 
         output = re.split('Index by function name',
                           self.command(command).output)[0]
@@ -645,7 +644,7 @@ majflt/s,VSZ,RSS,%MEM,StkSize,StkRef,kB_rd/s,kB_wr/s,kB_ccwr/s,Command"""
         data = {}
         for i in range(0, len(fields)):
             field = fields[i]
-            if field in [ '%CPU', '%MEM', 'kB_rd/s', 'kB_wr/s' ]:
+            if field in ['%CPU', '%MEM', 'kB_rd/s', 'kB_wr/s']:
 
                 data[field] = []
                 for line in lines:
@@ -660,7 +659,7 @@ majflt/s,VSZ,RSS,%MEM,StkSize,StkRef,kB_rd/s,kB_wr/s,kB_ccwr/s,Command"""
                 matplotlib.pyplot.ylabel(label)
                 matplotlib.pyplot.title('{0} usage'.format(field))
                 name = '{0}.pdf'.format(field, bbox_inches=0)
-                name = name.replace('%','').replace('_','').replace('/','')
+                name = name.replace('%', '').replace('_', '').replace('/', '')
                 matplotlib.pyplot.savefig(name)
                 matplotlib.pyplot.clf()
 
@@ -689,12 +688,12 @@ class AnnotatedSection(Section):
 
 # TODO: use cflags tag here instead of -O3
 
-        command = ' && '.join([ self.tags['build'].format('-O3 -g'),
-                                record,
-                                annotate ])
+        command = ' && '.join([self.tags['build'].format('-O3 -g'),
+                               record,
+                               annotate])
 
         output = self.command(command).output
-        
+
         self.tags['annotation'] = output
         self.log.debug("Source annotation completed")
         return self
@@ -792,7 +791,7 @@ def main():
     tags['count'] = cfg.get('count')
     tags['build'] = cfg.get('build')
     tags['run'] = cfg.get('run')
-    
+
     tags['first'], tags['last'], tags['increment'] = cfg.get('range').split(',')
     tags['range'] = str(range(int(tags['first']), int(tags['last']), int(tags['increment'])))
     tags['cores'] = str(multiprocessing.cpu_count())
@@ -830,14 +829,14 @@ def main():
     for key, value in sorted(tags.iteritems()):
         log.debug("Replacing macro {0} with {1}".format(key, value))
         sanity = value.replace('%', '')
-        template = template.replace('@@' + key.upper() + '@@', sanity )
+        template = template.replace('@@' + key.upper() + '@@', sanity)
 
     name = tags['program'] + '-' + log.timestamp + '.tex'
     open(name, 'w').write(template)
 
     latex = 'pdflatex {0} && pdflatex {0} && pdflatex {0}'
     command = latex.format(name)
-    subprocess.check_output(command, shell = True)
+    subprocess.check_output(command, shell=True)
     log.info('Completed execution in {0:.2f} seconds'.format(time.time() - start))
 
 if __name__ == "__main__":
