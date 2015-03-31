@@ -227,7 +227,7 @@ class Section:
         self.output = output
         self.elapsed = elapsed
 
-        self.log.debug('Run {0} for {1} in {2}'.format(cmd, output, elapsed))
+        self.log.debug("Running {0} took {1:.2f} seconds\n{2}".format(cmd, elapsed, output))
 
         return self
 
@@ -623,15 +623,13 @@ class ResourcesSection(Section):
     def gather(self):
         """Run program under pidstat."""
 
-        cmd = 'which pidstat >/dev/null && pidstat -s -r -d -u -h -p $! 1'
+        cmd = 'which pidstat >/dev/null && pidstat -s -r -d -u -l -h -p $! 1'
         pidstat = '& {0} | sed "s| \+|,|g" | grep ^, | cut -b2-'.format(cmd)
         cores = self.tags['cores']
         last = self.tags['last']
         program = self.tags['program']
         command = self.tags['run'].format(cores, last, program) + pidstat
         output = self.command(command).output
-
-# TODO: refactor this into resources section
 
         lines = output.splitlines()
 
@@ -644,7 +642,7 @@ majflt/s,VSZ,RSS,%MEM,StkSize,StkRef,kB_rd/s,kB_wr/s,kB_ccwr/s,Command"""
         data = {}
         for i in range(0, len(fields)):
             field = fields[i]
-            if field in ['%CPU', '%MEM', 'kB_rd/s', 'kB_wr/s']:
+            if field in ['CPU', '%MEM', 'kB_rd/s', 'kB_wr/s']:
 
                 data[field] = []
                 for line in lines:
@@ -664,7 +662,7 @@ majflt/s,VSZ,RSS,%MEM,StkSize,StkRef,kB_rd/s,kB_wr/s,kB_ccwr/s,Command"""
                 matplotlib.pyplot.clf()
 
         self.tags['resources'] = output
-        self.log.debug("Resource usage plotting completed")
+        self.log.debug('Resource usage plotting completed')
 
         return self
 
@@ -801,7 +799,6 @@ def main():
 # TODO: check if baseline results are valid
 # TODO: choose size to fit in 1 minute
 # TODO: cli option to not do any smart thing like choosing problem size
-# TODO: get/log human readable output, then process using Python
 
     tags.update(ProgramSection().gather().get())
     tags.update(SoftwareSection().gather().get())
@@ -837,7 +834,9 @@ def main():
     latex = 'pdflatex {0} && pdflatex {0} && pdflatex {0}'
     command = latex.format(name)
     subprocess.check_output(command, shell=True)
-    log.info('Completed execution in {0:.2f} seconds'.format(time.time() - start))
+    report = tags['program'] + '-' + log.timestamp + '.pdf'
+    log.info('Completed report {0} in {1:.2f} seconds'.format(report,
+                                                              time.time() - start))
 
 if __name__ == "__main__":
     main()
