@@ -12,7 +12,7 @@ A toolchain is used to build the program for optimization or profiling.
 ### Ubuntu 14.04.1 LTS
 
 ```
-$ sudo apt-get install texlive openmpi-bin hpcc gcc gfortran build-essential git python-pip libpng3 libfreetype6 python-matplotlib python-numpy python-dateutil python-scipy ispell htop emacs sysstat texlive-latex-extra linux-tools-generic python graphviz firefox mupdf dwarves linux-tools-3.13.0-32 -y
+$ sudo apt-get install texlive texlive-lang-spanish openmpi-bin hpcc gcc gfortran build-essential git python-pip libpng3 libfreetype6 python-matplotlib python-numpy python-dateutil python-scipy ispell htop emacs sysstat texlive-latex-extra linux-tools-generic python graphviz firefox mupdf dwarves linux-tools-3.13.0-32 -y
 $ sudo pip install hotspot
 ```
 

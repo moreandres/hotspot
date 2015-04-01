@@ -1,0 +1,305 @@
+\documentclass[a4paper]{article}
+
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage[spanish]{babel}
+
+\begin{document}
+
+\title{Propuesta de Trabajo Final\\
+\bigskip
+Especializaci\'on en C\'omputo de Altas Prestaciones y Tecnolog\'ia Grid\\
+\bigskip
+Tema:\\
+Herramientas para el Soporte de An\'alisis de Rendimiento}
+
+\author{Alumno: Andr\'es More - {\tt amore@hal.famaf.unc.edu.ar}
+\\Director: Dr. Fernando G. Tinetti - {\tt fernando@lidi.info.unlp.edu.ar}
+\bigskip
+\\Universidad Nacional de La Plata - Facultad de Inform\'atica}
+
+\date{Junio de 2013}
+
+\maketitle
+
+\newpage
+
+\section{Objetivos}
+
+  Este documento describe una propuesta de Trabajo Final para la
+  Especializaci\'on en C\'omputo de Altas Prestaciones y Tecnolog\'ia Grid
+  dictada en la Facultad de Inform\'atica de la Universidad Nacional de La
+  Plata.
+
+  \smallskip
+
+  La propuesta principal consiste en el estudio general de los m\'etodos
+  existentes para evaluaci\'on y an\'alisis de aplicaciones de alto
+  rendimiento.
+
+  \smallskip
+
+  Se establecen m\'ultiples objetivos espec\'ificos para
+  este trabajo, incluyendo la documentaci\'on de requerimientos en este
+  tipo de aplicaciones, la generaci\'on de una taxonom\'ia de las
+  tecnolog\'ias disponibles, su posterior estudio y ejercitaci\'on, y
+  finalmente el desarrollo de un m\'etodo generalizado para an\'alisis de
+  rendimiento.
+
+  \smallskip
+
+  Luego de cumplir estos objetivos se plantea como cierre analizar
+  varios n\'ucleos de c\'alculo como un ejercicio integrador. De este modo
+  se podr\'a demostrar el procedimiento de an\'alisis desarrollado
+  utilizando las herramientas y metodolog\'ias estudiadas previamente.
+
+  \smallskip
+
+  Adem\'as del estudio general de la evaluaci\'on y an\'alisis de rendimiento,
+  este trabajo tiene como objetivos espec\'ificos las siguientes actividades:
+
+  \smallskip
+
+  \begin{enumerate}
+  \item Generar una taxonom\'ia de m\'etodos y herramientas de an\'alisis de
+    rendimiento.
+  \item Ejercitar estas herramientas, documentando pasos, problemas comunes y
+    comparando sus caracter\'isticas y limitaciones.
+  \item Desarrollar una propuesta de un proceso de an\'alisis para aplicaciones
+    de altas prestaciones.
+  \item Desarrollar y analizar diferentes aplicaciones aplicando las
+    tecnolog\'ias previamente estudiadas.
+  \end{enumerate}
+  
+\section{Motivaciones y Estado del Arte}
+
+El desarrollo de aplicaciones que utilizan c\'omputo de alto rendimiento es
+principalmente realizado por especialistas en el dominio cient\'ifico de los
+problemas a simular o resolver, frecuentemente fuera del \'area de la
+inform\'atica.
+
+\smallskip
+
+Estos cient\'ificos no poseen todos los conocimientos, experiencia o recursos
+necesarios para una implementaci\'on adecuada, implicando una reducci\'on del
+tiempo disponible para el an\'alisis de los resultados obtenidos y su
+posterior publicaci\'on.
+
+\smallskip
+
+Al no existir un m\'etodo general para el an\'alisis de rendimiento los
+desarrolladores suelen utilizar procedimientos artesanales, e incluso aplicar
+optimizaciones sin tener las bases cuantitativas suficientes a la hora de
+dirigir sus esfuerzos.
+
+\smallskip
+
+Actualmente existen diversas tecnolog\'ias para el an\'alisis de rendimiento,
+ofreciendo diferentes niveles de portabilidad, intrusi\'on, aplicaci\'on o
+granularidad de la informaci\'on obtenida.
+
+\smallskip
+
+La idea m\'as simple es utilizar el tiempo total de ejecuci\'on como medida de
+cuan r\'apido se completa una tarea, aunque no se obtiene informaci\'on
+relevante sobre el lugar adecuado o las consecuencias de potenciales
+optimizaciones.
+
+\smallskip
+
+Otra posibilidad es implementar en la aplicaci\'on misma un sistema interno de
+administraci\'on de tiempo y recursos; en el caso de estar disponibles,
+tambi\'en se pueden invocar a mecanismos de evaluaci\'on propuestos por
+librer\'ias de terceros utilizadas dentro de la aplicaci\'on.
+
+\smallskip
+
+Una posibilidad m\'as interesante es utilizar un perfil de ejecuci\'on
+extra\'ido din\'amicamente para entender que partes del programa son
+utilizadas, en que orden y cuales son las que demandan mayor tiempo de
+ejecuci\'on.
+
+\smallskip
+
+En el otro extremo, el {\it hardware} que conforma una unidad de c\'omputo
+suele permitir acceso a registros contadores de eventos internos que pueden
+ser accedidos para comprobar el nivel de eficiencia de la ejecuci\'on de un
+programa.
+
+\section{Temas de Investigaci\'on}
+
+Esta secci\'on contiene una lista inicial de los temas a desarrollar.
+
+\begin{enumerate}
+\item Conceptos de an\'alisis de rendimiento: definiciones, m\'etricas,
+  procesos.
+\item Modelo de ejecuci\'on de tipo {\it pipeline}: teor\'ia y aplicaciones.
+\item Herramientas: caracter\'isticas, limitaciones y comparativas.
+\begin{enumerate}
+\item {\it oprofile}: evaluaci\'on a nivel de sistema.
+\item {\it gprof}: evaluaci\'on a nivel de aplicaci\'on.
+\end{enumerate}
+\end{enumerate}
+
+\section{Trabajo Experimental a Realizar}
+
+Utilizando las t\'ecnicas estudiadas, se propone implementar y luego analizar
+las siguientes aplicaciones como cierre del trabajo.
+
+\begin{itemize}
+
+\item \emph{matrix}: multiplicaci\'on de dos matrices densas, utilizando
+  operaciones de punto flotante en forma secuencial.
+
+\item \emph{heat2d}: distribuci\'on de calor en dos dimensiones, utilizando
+  iteraciones de operaciones simples que simulan el paso del tiempo.
+
+\item \emph{fft}: aplicaci\'on de transformadas de {\it Fourier} en espacios
+  tridimensionales, utilizando operaciones complejas de punto flotante.
+
+\item \emph{queens}: colocaci\'on de reinas en un tablero de ajedrez sin
+  amenaza mutua, utilizando operaciones de {\it backtracking} sobre arreglos
+  de enteros.
+
+\end{itemize}
+
+\section{Esquema de Plan de Trabajo}
+
+El siguiente cronograma muestra el plan de actividades tentativo.
+Es de notar que el trabajo ya se encuentra avanzado y un borrador
+inicial ya ha sido revisado informalmente.
+
+\begin{figure}[H]
+  \begin{center}
+    \begin{tabular}{|l|l|}\hline
+      {\bf Actividad} & {\bf Duraci\'on} \\ \hline
+      Recolecci\'on de Material & Junio \\ \hline
+      Tecnolog\'ias & Julio \\ \hline
+      Procedimiento General & Julio \\ \hline
+      An\'alisis de Ejemplos & Agosto \\ \hline
+      Resultados/Conclusiones & Agosto \\ \hline
+    \end{tabular}
+    \caption{Detalle de Actividades}
+  \end{center}
+  \label{schedule}
+\end{figure}
+
+\section{Posibilidades de Realizaci\'on}
+
+El alumno tiene a su disposici\'on acceso a equipamiento de \'ultima
+generaci\'on como parte de su \'ambito laboral.
+
+El alumno trabaja como l\'ider t\'ecnico de la herramienta Intel Cluster
+Checker en Argentina Software Design Center (Intel C\'ordoba); a su vez
+como docente investigador en el Instituto Universitario Aeron\'autico.
+
+\section{Bibliograf\'ia B\'asica Relacionada}
+
+Existe abundante material sobre el tema, desde textos base a documentaci\'on
+de tecnolog\'ias o herramientas en particular. Un conjunto inicial a modo de
+referencia es inclu\'ida en la bibliograf\'ia listada a continuaci\'on.
+
+\begin{thebibliography}{9}
+  
+\bibitem{openmp}
+  OpenMP Architecture Review Board,
+  \emph{OpenMP Application Program Interface}.
+  3.0,
+  2008.
+
+\bibitem{tinetti}
+  Fernando Tinetti,
+  \emph{C\'omputo Paralelo en Redes Locales de Computadoras},
+  2004.
+
+\bibitem{gprof}
+ Susan L. Graham,  Peter B. Kessler,  Marshall K. McKusick,
+ \emph{gprof: A Call Graph Execution Profiler},
+ 1982.
+
+\bibitem{oprofile}
+J. Levon,
+\emph{oprofile: hardware profiler for Linux systems},
+{\tt http://oprofile.sourceforge.net}.
+
+\bibitem{hennessy-patterson}
+ John. L. Hennesy, David A. Patterson,
+ \emph{Computer Architecture: A Quantitative Approach, 3rd Edition},
+ 2002.
+
+\bibitem{intel}
+ Intel Press,
+ \emph{Intel64 and IA-32 Architectures Software Developer's Manual - Volume 3B: System Programming Guide, Part 2},
+ March 2010.
+
+\bibitem{what}
+ Ulrich Deeper,
+ \emph{What Every Programmer Should Know About Memory},
+ November 2007.
+
+\bibitem{patterns}
+ G. Mattson, B.A. Sanders and B.L. Massingill, 
+ \emph{Patterns for Parallel Programming, Addison-Wesley},
+ 2004.
+
+\bibitem{automatic-performance-analysis}
+ T. Margalef, J. Jorba, O. Morajko, A. Morajko, E. Luque,
+ \emph{Different approaches to automatic performance analysis of distributed applications},
+ 2004.
+
+\bibitem{capturing-performance-knowledge}
+ K. Huck, O. Hernandez, V. Bui, S. Chandrasekaran, B. Chapman, A. Malony, L McInnes, B. Norris,
+ \emph{Capturing performance knowledge for automated analysis},
+ 2008.
+
+\bibitem{automatic-openmp-mpi-analysis}
+ F. Wolf, B. Mohr,
+ \emph{Automatic performance analysis of hybrid MPI/OpenMP applications},
+ 2003.
+
+\bibitem{intro-software-performance}
+ C. Smith,
+ \emph{Introduction to software performance engineering: origins and outstanding problems},
+ 2007.
+
+\bibitem{future-software-performance}
+ M. Woodside, G. Franks, D. Petriu,
+ \emph{The Future of Software Performance Engineering},
+ 2007.
+
+\bibitem{critical-overview}
+ J. Browne,
+ \emph{A critical overview of computer performance evaluation},
+ 1976.
+
+\bibitem{hpctoolkit}
+  Rice University,
+ \emph{HPC Toolkit},
+ {\tt http://hpctoolkit.org}.
+
+\bibitem{papi}
+  University of Tennessee,
+  \emph{Performance Application Programming Interface},
+  {\tt http://icl.cs.utk.edu/papi}.
+
+% http://en.wikipedia.org/wiki/Performance_tuning
+
+\end{thebibliography}
+
+\appendix
+
+\section{Trabajo Futuro}
+
+Esta propuesta de trabajo es presentada como base a un trabajo posterior para
+alcanzar el grado de magister, abarcando la construcci\'on conjunta de una
+librer\'ia m\'as una infrastructura automatizada de an\'alisis de rendimiento.
+
+\smallskip
+
+Una vez entendidas las posibilidades tecnol\'ogicas y estudiado su
+aplicaci\'on en m\'ultiples casos de ejemplo se puede entonces emprender una
+implementaci\'on de los requerimientos de este tipo de aplicaciones y del
+proceso mismo de an\'alisis.
+
+\end{document}

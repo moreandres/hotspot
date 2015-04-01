@@ -145,11 +145,10 @@ Binaries should be stripped to better fit inside cache.
 @@PAHOLE@@
 \end{verbatim}
 
-Showing layout of data structures.
-Reorganizing such data to remove alignment holes.
-Improve CPU cache utilization.
+The in-memory layout of data structures can be used to identify issues.
+Reorganizing data to remove alignment holes will improve CPU cache utilization.
 
-More information \url{seven dwarves}{https://www.kernel.org/doc/ols/2007/ols2007v2-pages-35-44.pdf}
+More information \url{https://www.kernel.org/doc/ols/2007/ols2007v2-pages-35-44.pdf}
 
 \subsection{Workload Stability}
 
@@ -232,7 +231,7 @@ The parallel and serial fractions of the program can be estimated using the info
 Optimization limits can be estimated using scaling laws.
 
 \begin{enumerate}
-\item Amdalah Law for 1024 procs: {\tt @@AMDALAH@@ times}.\\ Optimizations are limited up to this point when scaling problem size. \cite{amdalah}
+\item Amdalah Law for 1024 procs: {\tt @@AMDALAH@@ times}.\\ Optimizations are limited up to this point when scaling problem size. \cite{amdahl}
 \item Gustafson Law for 1024 procs: {\tt @@GUSTAFSON@@ times}.\\ Optimizations are limited up to this point when not scaling problem size. \cite{gustafson}
 \end{enumerate}
 
