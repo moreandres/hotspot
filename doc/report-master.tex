@@ -34,7 +34,7 @@
   Director: Dr Fernando G. Tinetti - {\tt fernando@lidi.info.unlp.edu.ar}
 }
 
-\date{Marzo de 2015}
+\date{Abril de 2015}
 
 \maketitle
 
@@ -111,6 +111,8 @@ La siguiente lista enumera las diferentes publicaciones realizadas durante el cu
 \item Reseña del Libro {\it Intel Xeon Phi Coprocessor High Performance Programming} - JCS\&T Vol 13 N 2 Octubre 2013 \footnote{\href{http://journal.info.unlp.edu.ar/journal/journal36/papers/JCST-Oct13-BR1.pdf}{JCS\&T Vol. 13 No. 2}}.
 \item Articulo {\it Lessons Learned from Contrasting BLAS Kernel Implementations} - XIII Workshop Procesamiento Distribuido y Paralelo (WPDP), 2013 \cite{lessons}.
 \end{enumerate}
+
+Las publicaciones realizadas pueden encontrarse en el apéndice \ref{contributions}.
 
 \section{Metodología}
 
@@ -999,7 +1001,7 @@ Este trabajo trata de simplificar la tarea de análisis de rendimiento.
 
 \bigskip
 
-El problema concreto sobre el que se trabaja es poseer automatización para ahorrar esfuerzo y minimizar el nivel de conocimiento requerido durante el desarrollo de aplicaciones de cómputo de altas prestaciones.
+El problema concreto sobre el que se trabaja es brindar automatización para ahorrar esfuerzo y minimizar el nivel de conocimiento requerido durante el desarrollo de aplicaciones de cómputo de altas prestaciones.
 
 \subsection{Problemas Usuales}
 
@@ -1020,13 +1022,17 @@ Sin embargo las herramientas adecuadas permiten extraer información de rendimie
 
 El análisis requiere el correcto uso de matemática estadística para promediar resultados, descartar ejecuciones problemáticas y establecer límites en las mejoras. Es frecuente la utilización de una hoja de cálculo para centralizar los cálculos una vez tabulados los tiempos de ejecución y demás métricas de rendimiento.
 
+\subsubsection{Recopilación de Datos y Representación de Resultados}
+
+El análisis requiere la recopilación de datos relevantes al rendimiento sobre el comportamiento del programa y el sistema ejecutando el mismo. Cuáles son estas métricas, cómo obtenerlas y cómo representarlas para el análisis es una tarea no trivial que requiere tiempo y experiencia en el tema.
+
 \subsubsection{Optimización Temprana}
 
 La optimización temprana sin tener en cuenta datos cuantitativos puede implicar que un esfuerzo importante no tenga impacto alguno en el resultado global del tiempo de ejecución de un programa.
 
 \section{Infrastructura de Soporte}
 
-Los siguientes requerimientos son los necesarios para una infrastructura de análisis de rendimiento.
+Los problemas usuales durante el análisis de rendimiento listados anteriormente reflejan la necesidad de utilizar soporte automátíco para la ejecución de pruebas de rendimiento, la recopilación de métricas relevantes y la generación de un reporte con gráficos comparativos e información de contexto. Los siguientes requerimientos son los necesarios para una infrastructura de análisis de rendimiento.
 
 \subsection{Reusabilidad}
 
@@ -1588,5 +1594,29 @@ Por último, aunque la generación de un documento portable en formato PDF es si
 
 \section{Mandel} \label{example-mandel}
 \includepdf[frame=true, pages=-, scale=0.75, pagecommand={}]{mandel.pdf}
+
+\chapter{Contribuciones} \label{contributions}
+
+\section{Estudio de Multiplicación de Matrices}
+
+\includepdf[frame=true, pages=-, scale=0.75, pagecommand={}]{CaseStudyOnMatrixMultiplication.pdf}
+
+\section{\it Optimizing Latency in Beowulf Clusters}
+
+\includepdf[frame=true, pages=-, scale=0.75, pagecommand={}]{v15n3p03.pdf}
+
+\section{Comparación de Implementaciones de una Operación BLAS}
+
+\includepdf[frame=true, pages=-, scale=0.75, pagecommand={}]{sspr.pdf}
+
+\section{Contribuciones en el Libro {\it Programming Intel Xeon Phi}}
+
+\section{Reseña del Libro {\it Intel Xeon Phi Coprocessor High Performance Programming}}
+
+\includepdf[frame=true, pages=-, scale=0.75, pagecommand={}]{JCST-Oct13-BR1.pdf}
+
+\section{{\it Lessons Learned from Contrasting BLAS Kernel Implementations}}
+
+\includepdf[frame=true, pages=-, scale=0.75, pagecommand={}]{sspr-paper.pdf}
 
 \end{document}

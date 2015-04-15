@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 """
-hotspot - Performance report generator.
+Performance report generator.
 """
 
 # TODO: replace all hotspot with filename
@@ -16,7 +16,6 @@ import matplotlib.pyplot
 import multiprocessing
 import numpy
 import os
-# import sys
 
 try:
     import cPickle as pickle
@@ -625,10 +624,9 @@ class ResourcesSection(Section):
 
         cmd = 'which pidstat >/dev/null && pidstat -s -r -d -u -l -h -p $! 1'
         pidstat = '& {0} | sed "s| \+|,|g" | grep ^, | cut -b2-'.format(cmd)
-        cores = self.tags['cores']
-        last = self.tags['last']
-        program = self.tags['program']
-        command = self.tags['run'].format(cores, last, program) + pidstat
+        command = self.tags['run'].format(self.tags['cores'],
+                                          self.tags['last'],
+                                          self.tags['program']) + pidstat
         output = self.command(command).output
 
         lines = output.splitlines()
@@ -678,9 +676,10 @@ class AnnotatedSection(Section):
         Section.__init__(self, 'annotated')
     def gather(self):
         """Run perf to record execution and generate annotated source code."""
+        program = self.tags['program']
         environment = self.tags['run'].format(self.tags['cores'],
                                               self.tags['last'],
-                                              self.tags['program']).split('./')[0]
+                                              program).split('./')[0]
         record = 'which perf >/dev/null && echo "{0} perf record -q -- ./{1}" > /tmp/test; bash -i /tmp/test >/dev/null 2>/dev/null'.format(environment, self.tags['program'])
         annotate = "perf annotate --stdio | grep -v '^\s*:\s*$' | grep -v '0.0' | grep -C 5 '\s*[0-9].*:'"
 
@@ -791,7 +790,9 @@ def main():
     tags['run'] = cfg.get('run')
 
     tags['first'], tags['last'], tags['increment'] = cfg.get('range').split(',')
-    tags['range'] = str(range(int(tags['first']), int(tags['last']), int(tags['increment'])))
+    tags['range'] = str(range(int(tags['first']),
+                              int(tags['last']),
+                              int(tags['increment'])))
     tags['cores'] = str(multiprocessing.cpu_count())
 
     tags.update(HardwareSection().gather().get())
@@ -835,8 +836,8 @@ def main():
     command = latex.format(name)
     subprocess.check_output(command, shell=True)
     report = tags['program'] + '-' + log.timestamp + '.pdf'
-    log.info('Completed report {0} in {1:.2f} seconds'.format(report,
-                                                              time.time() - start))
+    elapsed = time.time() - start
+    log.info('Completed report {0} in {1:.2f} seconds'.format(report, elapsed))
 
 if __name__ == "__main__":
     main()
