@@ -40,7 +40,7 @@
 
 \begin{abstract}
 
-En el área del cómputo de altas prestaciones las aplicaciones son construidas por especialistas del dominio del problema, no siempre expertos en optimización de rendimiento. Se identifica entonces la necesidad de una infrastructura automática para soportar el análisis de rendimiento.
+En el área del cómputo de altas prestaciones las aplicaciones son construidas por especialistas del dominio del problema, no siempre expertos en optimización de rendimiento. Se identifica entonces la necesidad de un método sistemático y automático para soportar el análisis de rendimiento.
 
 \bigskip
 
@@ -64,40 +64,33 @@ Este capítulo introduce el tema bajo estudio, definiendo los objetivos principa
 
 \section{Motivación}
 
-En el área de cómputo de altas prestaciones (o {\it HPC}, por las siglas en inglés de {\it High Performance Computing}) los desarrolladores son los mismos
-especialistas del dominio del problema a resolver. Las rutinas
-más demandantes de cálculo son en su mayoría científicas y su
-gran complejidad hace posible su correcta implementación sólo por los mismos investigadores.
-Estas cuestiones resultan en un tiempo reducido de análisis de resultados
-e impactan directamente en la productividad de los grupos de investigación y
-desarrollo.
+En el área de cómputo de altas prestaciones (o {\it HPC}, por las siglas en inglés de {\it High Performance Computing}) los desarrolladores son los mismos especialistas del dominio del
+ problema a resolver. Las rutinas más demandantes de cálculo son en su mayoría científicas y su gran complejidad hace posible su correcta implementación sólo por los mismos investigadores.
+Estas cuestiones resultan en un tiempo reducido de análisis de resultados e impactan directamente en la productividad de los grupos de investigación y desarrollo.
 
 \bigskip
 
-Con mayor impacto que en otras áreas de la computación, el código
-optimizado correctamente puede ejecutarse órdenes de magnitud mejor que una implementación
-directa \cite{mm-tool}. Además, se utiliza
-programación en paralelo para obtener una mejor utilización de la
-capacidad de cómputo disponible; aumentando por lo tanto la complejidad de
-implementación, depuración y optimización \cite{is-parallel-programming-hard}.
+Con mayor impacto que en otras áreas de la computación, el código optimizado correctamente puede ejecutarse órdenes de magnitud mejor que una implementación directa \cite{mm-tool}. 
+Además, se utiliza programación en paralelo para obtener una mejor utilización de la capacidad de cómputo disponible; aumentando por lo tanto la complejidad de implementación, depuración y
+optimización \cite{is-parallel-programming-hard}.
 
 \bigskip
 
-Frecuentemente el proceso de optimización termina siendo
-hecho de modo {\it ad-hoc}, sin conocimiento pleno de las herramientas disponibles y
-sus capacidades, y sin la utilización de información cuantitativa para dirigir los
-esfuerzos de optimización. Es incluso frecuente la implementación directa
-de algoritmos en lugar de la utilización de librerías ya disponibles, optimizadas
-profundamente y con correctitud comprobada.
+Frecuentemente el proceso de optimización termina siendo hecho de modo {\it ad-hoc}, sin conocimiento pleno de las herramientas disponibles y sus capacidades, y sin la utilización de
+información cuantitativa para dirigir los esfuerzos de optimización. Es incluso frecuente la implementación directa de algoritmos en lugar de la utilización de librerías ya disponibles,
+optimizadas profundamente y con correctitud comprobada.
 
 \section{Objetivos}
 
-La propuesta principal consiste en el desarrollo de una infraestructura de soporte para el análisis de aplicaciones de cómputo de altas prestaciones. Este trabajo se realiza como extensión al trabajo final {\it Herramientas para el Soporte de Análisis de Rendimiento} de la Especialización en Cómputo de Altas Prestaciones y Tecnología Grid.
+La propuesta principal consiste en el desarrollo de una infraestructura de soporte para el análisis de aplicaciones de cómputo de altas prestaciones.
+Este trabajo se realiza como extensión al trabajo final {\it Herramientas para el Soporte de Análisis de Rendimiento} de la Especialización en Cómputo de Altas Prestaciones y Tecnología Grid.
 
 \bigskip
 
-La infraestructura desarrollada implementa un procedimiento de análisis de rendimiento ejecutando pruebas de referencia, herramientas de perfil de rendimiento y graficación de resultados. La infraestructura genera como etapa final un informe detallado que soporta la tarea de optimización con información cuantitativa.
-El reporte final incluye datos estadísticos de la aplicación y el sistema donde se ejecuta, además de gráficos de desviación de resultados, escalamiento de problema y cómputo, e identificación de cuellos de botella.
+La infraestructura desarrollada implementa un procedimiento de análisis de rendimiento ejecutando pruebas de referencia, herramientas de perfil de rendimiento y graficación de resultados.
+La infraestructura genera como etapa final un informe detallado que soporta la tarea de optimización con información cuantitativa.
+El reporte final incluye datos estadísticos de la aplicación y el sistema donde se ejecuta, además de gráficos de desviación de resultados, escalamiento de problema y cómputo, e identificación
+de cuellos de botella.
 
 \section{Contribuciones}
 
@@ -152,29 +145,29 @@ Esta sección introduce el concepto de rendimiento y teoría básica sobre su an
 
 \subsection{Definición}
 
-El rendimiento se caracteriza por la cantidad de trabajo de cómputo que se
-logra en comparación con la cantidad de tiempo y los recursos ocupados.
-El rendimiento debe ser evaluado entonces de forma cuantificable, utilizando alguna
-métrica en particular de modo de poder comparar relativamente dos sistemas o
+El rendimiento se caracteriza por la cantidad de trabajo de cómputo que se logra en comparación con la cantidad de tiempo y los recursos ocupados.
+El rendimiento debe ser evaluado entonces de forma cuantificable, utilizando alguna métrica en particular de modo de poder comparar relativamente dos sistemas o
 el comportamiento de un mismo sistema bajo una configuración distinta.
 
 \subsection{Paralelismo}
 
-Una vez obtenida una implementación eficiente, la única alternativa para mejorar el rendimiento es explotar el paralelismo que
-ofrecen los sistemas de cómputo. Este paralelismo se puede explotar a diferentes niveles, desde instrucciones especiales que ejecutan sobre varios
-datos a la vez (vectorización), hasta la utilización de múltiples sistemas para distribuir el trabajo.
+Una vez obtenida una implementación eficiente, la única alternativa para mejorar el rendimiento es explotar el paralelismo que ofrecen los sistemas de cómputo.
+Este paralelismo se puede explotar a diferentes niveles, desde instrucciones especiales que ejecutan sobre varios datos a la vez (vectorización),
+hasta la utilización de múltiples sistemas para distribuir el trabajo.
 
 \bigskip
 
- El cálculo de las mejoras posibles de rendimiento, cómo priorizarlas y la estimación de su límite máximo es una tarea compleja. Para ello existen algunas leyes fundamentales utilizadas durante el análisis de rendimiento.
+El cálculo de las mejoras posibles de rendimiento, cómo priorizarlas y la estimación de su límite máximo es una tarea compleja. 
+Para ello existen algunas leyes fundamentales utilizadas durante el análisis de rendimiento.
 
 \subsubsection{Ley de {\it Amdahl}}
 
- La ley de {\it Amdahl} \cite{amdahl} dimensiona la mejora que puede obtenerse en un sistema de acuerdo a las mejoras logradas en sus componentes. Nos ayuda a establecer un límite máximo de mejora y a estimar cuales pueden ser los resultados de una optimización.
+ La ley de {\it Amdahl} \cite{amdahl} dimensiona la mejora que puede obtenerse en un sistema de acuerdo a las mejoras logradas en sus componentes. 
+Nos ayuda a establecer un límite máximo de mejora y a estimar cuales pueden ser los resultados de una optimización.
 
 \bigskip
 
-La mejora de un programa utilizando cómputo paralelo está limitado por el tiempo necesario para completar su fracción serial o secuencial. En la mayoría de los casos, el paralelismo sólo impacta notoriamente cuando es utilizado en un pequeño número de procesadores, o cuando se aplica a problemas altamente escalables (denominados {\it Embarrassingly Parallel Problems} en inglés). Una vez paralelizado un programa, los esfuerzos suelen ser enfocados en cómo minimizar la parte secuencial, algunas veces haciendo más trabajo redundante pero en forma paralela.
+La mejora de un programa utilizando cómputo paralelo está limitada por el tiempo necesario para completar su fracción serial o secuencial. En la mayoría de los casos, el paralelismo sólo impacta notoriamente cuando es utilizado en un pequeño número de procesadores, o cuando se aplica a problemas altamente escalables (denominados {\it Embarrassingly Parallel Problems} en inglés). Una vez paralelizado un programa, los esfuerzos suelen ser enfocados en cómo minimizar la parte secuencial, algunas veces haciendo más trabajo redundante pero en forma paralela.
 
 \bigskip
 
@@ -187,8 +180,7 @@ S = \frac{1}{(1 - P) + \frac{P}{N}}
 \end{eqnarray}
 
 Esta ley establece que incluso teniendo infinitas unidades de cómputo la ganancia está limitada.
-La Tabla \ref{fig:amdahl} muestra que no importa la cantidad de unidades de
-procesamiento que sean utilizadas, siempre existe un límite en la práctica.
+La Tabla \ref{fig:amdahl} muestra que no importa la cantidad de unidades de procesamiento que sean utilizadas, siempre existe un límite en la práctica.
 
 \begin{table}[H]
 \caption{Mejora Máxima según {\it Amdahl}}
@@ -198,8 +190,7 @@ procesamiento que sean utilizadas, siempre existe un límite en la práctica.
 \label{fig:amdahl}
 \end{table}
 
-Por ejemplo, en el caso de tener sólo un $ 10\% $ de paralelismo
-en una aplicación, la mejora nunca va a superar $ 1.1 $ veces la original.
+Por ejemplo, en el caso de tener sólo un $ 10\% $ de paralelismo en una aplicación, la mejora nunca va a superar $ 1.1 $ veces la original.
 En el caso de tener un $ 95\% $ de paralelismo, la mejora no puede ser mayor a $ 20 $ veces la original.
 
 \bigskip
@@ -208,24 +199,22 @@ En el caso de conocer los tiempos de ejecución para distinto número de procesa
 
 \subsubsection{Ley de {\it Gustafson}}
 
-Desde un punto de vista más general, la ley de {\it Gustafson}
-\cite{gustafson} (Ecuación \ref{eq:gustafson})
-establece que las aplicaciones que manejan problemas
-repetitivos con conjuntos de datos similares pueden ser fácilmente
-paralelizadas. En comparación, la ley anterior no escala el tamaño o
-resolución de problema cuando se incrementa la potencia de cálculo, es
-decir asume un tamaño de problema fijo. 
+Desde un punto de vista más general, la ley de {\it Gustafson} \cite{gustafson} (Ecuación \ref{eq:gustafson}) establece que las aplicaciones que manejan problemas
+repetitivos con conjuntos de datos similares pueden ser fácilmente paralelizadas. En comparación, la ley anterior no escala el tamaño o
+resolución de problema cuando se incrementa la potencia de cálculo, es decir asume un tamaño de problema fijo. 
 
 \begin{eqnarray}
 \label{eq:gustafson}
-Speedup(P) = P - \alpha \times ( P - 1)
+Speedup(P) = P - \alpha \times (P - 1)
 \end{eqnarray}
 
 donde $ P $ es el número de unidades de cómputo y $ \alpha $ el porcentaje de trabajo paralelizable.
 
 \bigskip
 
-Al aplicar esta ley obtenemos que un problema con datos grandes o repetitivos en cantidades grandes puede ser computado en paralelo muy eficientemente. Nos es útil para determinar el tamaño de problema a utilizar cuando los recursos de cómputo son incrementados. En el mismo tiempo de ejecución, el programa resuelve entonces problemas más grandes.
+Al aplicar esta ley obtenemos que un problema con datos grandes o repetitivos en cantidades grandes puede ser computado en paralelo muy eficientemente.
+Nos es útil para determinar el tamaño de problema a utilizar cuando los recursos de cómputo son incrementados. 
+En el mismo tiempo de ejecución, el programa resuelve entonces problemas más grandes.
 
 \begin{table}[H]
 \caption{Mejora Máxima según {\it Gustafson}}
@@ -238,19 +227,22 @@ Similarmente al cuadro anterior, podemos deducir de la Tabla \ref{fig:gustafson}
 
 \subsubsection{Métrica de {\it Karp-Flatt}}
 
-Esta métrica es utilizada para medir el grado de paralelismo de una aplicación \cite{karp-flatt}. Su valor nos permite rápidamente dimensionar la mejora posible al aplicar un alto nivel de paralelismo.
+Esta métrica es utilizada para medir el grado de paralelismo de una aplicación \cite{karp-flatt}. 
+Su valor nos permite rápidamente dimensionar la mejora posible al aplicar un alto nivel de paralelismo.
 
 \bigskip
 
-Dado un cómputo paralelo con una mejora de rendimiento $ \psi $ en $ P $
-procesadores, donde $ P > 1 $. La fracción serial {\it Karp-Flatt} representada con $ e $ y calculada según la Ecuación \ref{eq:karp-flatt} es determinada experimentalmente, mientras menor sea $ e $ mayor se supone el nivel de paralelismo posible.
+Dado un cómputo paralelo con una mejora de rendimiento $ \psi $ en $ P $ procesadores, donde $ P > 1 $. 
+La fracción serial {\it Karp-Flatt} representada con $ e $ y calculada según la Ecuación \ref{eq:karp-flatt} es determinada experimentalmente, 
+mientras menor sea $ e $ mayor se supone el nivel de paralelismo posible.
 
 \begin{eqnarray}
 \label{eq:karp-flatt}
  e = \frac{\frac{1}{\psi} - \frac{1}{p}}{1 - \frac{1}{p}} 
 \end{eqnarray}
 
-Para un problema de tamaño fijo, la eficiencia típicamente disminuye cuando el número de procesadores aumenta. Se puede entonces proceder a determinar si esta disminución es debida a un paralelismo limitado, a un algoritmo no optimizado o un problema de arquitectura del sistema.
+Para un problema de tamaño fijo, la eficiencia típicamente disminuye cuando el número de procesadores aumenta. 
+Se puede entonces proceder a determinar si esta disminución es debida a un paralelismo limitado, a un algoritmo no optimizado o un problema de arquitectura del sistema.
 
 \subsection{Métricas}
 
@@ -267,17 +259,14 @@ Algunos ejemplos de métricas de rendimiento son:
 
 \end{enumerate}
 
-Un método de medición de rendimiento indirecto consiste en medir el uso de
-los recursos del sistema mientras se ejercita el mismo con un trabajo dado.
-Por ejemplo: el nivel de carga de trabajo en el sistema, la cantidad de operaciones realizadas por el
-sistema operativo o la unidad de procesamiento, la utilización de memoria o
+Un método de medición de rendimiento indirecto consiste en medir el uso de los recursos del sistema mientras se ejercita el mismo con un trabajo dado.
+Por ejemplo: el nivel de carga de trabajo en el sistema, la cantidad de operaciones realizadas por el sistema operativo o la unidad de procesamiento, la utilización de memoria o
 archivos temporales e incluso el ancho de banda de red utilizado durante la comunicación.
 
 \subsection{Técnicas de Análisis}
 
-El procedimiento de mejora general usualmente consiste en ciclos iterativos de medir, localizar, optimizar y
-comparar (Figura \ref{fig:cycle}). Es muy importante mantener la disciplina en realizar un cambio a la
-vez ya que esto asegura resultados reproducibles y convergentes, sin efectos no deseados.
+El procedimiento de mejora general usualmente consiste en ciclos iterativos de medir, localizar, optimizar y comparar (Figura \ref{fig:cycle}). 
+Es muy importante mantener la disciplina en realizar un cambio a la vez ya que esto asegura resultados reproducibles y convergentes, sin efectos no deseados.
 
 \begin{figure}[H]
 \begin{center}
@@ -291,8 +280,11 @@ A la hora de tomar decisiones, éstas deben estar basadas en datos concretos, ya
 
 \bigskip
 
-En el caso de tener problemas de desviación en los resultados medidos, es aconsejable obtener un gran número de muestras y utilizar un valor promedio para asegurarse de evitar errores de medición tanto como sea posible. También es preferible aumentar el tamaño del problema a resolver, o la definición de los resultados, para ejercitar por más tiempo y tener así un resultado más estable.
-Suponiendo una distribución normal de resultados, se suele controlar que haya menos de 3 desviaciones estandar de diferencia. Se busca que la mayoría de los resultados queden cerca de su promedio, como muestra la Figura \ref{fig:deviation}.
+En el caso de tener problemas de desviación en los resultados medidos, es aconsejable obtener un gran número de muestras y utilizar un valor promedio para asegurarse de evitar errores de
+medición tanto como sea posible. También es preferible aumentar el tamaño del problema a resolver, o la definición de los resultados, para ejercitar por más tiempo y tener así un resultado 
+más estable.
+Suponiendo una distribución normal de resultados, se suele controlar que haya menos de 3 desviaciones estandar de diferencia. 
+Se busca que la mayoría de los resultados queden cerca de su promedio, como muestra la Figura \ref{fig:deviation}.
 
 \begin{figure}[H]
 \centering
@@ -301,12 +293,9 @@ Suponiendo una distribución normal de resultados, se suele controlar que haya m
 \label{fig:deviation}
 \end{figure}
 
-Los resultados deben también ser correctamente guardados para evitar
-problemas de datos. Si la configuración del sistema es dinámica entonces la
-reproducción de resultados es no trivial. En el caso de no tener una
-configuración de sistema estable en el tiempo, es recomendable siempre
-ejecutar una versión optimizada contra una versión de referencia en un mismo
-sistema de cómputo.
+Los resultados deben también ser correctamente guardados para evitar problemas de datos. Si la configuración del sistema es dinámica entonces la
+reproducción de resultados es no trivial. En el caso de no tener una configuración de sistema estable en el tiempo, es recomendable siempre
+ejecutar una versión optimizada contra una versión de referencia en un mismo sistema de cómputo.
 
 \bigskip
 
@@ -336,27 +325,19 @@ Actualmente existen numerosas y diversas herramientas para el análisis de rendi
 \subsection{Pruebas de Rendimiento}
 
 Para medir el rendimiento se utilizan pruebas de referencia (en inglés, {\em benchmarks}); éstas pueden ser aplicaciones sintéticas construidas específicamente, o bien aplicaciones del mundo real computando un problema prefijado. Al tener valores de referencia se pueden caracterizar los sistemas de modo de predecir el rendimiento de una aplicación.
-Los valores a los que se llegan con un {\it benchmark} suelen ser más prácticos y
-comparables que los teóricos de acuerdo a condiciones ideales de uso de recursos.
-También es posible garantizar que el sistema sigue en un mismo estado con el correr
-del tiempo y después de cambios de configuraciones en {\it hardware} o {\it software}.
+Los valores a los que se llegan con un {\it benchmark} suelen ser más prácticos y comparables que los teóricos de acuerdo a condiciones ideales de uso de recursos.
+También es posible garantizar que el sistema sigue en un mismo estado con el correr del tiempo y después de cambios de configuraciones en {\it hardware} o {\it software}.
 
 \bigskip
 
-Las características deseables en un {\it benchmark} son portabilidad, simplicidad, estabilidad y
-reproducción de resultados. Esto permite que sean utilizadas para realizar
-mediciones cuantitativas y así realizar comparaciones de optimizaciones o
-entre sistemas de cómputo diferentes. También se pide que el tiempo de
-ejecución sea razonable y que el tamaño del problema sea ajustable para
-poder mantener su utilidad con el paso del tiempo y el avance de las
-tecnologías.
+Las características deseables en un {\it benchmark} son portabilidad, simplicidad, estabilidad y reproducción de resultados. Esto permite que sean utilizadas para realizar
+mediciones cuantitativas y así realizar comparaciones de optimizaciones o entre sistemas de cómputo diferentes. También se pide que el tiempo de
+ejecución sea razonable y que el tamaño del problema sea ajustable para poder mantener su utilidad con el paso del tiempo y el avance de las tecnologías.
 
 \bigskip
 
-A continuación se introducen algunas de las más utilizadas para cómputo
-de altas prestaciones (listadas en la tabla \ref{table:benchmark-list}),
-y posteriormente algunos detalles específicos e instancias
-de sus datos de salida para ser utilizados a manera de ejemplo.
+A continuación se introducen algunas de las más utilizadas para cómputo de altas prestaciones (listadas en la tabla \ref{table:benchmark-list}),
+y posteriormente algunos detalles específicos e instancias de sus datos de salida para ser utilizados a manera de ejemplo.
 
 \begin{table}[H]
     \caption{Benchmarks}
@@ -373,12 +354,9 @@ de sus datos de salida para ser utilizados a manera de ejemplo.
 
 \bigskip
 
-Los {\it benchmarks} pueden ser utilizados para diferentes propósitos. Primero,
-los valores reportados son usados como referencia para contrastar rendimiento.
-Segundo, su desviación demuestra que algo ha cambiado en el sistema (por lo tanto
-su no desviación indica que el sistema sigue saludable). Por último,
-un {\it benchmark} sintético implementando el cómputo que uno quiere realizar
-muestra el rendimiento máximo posible a obtener en la práctica.
+Los {\it benchmarks} pueden ser utilizados para diferentes propósitos. Primero, los valores reportados son usados como referencia para contrastar rendimiento.
+Segundo, su desviación demuestra que algo ha cambiado en el sistema (por lo tanto su no desviación indica que el sistema sigue saludable). Por último,
+un {\it benchmark} sintético implementando el cómputo que uno quiere realizar muestra el rendimiento máximo posible a obtener en la práctica.
 
 \subsubsection{STREAM}
 
@@ -426,17 +404,13 @@ La correcta utilización de la jerarquía de la memoria de un sistema de cómput
 
 \subsubsection{Linpack}
 
-Linpack \cite{linpack} es un conjunto de subrutinas {\it FORTRAN} que resuelven
-problemas de álgebra lineal como ecuaciones lineales y multiplicación de
-matrices. High Performance Linpack (HPL) \cite{hpl} es una versión portable del {\it benchmark} que incluye
-el paquete Linpack pero modificado para sistemas de memoria distribuida.
+Linpack \cite{linpack} es un conjunto de subrutinas {\it FORTRAN} que resuelven problemas de álgebra lineal como ecuaciones lineales y multiplicación de
+matrices. High Performance Linpack (HPL) \cite{hpl} es una versión portable del {\it benchmark} que incluye el paquete Linpack pero modificado para sistemas de memoria distribuida.
 
 \bigskip
 
-Este {\it benchmark} es utilizado mundialmente para la comparación de la
-velocidad de las supercomputadoras en el ranking TOP500 \footnote{http://www.top500.org/}. 
-Un gráfico del TOP500 de los últimos años (Figura \ref{fig:top500}) demuestra claramente la
-tendencia en crecimiento de rendimiento; también la relación entre el primero,
+Este {\it benchmark} es utilizado mundialmente para la comparación de la velocidad de las supercomputadoras en el ranking TOP500 \footnote{http://www.top500.org/}. 
+Un gráfico del TOP500 de los últimos años (Figura \ref{fig:top500}) demuestra claramente la tendencia en crecimiento de rendimiento; también la relación entre el primero,
 el último y la suma de todos los sistemas en la lista.
 
 \begin{figure}[H]
@@ -446,14 +420,12 @@ el último y la suma de todos los sistemas en la lista.
 \label{fig:top500}
 \end{figure}
 
-Este {\it benchmark} requiere conocimiento avanzado para una correcta configuración,
-por ejemplo el tamaño de bloque que se va a utilizar para la distribución de trabajo
+Este {\it benchmark} requiere conocimiento avanzado para una correcta configuración, por ejemplo el tamaño de bloque que se va a utilizar para la distribución de trabajo
 debe estar directamente relacionado con el tamaño del {\it cache} de memoria del procesador.
 
 \bigskip
 
-La salida en pantalla resume entonces los datos de entrada y los resultados conseguidos.
-Como último paso el programa valida que los resultados sean correctos.
+La salida en pantalla resume entonces los datos de entrada y los resultados conseguidos. Como último paso el programa valida que los resultados sean correctos.
 
 {\small
 \begin{verbatim}
@@ -501,21 +473,19 @@ Finished      1 tests with the following results:
 
 \bigskip
 
-Existe cierta controversia de que no es una buena forma de ejercitar un
-sistema de cómputo distribuido ya que no implica uso significativo de la
-red, sólo procesamiento intensivo de aritmética de punto flotante
-sobre la jerarquía local de memoria.
+Existe cierta controversia de que no es una buena forma de ejercitar un sistema de cómputo distribuido ya que no implica uso significativo de la
+red, sólo procesamiento intensivo de aritmética de punto flotante sobre la jerarquía local de memoria.
 
 \subsubsection{Intel MPI Benchmarks}
 
-Es un conjunto de {\it benchmarks} cuyo objetivo es ejercitar las funciones
-más importantes del estándar para librerías de paso de mensajes (MPI, por las siglas de {\it Message Passing Interface} en inglés) \cite{mpi-standard}.
-El más conocido es el popular ping-pong, el cual ejercita la transmisión de mensajes ida y vuelta entre dos nodos de
-cómputo con diferentes tamaños de mensajes \cite{latency}.
+Es un conjunto de {\it benchmarks} cuyo objetivo es ejercitar las funciones más importantes del estándar para librerías de paso de mensajes
+(MPI, por las siglas de {\it Message Passing Interface} en inglés) \cite{mpi-standard}.
+El más conocido es el popular ping-pong, el cual ejercita la transmisión de mensajes ida y vuelta entre dos nodos de cómputo con diferentes tamaños de mensajes \cite{latency}.
 
 \bigskip
 
-Para obtener el máximo ancho de banda disponible, se ejercita la comunicación a través de mensajes con datos grandes. Para obtener la mínima latencia, se ejercita la comunicación con mensajes vacíos.
+Para obtener el máximo ancho de banda disponible, se ejercita la comunicación a través de mensajes con datos grandes. 
+Para obtener la mínima latencia, se ejercita la comunicación con mensajes vacíos.
 
 {\small
 \begin{verbatim}
@@ -554,16 +524,13 @@ Para obtener el máximo ancho de banda disponible, se ejercita la comunicación 
 
 \subsubsection{HPC Challenge}
 
-El {\it benchmark} HPC Challenge \cite{hpcc} (HPCC) está compuesto internamente por un conjunto de
-varios núcleos de cómputo: entre ellos STREAM, HPL, Ping Pong, Transformadas de {\it Fourier}
-y otros ejercitando la red de comunicación.
+El {\it benchmark} HPC Challenge \cite{hpcc} (HPCC) está compuesto internamente por un conjunto de varios núcleos de cómputo: entre ellos STREAM, HPL, Ping Pong,
+Transformadas de {\it Fourier} y otros más simples ejercitando la red de comunicación.
 
 \bigskip
 
-Este benchmark muestra diferentes resultados que son representativos
-y puestos en consideración de acuerdo al tipo de aplicación en discusión.
-La mejor máquina depende de la aplicación específica a ejecutar, ya que algunas
-aplicaciones necesitan mejor ancho de banda de memoria, mejor canal de comunicación, o
+Este benchmark muestra diferentes resultados que son representativos y puestos en consideración de acuerdo al tipo de aplicación en discusión.
+La mejor máquina depende de la aplicación específica a ejecutar, ya que algunas aplicaciones necesitan mejor ancho de banda de memoria, mejor canal de comunicación, o
 simplemente la mayor capacidad de cómputo de operaciones flotantes posible.
 
 \bigskip
@@ -578,9 +545,8 @@ Una analogía interesante para entender cómo el {\it benchmark} se relaciona co
 \end{center}
 \end{figure}
 
-Para una mejor comparación de resultados de HPCC se utilizan diagramas
-denominados {\it kiviats}, un ejemplo se muestra en la Figura \ref{fig:kiviat}.
-Los resultados están normalizados hacia uno de los sistemas, y se puede identificar mejor rendimiento en FLOPs por poseer mejores DGEMM y HPL en comparación.
+Para una mejor comparación de resultados de HPCC se utilizan diagramas de tipo radar denominados {\it kiviats}, un ejemplo se muestra en la Figura \ref{fig:kiviat}.
+Los resultados están normalizados hacia uno de los sistemas, en este ejemplo se puede identificar mejor rendimiento en FLOPs por poseer mejores DGEMM y HPL en comparación.
 
 \begin{figure}[H]
 \begin{center}
@@ -697,7 +663,9 @@ End of HPC Challenge tests.
 
 \subsection{Utilización de las Herramientas}
 
-Se recomienda un proceso de aplicación gradual empezando por herramientas generales de alto nivel que analizan la aplicación como un todo; terminando con herramientas de bajo nivel que proveen detalles complejos de granularidad más fina en partes específicas del código. Esto permite ir analizando el rendimiento sin tener que enfrentar la dificultad de un análisis complejo y extensivo desde un principio. Una lista de las herramientas más conocidas se muestra en la Tabla \ref{table:tooling}.
+Se recomienda un proceso de aplicación gradual empezando por herramientas generales de alto nivel que analizan la aplicación como un todo; terminando con herramientas de bajo nivel que proveen
+detalles complejos de granularidad más fina en partes específicas del código. Esto permite ir analizando el rendimiento sin tener que enfrentar la dificultad de un análisis complejo y
+extensivo desde un principio. Una lista de las herramientas más conocidas se muestra en la Tabla \ref{table:tooling}.
 
 \begin{table}[H]
 \caption{Aplicación Gradual de Herramientas}
@@ -721,12 +689,15 @@ A grandes rasgos el procedimiento es el siguiente:
 
 \item Se establece una línea de comparación al ejecutar una prueba de rendimiento del sistema, {\it HPCC} brinda un conjunto de métricas muy completo. 
 
-\item Se utilizan herramientas para medir el tiempo de ejecución de la aplicación sobre diferentes escenarios. {\tt time} permite una ejecución directa sin modificación de código, {\tt gettimeofday()} requiere modificación de código pero puede ser utilizados con mayor libertad dentro de la aplicación.  
-En el caso de estar utilizando la librería MPI, {\tt MPI\_WTime()} y la herramienta VAMPIR\footnote{\href{http://www.vampir.eu}{http://www.vampir.eu}} proveen soporte específico para análisis de rendimiento.
+\item Se utilizan herramientas para medir el tiempo de ejecución de la aplicación sobre diferentes escenarios. {\tt time} permite una ejecución directa sin modificación de código,
+{\tt gettimeofday()} requiere modificación de código pero puede ser utilizados con mayor libertad dentro de la aplicación.  
+En el caso de estar utilizando la librería MPI, {\tt MPI\_WTime()} y la herramienta VAMPIR\footnote{\href{http://www.vampir.eu}{http://www.vampir.eu}} proveen soporte específico para análisis
+de rendimiento.
 
 \item Se dimensiona el comportamiento de la aplicación mediante un perfil de ejecución y un análisis de cuello de botella utilizando {\tt gprof}. 
 
-\item Se analiza el comportamiento del sistema ejecutando la aplicación mediante {\tt oprofile} \footnote{\href{http://oprofile.sourceforge.net}{http://oprofile.sourceforge.net}} o {\tt perf} \footnote{\href{https://perf.wiki.kernel.org}{https://perf.wiki.kernel.org}}. 
+\item Se analiza el comportamiento del sistema ejecutando la aplicación mediante {\tt oprofile} \footnote{\href{http://oprofile.sourceforge.net}{http://oprofile.sourceforge.net}} o
+{\tt perf} \footnote{\href{https://perf.wiki.kernel.org}{https://perf.wiki.kernel.org}}. 
 
 \item Se revisa el reporte del compilador para comprobar que se estén vectorizando los ciclos de cálculo más intensivos.
 
@@ -740,8 +711,10 @@ Esta sección revisa como medir el tiempo de ejecución global de una aplicació
 
 \subsubsection{Tiempo de ejecución global}
 
-Para medir el tiempo de ejecución de un comando en consola se utiliza {\tt time(1)}. Aunque rudimentaria, esta simple herramienta no necesita de instrumentación de código y se encuentra disponible en cualquier distribución {\it GNU/Linux}.
-El intérprete de comandos tiene su propia versión embebida, sin embargo el del sistema brinda información del uso de otros recursos del sistema, usualmente localizado en {\tt /usr/bin/time}. Un ejemplo se demuestra en el listado \ref{lst:time1}.
+Para medir el tiempo de ejecución de un comando en consola se utiliza {\tt time(1)}. Aunque rudimentaria, esta simple herramienta no necesita de instrumentación de código y
+se encuentra disponible en cualquier distribución {\it GNU/Linux}.
+El intérprete de comandos tiene su propia versión embebida, sin embargo el del sistema brinda información del uso de otros recursos del sistema, usualmente localizado en {\tt /usr/bin/time}.
+Un ejemplo se demuestra en el listado \ref{lst:time1}.
 
 \bigskip
 
@@ -776,11 +749,13 @@ $ /usr/bin/time -v ./program
 \subsubsection{Reloj del sistema}
 
 La librería principal de sistema permite acceder a llamadas al sistema operativo para obtener datos precisos del paso del tiempo.
-Las más utilizadas son {\tt gettimeofday(3)} y {\tt clock(3)}, aunque éste último se comporta de manera especial al utilizar multi-threading ya que suma el tiempo ejecutado en cada unidad de cómputo.
+Las más utilizadas son {\tt gettimeofday(3)} y {\tt clock(3)}, aunque éste último se comporta de manera especial al utilizar multi-threading ya que suma el tiempo ejecutado en cada unidad de
+cómputo.
 
 \bigskip
 
-El código en el listado \ref{lst:wtime} ejemplifica como obtener un número de segundos en una representación de punto flotante de doble precisión, permitiendo una granularidad de medición adecuada.
+El código en el listado \ref{lst:wtime} ejemplifica como obtener un número de segundos en una representación de punto flotante de doble precisión, permitiendo una granularidad de medición
+adecuada.
 
 \begin{lstlisting}[caption={Tiempo de Ejecución},label={lst:wtime}]
 double wtime(void)
@@ -796,26 +771,20 @@ double wtime(void)
 
 \subsection{Perfil de Ejecución Funcional}
 
-Las herramientas denominadas {\it profilers} extraen el perfil dinámico de una aplicación en tiempo de ejecución. 
+Las herramientas de perfilado denominadas {\it profilers} extraen el perfil dinámico de una aplicación en tiempo de ejecución. 
 Se instrumenta la aplicación con una opción específica que incluye información de uso de las diferentes partes del programa y los recursos del sistema como por ejemplo procesador y memoria.
 
 \bigskip
 
-La aplicación debe ejecutarse con un conjunto de datos prefijado. El conjunto de
-datos debe ser representativo y debe también ejercitar la aplicación por
-una cantidad de tiempo suficiente como para intensificar el uso de los
-recursos. Los datos del perfil de una ejecución son luego obtenidos en la
-forma de un archivo de datos, luego se procede a procesar los datos acumulados
-con un analizador respectivo.
+La aplicación debe ejecutarse con un conjunto de datos prefijado. El conjunto de datos debe ser representativo y debe también ejercitar la aplicación por
+una cantidad de tiempo suficiente como para intensificar el uso de los recursos. Los datos del perfil de una ejecución son luego obtenidos en la
+forma de un archivo de datos, luego se procede a procesar los datos acumulados con un analizador respectivo.
 
 \bigskip
 
-Provee un perfil plano que consiste en una simple lista de las funciones
-ejecutadas ordenadas por la cantidad acumulada de tiempo utilizado.
-También provee el gráfico de llamadas anidadas, que muestra el tiempo
-utilizado por cada función en llamadas sucesivas. Las funciones recursivas
-son manejadas de manera especial ya que imposibilitan el armado de relaciones
-de dependencias.
+Provee un perfil plano que consiste en una simple lista de las funciones ejecutadas ordenadas por la cantidad acumulada de tiempo utilizado.
+También provee el gráfico de llamadas anidadas, que muestra el tiempo utilizado por cada función en llamadas sucesivas. Las funciones recursivas
+son manejadas de manera especial ya que imposibilitan el armado de relaciones de dependencias.
 
 \subsubsection{Ejemplo: {\tt gprof}}
 
@@ -867,19 +836,19 @@ index % time    self  children    called     name
 
 \subsection{Perfil de Ejecución Asistido por {\it Hardware}}
 
-Un {\it profiler} puede utilizar el {\it hardware} para analizar el uso de los recursos disponibles a nivel de núcleo del
-sistema operativo. Actúa de forma transparente a nivel global. Utiliza
-contadores de {\it hardware} del CPU y además interrupciones de un temporizador
+Un {\it profiler} puede utilizar el {\it hardware} para analizar el uso de los recursos disponibles a nivel de núcleo del sistema operativo. 
+Actúa de forma transparente a nivel global. Utiliza contadores de {\it hardware} del CPU y además interrupciones de un temporizador
 cuando no logra detectar soporte específico en {\it hardware}. Aunque tiene un costo adicional inherente, la sobrecarga es mínima.
 
 \bigskip
 
-Para obtener un perfil de ejecución representativo, usualmente se recomienda detener toda aplicación o servicio no relevante en el sistema. La herramienta de por si no requiere acceder al código fuente de la aplicación, pero si esta disponible el código correspondiente se muestra anotado con contadores si hay símbolos de depuración en el binario.
+Para obtener un perfil de ejecución representativo, usualmente se recomienda detener toda aplicación o servicio no relevante en el sistema. 
+La herramienta de por si no requiere acceder al código fuente de la aplicación, pero si esta disponible el código correspondiente se muestra anotado con contadores
+si hay símbolos de depuración en el binario.
 
 \bigskip
 
-Los registros de {\it hardware} implementando contadores más utilizados son los
-siguientes:
+Los registros de {\it hardware} implementando contadores más utilizados son los siguientes:
 
 \begin{enumerate}
 \item Cantidad total de ciclos de procesador
@@ -895,7 +864,8 @@ incluso programables para funciones determinadas de medición.
 
 \subsubsection{Ejemplo: {\tt perf}}
 
-A continuación en el listado \ref{lst:perfstat} se demuestra la información provista por {\tt perf} en sus diferentes modos de ejecución: estadísticas de contadores, perfil de sistema y por último perfil de aplicación.
+A continuación en el listado \ref{lst:perfstat} se demuestra la información provista por {\tt perf} en sus diferentes modos de ejecución: estadísticas de contadores, perfil de sistema y
+por último perfil de aplicación.
 
 \begin{lstlisting}[caption={Estadísticas de Contadores},label={lst:perfstat}]
 $ perf stat -B program
@@ -958,12 +928,12 @@ En el listado \ref{lst:annotated} se muestra la salida del perfil de código ano
 ...
 \end{lstlisting}
 
-Este punto de análisis requiere conocimiento avanzado de como funciona el CPU utilizado, su acceso a memoria y los costos de las diferentes instrucciones soportadas. Una fuente de consulta debe incluir conceptos generales de arquitectura de procesadores \cite{hennessy} e información de los fabricantes \cite{intel-optimization}.
+Este punto de análisis requiere conocimiento avanzado de como funciona el CPU utilizado, su acceso a memoria y los costos de las diferentes instrucciones soportadas. 
+Una fuente de consulta debe incluir conceptos generales de arquitectura de procesadores \cite{hennessy} e información de los fabricantes \cite{intel-optimization}.
 
 \subsection{Reporte de Vectorización}
 
-Una herramienta de bajo nivel para analizar rendimiento es el mismo compilador
-que debería estar vectorizando los ciclos de cómputo intensivo. Esto es muy
+Una herramienta de bajo nivel para analizar rendimiento es el mismo compilador que debería estar vectorizando los ciclos de cómputo intensivo. Esto es muy
 útil para detectar si los cuellos de botella ya se encuentran optimizados o no.
 
 \bigskip
@@ -999,11 +969,12 @@ Este capítulo introduce el problema a resolver.
 
 \section{Análisis de Rendimiento}
 
-Este trabajo trata de simplificar la tarea de análisis de rendimiento. 
+Este trabajo trata entonces de simplificar la tarea de análisis de rendimiento. 
 
 \bigskip
 
-El problema concreto sobre el que se trabaja es brindar automatización para ahorrar esfuerzo y minimizar el nivel de conocimiento requerido durante el desarrollo de aplicaciones de cómputo de altas prestaciones.
+El problema concreto sobre el que se trabaja es brindar automatización para ahorrar esfuerzo y minimizar el nivel de conocimiento requerido durante el desarrollo de aplicaciones de cómputo de
+altas prestaciones.
 
 \subsection{Problemas Usuales}
 
@@ -1035,7 +1006,7 @@ La optimización temprana sin tener en cuenta datos cuantitativos puede implicar
 \subsubsection{Implementación Teórica de Algoritmos}
 
 La implementación directa de un algoritmo matemático puede garantizar su correctitud pero no su eficiencia durante su ejecución. La reutilización de librerías de dominio público ofrecidas por
-los fabricantes es siempre preferida ya que garantizan calidad con un mínimo esfuerzo de aprender como utilizarlas correctamente.
+los fabricantes es siempre preferida ya que garantizan eficiencia con un mínimo esfuerzo de aprender como utilizarlas correctamente.
 
 \section{Infrastructura de Soporte}
 
@@ -1061,7 +1032,7 @@ La infrastructura debe poseer un diseño de fácil extensión, la incorporación
 
 \subsection{Simplicidad}
 
-La infrastructura debe reutilizar las mismas herramientas disponibles en el sistema, de tal forma el usuario puede continuar el analisis de forma directa.
+La infrastructura debe reutilizar las mismas herramientas disponibles en el sistema, de tal forma el usuario puede continuar el análisis de forma directa.
 También debe generar archivos de soporte con la información pura de los comandos ejecutados y su salida sin depurar.
 Debe ser posible completar un reporte entre un día de trabajo y otro sin la interacción con un usuario.
 
@@ -1081,12 +1052,12 @@ La Figura \ref{fig:procedure} muestra a grandes rasgos las etapas del proceso a 
 \end{figure}
 
 Primero se establece una línea base de rendimiento del sistema utilizando pruebas de rendimiento conocidas.
-Luego se procede a trabajar en etapas iterativas asegurando en cada paso la estabilidad de los resultados, revisando la utilización de recursos y utilizando un perfil de ejecución para encontrar un punto de enfoque. Luego de optimizar y comprobar la mejora, se vuelve a empezar el ciclo.
+Luego se procede a trabajar en etapas iterativas asegurando en cada paso la estabilidad de los resultados, revisando la utilización de recursos y utilizando un perfil de ejecución para encontrar un punto de enfoque. Luego de optimizar y comprobar la mejora, se vuelve a repetir el ciclo.
 
 \section{Paso a Paso}
 
 A continuación se muestran los pasos a realizar, junto con preguntas que guían el análisis de rendimiento de una aplicación.
-La infrastructura solo implementa los pasos especificos de ejecución de herramientas para la recolección de información.
+La infrastructura solo implementa los pasos específicos de ejecución de herramientas para la recolección de información.
 
 \subsection{Pruebas de Referencia}
 
@@ -1117,8 +1088,8 @@ $ for i in `seq 1 32`; do /usr/bin/time -v ./program >> time.csv; done
 \item ¿Son los resultados estables?
 \item ¿La desviación estándar es menor que 3?
 \item ¿Cuál es el promedio geométrico para comparaciones futuras?
-\item ¿ Es necesario incrementar el problema para mejorar la desviación?
-\item ¿ Es posible reducir el tiempo sin afectar la desviación?
+\item ¿Es necesario incrementar el problema para mejorar la desviación?
+\item ¿Es posible reducir el tiempo sin afectar la desviación?
 \end{enumerate}
 
 \item Escalar el problema para dimensionar la cantidad de trabajo según el tamaño del problema.
@@ -1198,12 +1169,12 @@ El procedimiento anterior se implementó como una infrastructura automática de 
 \bigskip
 
 La automatización se comporta del mismo modo que un usuario realizando un procedimiento sistemático de analisis de rendimiento.
-Es decir que ejecuta utilizades del sistema como {\tt gcc}, {\tt make}, {\tt prof}, {\tt gprof}, {\tt pidstat} para obtener la información relevante.
-{\it Latex} se utiliza para la generación del reporte final.
+Es decir que ejecuta utilidades del sistema como {\tt gcc}, {\tt make}, {\tt prof}, {\tt gprof}, {\tt pidstat} para obtener la información relevante.
+\LaTeX se utiliza para la generación del reporte final.
 
 \bigskip
 
-Las limitaciones {\it a-priori} que posee la infrastructura son en materia de portabilidad y aplicación. Por el lado de la portabilidad, solo se soportan sistemas {\it GNU/Linux recientes}, siendo necesarias el conjunto de utilidades de soporte especificadas anteriormente. Por el lado de la aplicación, solo se soportan programan utilizando tecnología {\it OpenMP}.
+Las limitaciones {\it a-priori} que posee la infrastructura son en materia de portabilidad y aplicación. Por el lado de la portabilidad, sólo se soportan sistemas {\it GNU/Linux recientes}, siendo necesarias el conjunto de utilidades de soporte especificadas anteriormente. Por el lado de la aplicación, sólo se soportan programan utilizando tecnología {\it OpenMP}.
 
 \section{Teoría de Operación}
 
@@ -1228,35 +1199,39 @@ La interacción con la infrastructura se detalla en la Figura \ref{fig:hotspot-s
 
 \subsection{Funcionamiento Interno}
 
-Se utiliza un directorio escondido dentro de la carpeta que contiene la aplicación y se guardan en sub-directorios por fecha y hora las diferentes ejecuciones. Esta información puede ser usada para una comparación histórica de resultados.
+Se utiliza un directorio escondido dentro de la carpeta que contiene la aplicación y se guardan en sub-directorios por fecha y hora las diferentes ejecuciones. 
+Esta información puede ser usada para una comparación histórica de resultados.
 
 \bigskip
 
-Inicialmente se ejecuta la aplicación múltiples veces para validar que los resultados poseen una desviación saludable. Se resume esta información con un histograma y se hace una aproximación a una distribución de resultados normales como comparación.
-Se toma como referencia la media geométrica de los resultados.
-La primer ejecución se descarta.
+Inicialmente se ejecuta la aplicación múltiples veces para validar que los resultados poseen una desviación saludable. Se resume esta información con un histograma y se hace una aproximación
+a una distribución de resultados normales como comparación. Se toma como referencia la media geométrica de los resultados. La primer ejecución se descarta.
 
 \bigskip
 
-Se ejercita la aplicación dentro del rango de tamaño del problema especificado, por cada punto en el rango se ejecuta múltiples veces para luego tomar un promedio. Se grafican los resultados en un gráfico de escalamiento donde se sobrepone una curva ideal suponiendo que un problema del doble de tamaño va a necesitar el doble de tiempo de cómputo.
+Se ejercita la aplicación dentro del rango de tamaño del problema especificado, por cada punto en el rango se ejecuta múltiples veces para luego tomar un promedio. Se grafican los resultados
+en un gráfico de escalamiento donde se sobrepone una curva ideal suponiendo que un problema del doble de tamaño va a necesitar el doble de tiempo de cómputo.
 
 \bigskip
 
-Se detecta cuantas unidades de procesamiento hay en el sistema y se realizan pruebas utilizando más unidades incrementalmente. Se utiliza una y luego se itera hasta utilizar todas, se ejecuta múltiples veces la aplicación y se promedia el resultado. También se sobrepone una curva ideal suponiendo escalamiento ideal como en el caso anterior.
+Se detecta cuantas unidades de procesamiento hay en el sistema y se realizan pruebas utilizando más unidades incrementalmente. Se utiliza una y luego se itera hasta utilizar todas,
+se ejecuta múltiples veces la aplicación y se promedia el resultado. También se sobrepone una curva ideal suponiendo escalamiento ideal como en el caso anterior.
 
 \bigskip
 
-Utilizando la información anterior, se calcula el porcentaje de ejecución en serie y en paralelo. Con esta información se calculan tambien los limites según leyes de {\it Amdalah} y {\it Gustafson} para los procesadores disponibles y para un número grande como para visualizar el caso de poseer infinitas unidades de cómputo.
+Utilizando la información anterior, se calcula el porcentaje de ejecución en serie y en paralelo. Con esta información se calculan también los limites según leyes de {\it Amdalah} y
+{\it Gustafson} para los procesadores disponibles y para un número grande como para visualizar el caso de poseer infinitas unidades de cómputo.
 
 \bigskip
 
-Se recompila la aplicación con información extra de depuración y se obtiene información del perfil de ejecución. Se detallan las funciones, las líneas de código y el {\it assembler} implementado por las mismas.
+Se recompila la aplicación con información extra de depuración y se obtiene información del perfil de ejecución. Se detallan las funciones, las líneas de código y el
+{\it assembler} implementado por las mismas.
 
 \section{Diseño de Alto Nivel}
 
 El diseño de la infrastructura refleja la interacción manual con el sistema. 
 Se depende de la presencia de herramientas de línea de comando, del programa a analizar en particular, y de \LaTeX.
-Esto se resume en la Figura \ref{fig:hotspot-hld}
+Estos componentes se detallan en la Figura \ref{fig:hotspot-hld}.
 
 \begin{figure}[H]
 \begin{center}
@@ -1321,6 +1296,17 @@ El lenguaje utilizado {\tt Python 2.7.6}, publicado en {\it Python Software Foun
 El repositorio de código también se encuentra disponible \footnote{\href{https://github.com/moreandres/hotspot}{https://github.com/moreandres/hotspot}}.
 La licencia del código fuente es GPLv2. Se reutilizan librerías como {\tt matplotlib.pyplot} \cite{matplotlib} y {\tt numpy} \cite{numpy} para gráficar los resultados obtenidos durante las pruebas de rendimiento.
 
+\subsection{Archivos}
+
+Una vez instalado el paquete en el sistema, cualquier modificación es posible ya que se utiliza un lenguaje interpretado. 
+Como referencia rápida, la ubicación de los archivos suele ser: \\ {\tt /usr/local/lib/python2.7/dist-packages/hotspot-0.0.2-py2.7.egg}.
+
+\begin{description}
+\item[Lógica Principal]: La lógica que obtiene información para ser incluida en el reporte se puede encontrar en {\tt hotspot/hotspot.py}.
+\item[Plantilla del Reporte]: La plantilla \LaTeX que contiene el formato del reporte se puede encontrar en {\tt config/hotspot.tex}.
+\item[Configuración]: Un archivo de configuración de ejemplo puede encontrarse en {\tt config/hotspot.cfg}.
+\end{description}
+
 \subsection{Configuración}
 
 El listado \ref{lst:hotspot-help} muestra la pantalla de ayuda de la infrastructura.
@@ -1340,7 +1326,6 @@ optional arguments:
   --debug, -d           enable verbose logging
 
 Check https://github.com/moreandres/hotspot for details.
-$ hotspot
 \end{lstlisting}
 
 \bigskip
@@ -1391,7 +1376,7 @@ Las consideraciones generales tenidas en cuenta en todas las secciones fueron la
 \item[Explicación breve del objetivo de la sección y/o gráficos:] Esto permite entender rápidamente la información de cada sección.
 \item[Inclusión de líneas de tendencía y comportamiento ideal en gráficos:] Esto permite una rápida comparación con el escenario ideal.
 \item[Referencias a material de consulta:] Esto permite ahondar en detalles en caso de ser necesario.
-\item[Utilización del inglés:] Esto permite compartir los resultados fácilmente entre grupos de trabajos distribuídos en el mundo.
+\item[Utilización del inglés:] Esto permite compartir los resultados fácilmente entre grupos de trabajos distribuídos internacionalmente.
 \end{description}
 
 \subsection{Consideraciones Particulares}
@@ -1433,7 +1418,8 @@ Esto permite entender el grado de optimización que ya posee un programa en mate
 
 \subsubsection{Escalabilidad}
 
-Se incluyen gráficos resumiendo la escalabilidad del programa al aumento el tamaño del problema y también por separado la cantidad de unidades de cómputo. Esto permite entender el grado de optimización del programa.
+Se incluyen gráficos resumiendo la escalabilidad del programa al aumento el tamaño del problema y también por separado la cantidad de unidades de cómputo. 
+Esto permite entender el grado de optimización del programa.
 
 \bigskip
 
@@ -1442,7 +1428,8 @@ Este dato es importante para entender el tope de mejora posible.
 
 \subsubsection{Perfil de Ejecución}
 
-Se incluye información sobre las funciones y líneas de código más usadas del programa durante su ejecución. Esto nos focaliza explícitamente los futuros esfuerzos de optimización, ya que garantiza un alto impacto global.
+Se incluye información sobre las funciones y líneas de código más usadas del programa durante su ejecución. 
+Esto nos focaliza explícitamente los futuros esfuerzos de optimización, ya que garantiza un alto impacto global.
 
 \bigskip
 
@@ -1454,11 +1441,13 @@ Se listan también cuellos de botella, junto con el código de ensamblador respe
 
 \subsubsection{Bajo Nivel}
 
-Se incluye el reporte de vectorización emitido por el compilador. Nos permite comprobar si todos los ciclos dentro del código fuente están siendo vectorizados. En caso negativo, se muestra información relevante de la razón.
+Se incluye el reporte de vectorización emitido por el compilador. Nos permite comprobar si todos los ciclos dentro del código fuente están siendo vectorizados. 
+En caso negativo, se muestra información relevante de la razón.
 
 \bigskip
 
-Se incluye además el reporte de contadores de {\it hardware} relacionados con el rendimiento de la unidad de procesamiento. Aunque requiere un entendimiento avanzado de la arquitectura del sistema \cite{hennessy}, muchos problemas pueden ser identificados con esta información.
+Se incluye además el reporte de contadores de {\it hardware} relacionados con el rendimiento de la unidad de procesamiento. 
+Aunque requiere un entendimiento avanzado de la arquitectura del sistema \cite{hennessy}, muchos problemas pueden ser identificados con esta información.
 
 \subsubsection{Referencias}
 
@@ -1596,6 +1585,7 @@ Esto implica que los ciclos de cómputos no están siendo vectorizados, desaprov
 \end{enumerate}
 
 El reporte generado por la infrastructura puede consultarse en el apéndice \ref{example-matrix}.
+Una comparación de rendimiento de diferentes algoritmos de multiplicación de matrices puede encontrarse en \cite{mm-tool}.
 
 \subsection{Transmisión de Calor en 2 Dimensiones}
 
@@ -1817,7 +1807,7 @@ Algunas conclusiones que pueden obtenerse al ejecutar la infrastructura desarrol
 
 \bigskip
 
-El reporte generado en bruto puede consultarse en el apéndice \ref{example-mandel}.
+El reporte generado puede consultarse en el apéndice \ref{example-mandel}.
 
 \chapter{Conclusiones y Trabajo Futuro} \label{Conclusiones y Trabajo Futuro}
 
@@ -1847,16 +1837,19 @@ reportes de rendimiento.
 
 Se desarrolló como estaba planeado una infrastructura de soporte que permite a un desarrollador especialista en el dominio de un problema obtener rápidamente información cuantitativa del comportamiento de un programa {\it OpenMP}, incluyendo utilización del recurso y cuellos de botella para dirigir los esfuerzos de optimización.
 
+\bigskip
+
+La infrastructura fue construída sobre los comandos que un desarrollador utilizaría. Realizar cualquier modificación es entonces trivial para contemplar nuevas herramientas
+o agregar nuevas secciones en los reportes generados como etapa final.
+
 \section{Trabajo Futuro}
 
 Las posibilidades de extensión de esta infrastructura son muchas, cada sección del reporte final puede incluir información más detallada o utilizar otras herramientas. En particular la sección de contadores de {\it hardware} solo contiene una lista de contadores generalizada para cualquier arquitectura; si se asume una arquitectura dada, se puede fácilmente proveer información más especifica y por lo tanto más útil.
 
 \bigskip
 
-La utilización de estas ideas en una aplicación del mundo real es materia
-pendiente, otra posibilidad es re-implementar desde cero alguna aplicación
-científica en colaboración con algún grupo de investigación y realizar
-varios ciclos de optimización para validar su utilidad.
+La utilización de estas ideas en una aplicación del mundo real es materia pendiente, otra posibilidad es re-implementar desde cero alguna aplicación
+científica en colaboración con algún grupo de investigación y realizar varios ciclos de optimización para validar su utilidad.
 
 \bigskip
 
