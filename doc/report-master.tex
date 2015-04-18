@@ -109,7 +109,7 @@ La siguiente lista enumera las diferentes publicaciones realizadas durante el cu
 \item Comparación de Implementaciones de una Operación BLAS. Reporte técnico realizado como parte del curso {\it Programación GPU de Propósito General} dictado por la Dra {\it Margarita Amor}.
 \item Sección {\it Intel Cluster Ready} e {\it Intel Cluster Checker} en el libro {\it Programming Intel Xeon Phi}. Intel Press. 2013 \cite{xeonphi}.
 \item Reseña del Libro {\it Intel Xeon Phi Coprocessor High Performance Programming} - JCS\&T Vol 13 N 2 Octubre 2013 \footnote{\href{http://journal.info.unlp.edu.ar/journal/journal36/papers/JCST-Oct13-BR1.pdf}{JCS\&T Vol. 13 No. 2}}.
-\item Articulo {\it Lessons Learned from Contrasting BLAS Kernel Implementations} - XIII Workshop Procesamiento Distribuido y Paralelo (WPDP), 2013 \cite{lessons}.
+\item Artículo {\it Lessons Learned from Contrasting BLAS Kernel Implementations} - XIII Workshop Procesamiento Distribuido y Paralelo (WPDP), 2013 \cite{lessons}.
 \end{enumerate}
 
 Las publicaciones realizadas pueden encontrarse en el apéndice \ref{contributions}.
@@ -129,7 +129,7 @@ En base al problema y a los objetivos establecidos previamente, la metodología 
 
 \section{Estructura}
 
-El resto del documento se estructura de la siguiente forma:
+El resto del documento se estructura de la siguiente manera:
 
 \begin{itemize}
 \item Capitulo \ref{Estado del Arte}: revisa el estado del arte de los temas incluidos.
@@ -138,6 +138,8 @@ El resto del documento se estructura de la siguiente forma:
 \item Capitulo \ref{Casos de Aplicacion}: aplica la solución a casos de estudio.
 \item Capítulo \ref{Conclusiones y Trabajo Futuro}: concluye reflejando los objetivos y proponiendo trabajo futuro.
 \item Apéndice \ref{examples}: muestra los reportes completos de los casos de aplicación.
+\item Apéndice \ref{contributions}: contiene las publicaciones realizadas.
+
 \end{itemize}
 
 \chapter{Estado del Arte} \label{Estado del Arte}
@@ -1030,6 +1032,11 @@ El análisis requiere la recopilación de datos relevantes al rendimiento sobre 
 
 La optimización temprana sin tener en cuenta datos cuantitativos puede implicar que un esfuerzo importante no tenga impacto alguno en el resultado global del tiempo de ejecución de un programa.
 
+\subsubsection{Implementación Teórica de Algoritmos}
+
+La implementación directa de un algoritmo matemático puede garantizar su correctitud pero no su eficiencia durante su ejecución. La reutilización de librerías de dominio público ofrecidas por
+los fabricantes es siempre preferida ya que garantizan calidad con un mínimo esfuerzo de aprender como utilizarlas correctamente.
+
 \section{Infrastructura de Soporte}
 
 Los problemas usuales durante el análisis de rendimiento listados anteriormente reflejan la necesidad de utilizar soporte automátíco para la ejecución de pruebas de rendimiento, la recopilación de métricas relevantes y la generación de un reporte con gráficos comparativos e información de contexto. Los siguientes requerimientos son los necesarios para una infrastructura de análisis de rendimiento.
@@ -1462,38 +1469,239 @@ Esto permite a los usuarios del reporte conocer más de los puntos relevantes de
 
 Este capítulo contiene casos de estudio mostrando los resultados de aplicar la infraestructura desarrollada a aplicaciones de cómputo de alto rendimiento conocidas.
 
+\section{Sistema de Prueba}
+
+La configuración del sistema obtenida es la correcta teniendo en cuenta que las pruebas fueron realizadas sobre {\it hardware} virtualizado. La identificación de la memoria, procesador,
+placa madre y almacenamiento pueden ser utilizados para buscar información de rendimiento publicada oficialmente por cada fabricante.
+
+\bigskip
+
+La identificación del {\it software} disponible en el sistema permite ser más específicos al comparar los resultados obtenidos.
+
+\bigskip
+
+La información de línea base de rendimiento obtenida luego de ejecutar el conjunto de pruebas de rendimiento contenido dentro de HPCC nos permite correlacionar núcleos de computo
+conocidos contra los dominantes en nuestro programa bajo análisis.
+
 \section{Código de Prueba}
 
-Esta sección incluye los resultados obtenidos al aplicar la infrastructura a núcleos de cómputo de prueba.
+Esta sección incluye una revisión de los resultados específicos obtenidos al aplicar la infrastructura a códigos de prueba.
 
 \subsection{Multiplicación de Matrices}
 
-La multiplicación de matrices es una operación fundamental en múltiples campos de aplicación científica como la resolución de ecuaciones lineales y la representación de grafos y espacios dimensionales. Por ello existe abundante material sobre el tema. Tomando como ejemplo una implementación utilizando OpenMP \footnote{\href{http://blog.speedgocomputing.com/2010/08/parallelizing-matrix-multiplication.html}{http://blog.speedgocomputing.com/2010/08/parallelizing-matrix-multiplication.html}.}.
+La multiplicación de matrices es una operación fundamental en diversos campos de aplicación científica como la resolución de ecuaciones lineales y la representación de grafos y espacios dimensionales. Por ello existe abundante material sobre el tema. Tomando como ejemplo una implementación utilizando OpenMP \footnote{\href{http://blog.speedgocomputing.com/2010/08/parallelizing-matrix-multiplication.html}{http://blog.speedgocomputing.com/2010/08/parallelizing-matrix-multiplication.html}.}. El código utilizado se muestra continuación en el listado \ref{lst:matrix}, la configuración del caso de prueba en el listado \ref{lst:cfg-matrix}.
+
+\bigskip
+
+\begin{lstlisting}[caption={Código de Multiplicación de Matrices},label={lst:matrix}]
+#include <stdlib.h>
+#include <stdio.h>
+
+int main()
+{
+  int size = 1024;
+  if (getenv("N"))
+    size = atoi(getenv("N"));
+
+  float *a = malloc(sizeof(float) * size * size);
+  float *b = malloc(sizeof(float) * size * size);
+  float *c = malloc(sizeof(float) * size * size);
+  
+  int i, j, k;
+
+  for (i = 0; i < size; ++i) {
+    for (j = 0; j < size; ++j) {
+      a[i+j*size] = (float) (i + j);
+      b[i+j*size] = (float) (i - j);
+      c[i+j*size] = 0.0f;
+    }
+  }
+
+#pragma omp parallel for shared(a,b,c) 
+  for (i = 0; i < size; ++i) {
+    for (j = 0; j < size; ++j) {
+      for (k = 0; k < size; ++k) {
+	c[i+j*size] += a[i+k*size] * b[k+j*size];
+      }
+    }
+  }
+
+  return 0;
+}
+\end{lstlisting}
+
+\bigskip
+
+\begin{lstlisting}[caption={Caso de Prueba de Multiplicación de Matrices},label={lst:cfg-matrix}]
+# hotspot configuration file
+[hotspot]
+range=1024,2048,256
+cflags=-O3 -Wall -Wextra
+build=CFLAGS='{0}' make
+clean=make clean
+run=OMP_NUM_THREADS={0} N={1} ./{2}
+count=8
+\end{lstlisting}
 
 \bigskip
 
 El reporte de rendimiento nos demuestra lo siguiente:
 
 \begin{enumerate}
-\item El caso de prueba es muy estable, con una desviación estandar mucho menor a 1.
-\item Las optimizaciones que realiza el compilador demuestran un impacto importante en el tiempo de ejecución.
-\item Los tiempos de ejecución al escalar el problema descubren un pico que posiblemente implique un error de implementación de algoritmo.
-\item Los tiempos de ejecución al incrementar las unidades de cómputo revelan un problema ya que no muestra mejoras constantes.
-\item Se estima un 75\% de paralelismo, con una mejora teórica máxima de 3.5 veces sin escalar el tamaño del problema si utilizamos el mismo algoritmo.
-\item El cuello de botella se localiza en el código que obtiene el valor parcial de un elemento de la matriz resultante.
-\item No hay lecturas ni escrituras al disco, por lo que no se está utilizando memoria virtual.
-\item El cuello de botella principal utiliza la instrucción {\tt add}, la cual no es vectorial.
-\item Las vectorizaciones no son realizadas exitosamente por el compilador en ningún ciclo dentro del código.
-\end{enumerate}
 
-\bigskip
+\item El caso de prueba es muy estable, con una desviación estandar mucho menor a 1.
+
+\smallskip
+
+Esto implica que el tamaño de los datos de entrada son apropiados para realizar un análisis de rendimiento sin introducir datos aleatorios de ejecución.
+
+\item Las optimizaciones que realiza el compilador demuestran un impacto importante en el tiempo de ejecución.
+
+\smallskip
+
+Esto implica que las optimizaciones automáticas realizadas por el compilador encuentran en el código oportunidades claras de optimización.
+
+\item Los tiempos de ejecución al escalar el problema descubren un pico que posiblemente implique un error de implementación de algoritmo.
+
+\item Los tiempos de ejecución al incrementar las unidades de cómputo revelan un problema ya que no muestra mejoras constantes.
+
+\item Se estima un 75\% de paralelismo, con una mejora teórica máxima de 3.5 veces sin escalar el tamaño del problema si utilizamos el mismo algoritmo.
+
+\smallskip
+
+Los últimos tres items muestran que la implementación del código no está optimizada para los recursos de cómputo disponibles. 
+
+En este caso es recomendable la revisión de publicaciones en el tema y la reutilización de librerías ya optimizadas.
+
+\item El cuello de botella se localiza en el código que obtiene el valor parcial de un elemento de la matriz resultante.
+
+\item No hay lecturas ni escrituras al disco, por lo que no se está rendimiento al utilizar memoria virtual.
+
+\smallskip
+
+Esto implica que el tamaño elegido de problema puede ser cálculado integramente utilizando la memoria principal.
+
+\item El cuello de botella principal utiliza la instrucción {\tt add}, la cual no es vectorial.
+
+\smallskip
+
+Esto implica que el código no está siendo totalmente vectorizado, desaprovechando la capacidad de cómputo disponible.
+
+\item Las vectorizaciones no son realizadas exitosamente por el compilador en ningún ciclo dentro del código.
+
+\smallskip
+
+Esto implica que los ciclos de cómputos no están siendo vectorizados, desaprovechando la capacidad de cómputo disponible.
+
+\end{enumerate}
 
 El reporte generado por la infrastructura puede consultarse en el apéndice \ref{example-matrix}.
 
 \subsection{Transmisión de Calor en 2 Dimensiones}
 
 Otro problema interesante es la simulación de transferencia de calor en un plano bidimensional.
-Se utiliza una grilla donde cada celda transfiere calor a sus vecinos en una serie finita de ciclos simulando el paso del tiempo \footnote{\href{http://www.rblasch.org/studies/cs580/pa5/\#Source+Code-N100AC}{http://www.rblasch.org/studies/cs580/pa5/\#Source+Code-N100AC}.}.
+Se utiliza una grilla donde cada celda transfiere calor a sus vecinos en una serie finita de ciclos simulando el paso del tiempo \footnote{\href{http://www.rblasch.org/studies/cs580/pa5/\#Source+Code-N100AC}{http://www.rblasch.org/studies/cs580/pa5/\#Source+Code-N100AC}.}. El código utilizado es incluido a continuación en el listado \ref{lst:heat}, la configuración del caso de prueba en el listado \ref{lst:cfg-heat}.
+
+\bigskip
+
+\begin{lstlisting}[caption={Código de Transmisión de Calor en 2 Dimensiones},label={lst:heat}]
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+#define CRESN   302		/* x, y resolution */
+#define RESN    300
+#define MAX_COLORS 8
+#define MAX_HEAT  20.0
+
+double solution[2][CRESN][CRESN], diff_constant;
+int cur_gen, next_gen;
+
+double sim_time, final = 10000.0, time_step = 0.1, diff = 10000.0;
+
+void compute_one_iteration();
+void setup();
+
+int main()
+{
+  final = 1024;
+  if (getenv("N"))
+    final = atoi(getenv("N"));
+
+  int temp;
+
+  setup ();
+
+  for (sim_time = 0; sim_time < final; sim_time += time_step)
+    {
+      compute_one_iteration (sim_time);
+      temp = cur_gen;
+      cur_gen = next_gen;
+      next_gen = temp;
+    }
+
+  return 0;
+}
+
+void setup()
+{
+  int i, j;
+
+#pragma omp parallel for shared(solution) private(i,j)
+  for (i = 0; i < CRESN; i++)
+    for (j = 0; j < CRESN; j++)
+      solution[0][i][j] = solution[1][i][j] = 0.0;
+
+  cur_gen = 0;
+  next_gen = 1;
+  diff_constant = diff * time_step / ((float) RESN * (float) RESN);
+}
+
+void compute_one_iteration()
+{
+  int i, j;
+  /* set boundary values */
+  for (i = 0; i < CRESN; i++)
+    {
+      if (i < 256 || i > 768)
+	solution[cur_gen][i][0] = solution[cur_gen][i][1];
+      else
+	solution[cur_gen][i][0] = MAX_HEAT;
+    }
+  for (i = 0; i < CRESN; i++)
+    {
+      solution[cur_gen][i][CRESN - 1] = solution[cur_gen][i][CRESN - 2];
+    }
+  for (i = 0; i < CRESN; i++)
+    {
+      solution[cur_gen][0][i] = solution[cur_gen][1][i];
+      solution[cur_gen][CRESN - 1][i] = solution[cur_gen][CRESN - 2][i];
+    }
+  /* corners ? */
+
+#pragma omp parallel for shared(solution,cur_gen,next_gen,diff_constant) private(i,j)
+  for (i = 1; i <= RESN; i++)
+    for (j = 1; j <= RESN; j++)
+      solution[next_gen][i][j] = solution[cur_gen][i][j] +
+	(solution[cur_gen][i + 1][j] +
+	 solution[cur_gen][i - 1][j] +
+	 solution[cur_gen][i][j + 1] +
+	 solution[cur_gen][i][j - 1] -
+	 4.0 * solution[cur_gen][i][j]) * diff_constant;
+}
+\end{lstlisting}
+
+\bigskip
+
+\begin{lstlisting}[caption={Caso de Prueba de Distribución de Calor en 2 Dimensiones},label={lst:cfg-heat}]
+[hotspot]
+range=16384,32768,1024
+cflags=-O3 -Wall -Wextra
+build=CFLAGS='{0}' make
+clean=make clean
+run=OMP_NUM_THREADS={0} N={1} ./{2}
+count=8
+\end{lstlisting}
 
 \bigskip
 
@@ -1515,7 +1723,85 @@ El reporte generado por la infrastructura puede consultarse en el apéndice \ref
 \subsection{Conjunto de {\it Mandelbrot}}
 
 Los conjuntos de {\it Mandelbrot} resultan de un cálculo de una secuencia de operaciones sobre números complejos que no tienden a infinito.
-Si se supone que los componentes real y complejo corresponden a las coordenadas de un gráfico de dos dimensiones, las imágenes resultantes simulan figuras fractales \cite{mandel}. 
+Si se supone que los componentes real y complejo corresponden a las coordenadas de un gráfico de dos dimensiones, las imágenes resultantes simulan figuras fractales \cite{mandel}.
+El código utilizado se incluye a continuación en el listado \ref{lst:mandel}, la configuración utilizada para el caso de prueba en el listado \ref{lst:cfg-mandel}.
+
+\bigskip
+
+\begin{lstlisting}[caption={Código de Conjunto de Mandelbrot},label={lst:mandel}]
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <assert.h>
+
+#define X_RESN 1024
+#define Y_RESN 1024
+#define X_MIN -2.0
+#define X_MAX 2.0
+#define Y_MIN -2.0
+#define Y_MAX 2.0
+
+typedef struct complextype
+{
+  float real, imag;
+} Compl;
+
+int main()
+{
+  int i, j, k;
+  Compl z, c;
+  float lensq, temp;
+  int iters;
+  int res[X_RESN][Y_RESN];
+
+  iters = 1024;
+  if (getenv("N"))
+    iters = atoi(getenv("N"));
+
+#pragma omp parallel for shared(res, iters) private(i, j, z, c, k, temp, lensq)
+  for (i = 0; i < Y_RESN; i++)
+    for (j = 0; j < X_RESN; j++)
+      {
+	z.real = z.imag = 0.0;
+	c.real = X_MIN + j * (X_MAX - X_MIN) / X_RESN;
+	c.imag = Y_MAX - i * (Y_MAX - Y_MIN) / Y_RESN;
+	k = 0;
+
+	do
+	  {
+	    temp = z.real * z.real - z.imag * z.imag + c.real;
+	    z.imag = 2.0 * z.real * z.imag + c.imag;
+	    z.real = temp;
+	    lensq = z.real * z.real + z.imag * z.imag;
+	    k++;
+	  }
+	while (lensq < 4.0 && k < iters);
+
+	if (k >= iters)
+	  res[i][j] = 0;
+	else
+	  res[i][j] = 1;
+
+      }
+
+  assert(res[0][0]);
+
+  return 0;
+}
+\end{lstlisting}
+
+\bigskip
+
+\begin{lstlisting}[caption={Caso de Prueba de Conjunto de Mandelbrot},label={lst:cfg-mandel}]
+[hotspot]
+range=16384,32768,1024
+cflags=-O3 -Wall -Wextra
+build=CFLAGS='{0}' make
+clean=make clean
+run=OMP_NUM_THREADS={0} N={1} ./{2}
+count=8
+\end{lstlisting}
 
 \bigskip
 
@@ -1599,23 +1885,35 @@ Por último, aunque la generación de un documento portable en formato PDF es si
 
 \section{Estudio de Multiplicación de Matrices}
 
+Estudio de Multiplicación de Matrices. Reporte Técnico. Realizado como parte del curso {\it Programación en Clusters} dictado por el Dr {\it Fernando Tinetti} \cite{mm-tool}.
+
 \includepdf[frame=true, pages=-, scale=0.75, pagecommand={}]{CaseStudyOnMatrixMultiplication.pdf}
 
 \section{\it Optimizing Latency in Beowulf Clusters}
+
+Artículo {\it Optimizing Latency in Beowulf Clusters}. HPC Latam 2012 \cite{latency}.
 
 \includepdf[frame=true, pages=-, scale=0.75, pagecommand={}]{v15n3p03.pdf}
 
 \section{Comparación de Implementaciones de una Operación BLAS}
 
+Comparación de Implementaciones de una Operación BLAS. Reporte técnico realizado como parte del curso {\it Programación GPU de Propósito General} dictado por la Dra {\it Margarita Amor}.
+
 \includepdf[frame=true, pages=-, scale=0.75, pagecommand={}]{sspr.pdf}
 
 \section{Contribuciones en el Libro {\it Programming Intel Xeon Phi}}
 
+Agradecimiento incluído de los autores por el borrador de los capítulos sobre {\it Intel Cluster Checker} e {\it Intel Cluster Ready}.
+
 \section{Reseña del Libro {\it Intel Xeon Phi Coprocessor High Performance Programming}}
+
+Reseña del Libro {\it Intel Xeon Phi Coprocessor High Performance Programming} - JCS\&T Vol 13 N 2 Octubre 2013 \footnote{\href{http://journal.info.unlp.edu.ar/journal/journal36/papers/JCST-Oct13-BR1.pdf}{JCS\&T Vol. 13 No. 2}}.
 
 \includepdf[frame=true, pages=-, scale=0.75, pagecommand={}]{JCST-Oct13-BR1.pdf}
 
 \section{{\it Lessons Learned from Contrasting BLAS Kernel Implementations}}
+
+Artículo {\it Lessons Learned from Contrasting BLAS Kernel Implementations} - XIII Workshop Procesamiento Distribuido y Paralelo (WPDP), 2013 \cite{lessons}.
 
 \includepdf[frame=true, pages=-, scale=0.75, pagecommand={}]{sspr-paper.pdf}
 
