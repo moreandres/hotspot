@@ -15,22 +15,12 @@
  address = {San Francisco, CA, USA},
 } 
 
-@article{latency,
-  title={Optimizing Latency in Beowulf Clusters},
-  author={Garabato, Rafael and More, Andr{\'e}s and Rosales, Victor},
-  journal={CLEI Electronic Journal},
-  volume={15},
-  number={3},
-  pages={3--3},
-  year={2012},
-  publisher={Centro Latinoamericano de Estudios en Inform{\'a}tica}
-}
-
 @techreport{mm-tool,
     author = {{Andres More}},
     title = {{A Case Study on High Performance Matrix Multiplication}},
     url = {https://code.google.com/p/mm-matrixmultiplicationtool/},
-    year = {2008}
+    year = {2008},
+    institution = {Universidad Nacional de La Plata},
 }
 
 @book{is-parallel-programming-hard,
@@ -54,7 +44,8 @@
     institution = {University of Tennessee},
     month = may,
     title = {{MPI}: A {Message-Passing} Interface Standard},
-    year = {1994}
+    year = {1994},
+    author = {Message Passing Interface Forum}
 }
 
 @manual{openmp-api,
@@ -69,7 +60,8 @@
 @techreport{tinetti,
     author = {{Fernando G. Tinetti}},
     title = {{Cómputo Paralelo en Redes Locales de Computadoras}},
-    year = {2004}
+    year = {2004},
+    institution = {Universidad Nacional de La Plata}
 }
 
 @article{gprof,
@@ -102,6 +94,8 @@
 	year          = {2009},
 	month         = {March},
 	number        = {248966-018},
+        series = {1},
+        publisher = {Intel Press},
 }
 
 @techreport{memory,
@@ -109,7 +103,8 @@
     month = nov,
     title = {{What Every Programmer Should Know About Memory}},
     url = {http://people.redhat.com/drepper/cpumemory.pdf},
-    year = {2007}
+    year = {2007},
+    institution = {Red Hat},
 }
 
 @techreport{gregg,
@@ -117,7 +112,8 @@
     month = feb,
     title = {{Linux Performance Analysis and Tools}},
     url = {http://es.slideshare.net/brendangregg/linux-performance-analysis-and-tools},
-    year = {2013}
+    year = {2013},
+    institution = {Joyent},
 }
 
 @book{patterns,
@@ -133,6 +129,7 @@
  author = {Margalef, Tom\`{a}s and Jorba, Josep and Morajko, Oleg and Morajko, Anna and Luque, Emilio},
  chapter = {Different approaches to automatic performance analysis of distributed applications},
  title = {Performance analysis and grid computing},
+ booktitle = {Performance analysis and grid computing},
  editor = {Getov, Vladimir and Gerndt, Michael and Hoisie, Adolfy and Malony, Allen and Miller, Barton},
  year = {2004},
  isbn = {1-4020-7693-2},
@@ -349,31 +346,19 @@
     year = {1979}
 }
   
-@electronic{hpl,
+@techreport{hpl,
     address = {http://www.netlib.org/benchmark/hpl/},
     author = {Petitet, A. and Whaley, R. C. and Dongarra, Jack and Cleary, A.},
-    title = {{HPL} - A Portable Implementation of the {High-Performance} Linpack Benchmark for {Distributed-Memory} Computers}
-}
-
-@Article{matplotlib,
-  Author    = {Hunter, J. D.},
-  Title     = {Matplotlib: A 2D graphics environment},
-  Journal   = {Computing In Science \& Engineering},
-  Volume    = {9},
-  Number    = {3},
-  Pages     = {90--95},
-  abstract  = {Matplotlib is a 2D graphics package used for Python
-  for application development, interactive scripting, and
-  publication-quality image generation across user
-  interfaces and operating systems.},
-  publisher = {IEEE COMPUTER SOC},
-  year      = 2007
+    title = {{HPL} - A Portable Implementation of the {High-Performance} Linpack Benchmark for {Distributed-Memory} Computers},
+    institution = {University of Tennessee},
+    year = {2008},
 }
 
 @TECHREPORT{hpcc,
     author = {Piotr Luszczek and Jack J. Dongarra and David Koester and Rolf Rabenseifner and Bob Lucas and Jeremy Kepner and John Mccalpin and David Bailey and Daisuke Takahashi},
     title = {{Introduction to the HPC Challenge Benchmark Suite}},
-    year = {2005}
+    year = {2005},
+    institution = {.},
 }  
 
 @article{latency,
@@ -409,7 +394,8 @@
     isbn = {0471624896},
     publisher = {Wiley},
     title = {An Introduction to Numerical Analysis},
-    url = {http://www.amazon.com/exec/obidos/redirect?tag=citeulike07-20\&path=ASIN/0471624896}
+    url = {http://www.amazon.com/exec/obidos/redirect?tag=citeulike07-20\&path=ASIN/0471624896},
+    year = {1989},
 }
 
 @article{conway,
@@ -464,3 +450,13 @@
  address = {Piscataway, NJ, USA},
  keywords = {NumPy, Python, Python, NumPy, scientific programming, numerical computations, programming libraries, numerical computations, programming libraries, scientific programming},
 } 
+
+@book{mklbook,
+    title={Intel Math Kernel Library. Reference Manual},
+    publisher={Intel Corporation},
+    city={Santa Clara},
+    country={USA},
+    isbn={630813-054US},
+    year={2009},
+    author={Intel Corporation},
+}

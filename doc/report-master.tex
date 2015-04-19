@@ -48,7 +48,12 @@ Este trabajo revisa la construcción de una infraestructura que simplifica el an
 
 \bigskip
 
-En particular, este trabajo contribuye con un generador automático de reportes de rendimiento para aplicaciones de cómputo de altas prestaciones utilizando tecnología {\it OpenMP} sobre sistemas {\it GNU/Linux}.
+La infrastructura brinda información de contexto sobre un programa y el sistema donde se ejecuta. Esto incluye su comportamiento al incrementar las únidades de cómputo o el tamaño del problema,
+el perfil de ejecución, sus cuellos de botella y la utilización de los recursos disponibles.
+
+\bigskip
+
+En particular, este trabajo contribuye entonces con un generador automático de reportes de rendimiento para aplicaciones de cómputo de altas prestaciones utilizando tecnología {\it OpenMP} sobre sistemas {\it GNU/Linux}.
 
 \end{abstract}
 
@@ -71,19 +76,28 @@ Estas cuestiones resultan en un tiempo reducido de análisis de resultados e imp
 \bigskip
 
 Con mayor impacto que en otras áreas de la computación, el código optimizado correctamente puede ejecutarse órdenes de magnitud mejor que una implementación directa \cite{mm-tool}. 
-Además, se utiliza programación en paralelo para obtener una mejor utilización de la capacidad de cómputo disponible; aumentando por lo tanto la complejidad de implementación, depuración y
-optimización \cite{is-parallel-programming-hard}.
+Esto implica que invertir en optimización de un programa puede tener un retorno interesante a largo plazo si las simulaciones a realizar son demasiadas.
+
+\bigskip
+
+Se suele utiliza programación en paralelo para obtener una mejor utilización de la capacidad de cómputo disponible; aumentando por lo tanto la complejidad de implementación, depuración y
+optimización con la que el experto en el dominio necesita trabajar en el día a día \cite{is-parallel-programming-hard}.
 
 \bigskip
 
 Frecuentemente el proceso de optimización termina siendo hecho de modo {\it ad-hoc}, sin conocimiento pleno de las herramientas disponibles y sus capacidades, y sin la utilización de
 información cuantitativa para dirigir los esfuerzos de optimización. Es incluso frecuente la implementación directa de algoritmos en lugar de la utilización de librerías ya disponibles,
-optimizadas profundamente y con correctitud comprobada.
+optimizadas profundamente y con correctitud garantizada \cite{mklbook}.
 
 \section{Objetivos}
 
 La propuesta principal consiste en el desarrollo de una infraestructura de soporte para el análisis de aplicaciones de cómputo de altas prestaciones.
 Este trabajo se realiza como extensión al trabajo final {\it Herramientas para el Soporte de Análisis de Rendimiento} de la Especialización en Cómputo de Altas Prestaciones y Tecnología Grid.
+
+\bigskip
+
+El problema a resolver es simplificar la compleja tarea de realizar un análisis de rendimiento sobre programas de simulación y cálculo científico. El análisis implica la ejecución repetitiva
+de varios casos de prueba bajo diferentes condiciones, además de la aplicación de múltiples herramientas para analizar el comportamiento y la utilización de los recursos disponibles.
 
 \bigskip
 
@@ -125,13 +139,15 @@ En base al problema y a los objetivos establecidos previamente, la metodología 
 El resto del documento se estructura de la siguiente manera:
 
 \begin{itemize}
-\item Capitulo \ref{Estado del Arte}: revisa el estado del arte de los temas incluidos.
-\item Capitulo \ref{Descripcion del Problema}: describe el problema a resolver.
-\item Capitulo \ref{Propuesta de Solucion}: muestra la propuesta de solución.
-\item Capitulo \ref{Casos de Aplicacion}: aplica la solución a casos de estudio.
-\item Capítulo \ref{Conclusiones y Trabajo Futuro}: concluye reflejando los objetivos y proponiendo trabajo futuro.
+\item Capitulo \ref{Estado del Arte}: revisa el estado del arte de los temas incluídos dentro del análisis de rendimiento: paralelismo, leyes fundamentales, métricas, técnicas de análisis,
+herramientas de soporte y pruebas de rendimiento.
+\item Capitulo \ref{Descripcion del Problema}: describe la cuestión a resolver como parte de esta tesis. Los problemas usuales del propio análisis, métodos de optimización a soportar, y una
+discusión de como debería ser una infrastructura de soporte.
+\item Capitulo \ref{Propuesta de Solucion}: muestra la propuesta de solución. El procedimiento general propuesto, los comandos a utilizar, y la arquitectura y diseño de la solución implementada junto con una descripción de las diferentes secciones generadas por la herramienta en el reporte final.
+\item Capitulo \ref{Casos de Aplicacion}: aplica la solución a casos de estudio. Se incluyen los resultados de tres ejemplos.
+\item Capítulo \ref{Conclusiones y Trabajo Futuro}: concluye reflejando los objetivos y proponiendo líneas de trabajo futuro. 
 \item Apéndice \ref{examples}: muestra los reportes completos de los casos de aplicación.
-\item Apéndice \ref{contributions}: contiene las publicaciones realizadas.
+\item Apéndice \ref{contributions}: contiene las publicaciones realizadas durante el transcurso de la carrera.
 
 \end{itemize}
 
@@ -340,10 +356,10 @@ A continuación se introducen algunas de las más utilizadas para cómputo de al
 y posteriormente algunos detalles específicos e instancias de sus datos de salida para ser utilizados a manera de ejemplo.
 
 \begin{table}[H]
-    \caption{Benchmarks}
+    \caption{Pruebas de Rendimiento}
     \centering
     \begin{tabular}{|l|l|l|}\hline
-      {\bf Benchmark} & {\bf Componente} & {\bf Descripción} \\ \hline
+      {\bf Nombre} & {\bf Componente} & {\bf Descripción} \\ \hline
       STREAM & Memoria & Ancho de banda sostenido \\ \hline
       Linpack & Procesador & Operaciones de punto flotante \\ \hline
       IMB Ping Pong & Red & Latencia/Ancho de banda de red \\ \hline
@@ -1007,6 +1023,18 @@ La optimización temprana sin tener en cuenta datos cuantitativos puede implicar
 
 La implementación directa de un algoritmo matemático puede garantizar su correctitud pero no su eficiencia durante su ejecución. La reutilización de librerías de dominio público ofrecidas por
 los fabricantes es siempre preferida ya que garantizan eficiencia con un mínimo esfuerzo de aprender como utilizarlas correctamente.
+
+\subsection{Métodos de Optimización}
+
+Los métodos usuales de optimización de un programa que ya utiliza un algoritmo adecuado son usualmente los siguientes:
+
+\begin{description}
+\item[Código:] se analiza el código fuente para mejorar la predicción de saltos, realizar {\it inlining} de rutinas muy utilizadas, alinear código y realizar {\it unrolling} de ciclos para posibilitar vectorización.
+\item[Ejecución:] se analiza el código a nivel de ensamblador para comprobar el uso de instrucciones livianas o vectoriales, y además tratando de reducir el uso de registros.
+\item[Memoria:] se analiza las estructuras de datos para incrementar la tasa de transferencia a memoria, minimizar fallas de cache, alinear datos y mejorar la localidad del acceso a los mismos.
+\item[Precarga:] se analiza el uso de instrucciones de {\it hardware} para precargar datos en cache cuando los algoritmos predictivos no son suficientes.
+\item[Punto Flotante:] se considera el relajamiento de las reglas de redondeo y representación según los estándares, intercambiando un mayor error acumulado por mejor velocidad de procesamiento
+\end{description}
 
 \section{Infrastructura de Soporte}
 
@@ -1871,30 +1899,42 @@ Por último, aunque la generación de un documento portable en formato PDF es si
 \section{Propagación de Calor en 2 Dimensiones} \label{example-heat2d}
 \includepdf[frame=true, pages=-, scale=0.75, pagecommand={}]{heat2d.pdf}
 
-\section{Mandel} \label{example-mandel}
+\section{Conjunto de Mandelbrot} \label{example-mandel}
 \includepdf[frame=true, pages=-, scale=0.75, pagecommand={}]{mandel.pdf}
 
 \chapter{Contribuciones} \label{contributions}
 
-\section{Estudio de Multiplicación de Matrices}
+\section{Reportes Técnicos}
+
+\subsection{Estudio de Multiplicación de Matrices}
 
 Estudio de Multiplicación de Matrices. Reporte Técnico. Realizado como parte del curso {\it Programación en Clusters} dictado por el Dr {\it Fernando Tinetti} \cite{mm-tool}.
 
 \includepdf[frame=true, pages=-, scale=0.75, pagecommand={}]{CaseStudyOnMatrixMultiplication.pdf}
 
-\section{\it Optimizing Latency in Beowulf Clusters}
-
-Artículo {\it Optimizing Latency in Beowulf Clusters}. HPC Latam 2012 \cite{latency}.
-
-\includepdf[frame=true, pages=-, scale=0.75, pagecommand={}]{v15n3p03.pdf}
-
-\section{Comparación de Implementaciones de una Operación BLAS}
+\subsection{Comparación de Implementaciones de una Operación BLAS}
 
 Comparación de Implementaciones de una Operación BLAS. Reporte técnico realizado como parte del curso {\it Programación GPU de Propósito General} dictado por la Dra {\it Margarita Amor}.
 
 \includepdf[frame=true, pages=-, scale=0.75, pagecommand={}]{sspr.pdf}
 
-\section{Contribuciones en el Libro {\it Programming Intel Xeon Phi}}
+\section{Artículos en Conferencias}
+
+\subsection{\it Optimizing Latency in Beowulf Clusters}
+
+Artículo {\it Optimizing Latency in Beowulf Clusters}. HPC Latam 2012 \cite{latency}.
+
+\includepdf[frame=true, pages=-, scale=0.75, pagecommand={}]{v15n3p03.pdf}
+
+\section{{\it Lessons Learned from Contrasting BLAS Kernel Implementations}}
+
+Artículo {\it Lessons Learned from Contrasting BLAS Kernel Implementations} - XIII Workshop Procesamiento Distribuido y Paralelo (WPDP), 2013 \cite{lessons}.
+
+\includepdf[frame=true, pages=-, scale=0.75, pagecommand={}]{sspr-paper.pdf}
+
+\section{Libros}
+
+\subsection{Contribuciones en el Libro {\it Programming Intel Xeon Phi}}
 
 Agradecimiento incluído de los autores por el borrador de los capítulos sobre {\it Intel Cluster Checker} e {\it Intel Cluster Ready}.
 
@@ -1903,11 +1943,5 @@ Agradecimiento incluído de los autores por el borrador de los capítulos sobre 
 Reseña del Libro {\it Intel Xeon Phi Coprocessor High Performance Programming} - JCS\&T Vol 13 N 2 Octubre 2013 \footnote{\href{http://journal.info.unlp.edu.ar/journal/journal36/papers/JCST-Oct13-BR1.pdf}{JCS\&T Vol. 13 No. 2}}.
 
 \includepdf[frame=true, pages=-, scale=0.75, pagecommand={}]{JCST-Oct13-BR1.pdf}
-
-\section{{\it Lessons Learned from Contrasting BLAS Kernel Implementations}}
-
-Artículo {\it Lessons Learned from Contrasting BLAS Kernel Implementations} - XIII Workshop Procesamiento Distribuido y Paralelo (WPDP), 2013 \cite{lessons}.
-
-\includepdf[frame=true, pages=-, scale=0.75, pagecommand={}]{sspr-paper.pdf}
 
 \end{document}
