@@ -26,7 +26,7 @@
 \renewcommand{\tablename}{Tabla}
 
 \title{Universidad Nacional de La Plata\\Facultad de Informática\\ \bigskip
-{\large Tesis presentada para obtener el grado de \\}  Magister en Cómputo de Altas Prestaciones\\ \bigskip
+{\large Tesis presentada para obtener el grado de \\}  Magíster en Cómputo de Altas Prestaciones\\ \bigskip
   Infraestructura para el Análisis de Rendimiento}
 
 \author{
@@ -48,7 +48,7 @@ Este trabajo revisa la construcción de una infraestructura que simplifica el an
 
 \bigskip
 
-La infrastructura brinda información de contexto sobre un programa y el sistema donde se ejecuta. Esto incluye su comportamiento al incrementar las únidades de cómputo o el tamaño del problema,
+La infraestructura brinda información de contexto sobre un programa y el sistema donde se ejecuta. Esto incluye su comportamiento al incrementar las unidades de cómputo o el tamaño del problema,
 el perfil de ejecución, sus cuellos de botella y la utilización de los recursos disponibles.
 
 \bigskip
@@ -108,7 +108,7 @@ de cuellos de botella.
 
 \section{Contribuciones}
 
-La siguiente lista enumera las diferentes publicaciones realizadas durante el cursado del magister y el desarrollo de la tesis.
+La siguiente lista enumera las diferentes publicaciones realizadas durante el cursado del magíster y el desarrollo de la tesis.
 
 \begin{enumerate}
 \item Estudio de Multiplicación de Matrices. Reporte Técnico. Realizado como parte del curso {\it Programación en Clusters} dictado por el Dr {\it Fernando Tinetti} \cite{mm-tool}.
@@ -139,10 +139,10 @@ En base al problema y a los objetivos establecidos previamente, la metodología 
 El resto del documento se estructura de la siguiente manera:
 
 \begin{itemize}
-\item Capitulo \ref{Estado del Arte}: revisa el estado del arte de los temas incluídos dentro del análisis de rendimiento: paralelismo, leyes fundamentales, métricas, técnicas de análisis,
+\item Capitulo \ref{Estado del Arte}: revisa el estado del arte de los temas incluidos dentro del análisis de rendimiento: paralelismo, leyes fundamentales, métricas, técnicas de análisis,
 herramientas de soporte y pruebas de rendimiento.
 \item Capitulo \ref{Descripcion del Problema}: describe la cuestión a resolver como parte de esta tesis. Los problemas usuales del propio análisis, métodos de optimización a soportar, y una
-discusión de como debería ser una infrastructura de soporte.
+discusión de como debería ser una infraestructura de soporte.
 \item Capitulo \ref{Propuesta de Solucion}: muestra la propuesta de solución. El procedimiento general propuesto, los comandos a utilizar, y la arquitectura y diseño de la solución implementada junto con una descripción de las diferentes secciones generadas por la herramienta en el reporte final.
 \item Capitulo \ref{Casos de Aplicacion}: aplica la solución a casos de estudio. Se incluyen los resultados de tres ejemplos.
 \item Capítulo \ref{Conclusiones y Trabajo Futuro}: concluye reflejando los objetivos y proponiendo líneas de trabajo futuro. 
@@ -299,7 +299,7 @@ A la hora de tomar decisiones, éstas deben estar basadas en datos concretos, ya
 En el caso de tener problemas de desviación en los resultados medidos, es aconsejable obtener un gran número de muestras y utilizar un valor promedio para asegurarse de evitar errores de
 medición tanto como sea posible. También es preferible aumentar el tamaño del problema a resolver, o la definición de los resultados, para ejercitar por más tiempo y tener así un resultado 
 más estable.
-Suponiendo una distribución normal de resultados, se suele controlar que haya menos de 3 desviaciones estandar de diferencia. 
+Suponiendo una distribución normal de resultados, se suele controlar que haya menos de 3 desviaciones estándar de diferencia. 
 Se busca que la mayoría de los resultados queden cerca de su promedio, como muestra la Figura \ref{fig:deviation}.
 
 \begin{figure}[H]
@@ -1191,18 +1191,18 @@ $ gcc -Wall -Wextra -O3 --report-loop
 
 \section{Infraestructura}
 
-El procedimiento anterior se implementó como una infrastructura automática de generacion de reportes de rendimiento denominada 
+El procedimiento anterior se implementó como una infraestructura automática de generación de reportes de rendimiento denominada 
 {\tt hotspot} \footnote{El proyecto {\tt hotspot} está disponible en \href{https://github.com/moreandres/hotspot}{https://github.com/moreandres/hotspot}}.
 
 \bigskip
 
-La automatización se comporta del mismo modo que un usuario realizando un procedimiento sistemático de analisis de rendimiento.
+La automatización se comporta del mismo modo que un usuario realizando un procedimiento sistemático de análisis de rendimiento.
 Es decir que ejecuta utilidades del sistema como {\tt gcc}, {\tt make}, {\tt prof}, {\tt gprof}, {\tt pidstat} para obtener la información relevante.
 \LaTeX se utiliza para la generación del reporte final.
 
 \bigskip
 
-Las limitaciones {\it a-priori} que posee la infrastructura son en materia de portabilidad y aplicación. Por el lado de la portabilidad, sólo se soportan sistemas {\it GNU/Linux recientes}, siendo necesarias el conjunto de utilidades de soporte especificadas anteriormente. Por el lado de la aplicación, sólo se soportan programan utilizando tecnología {\it OpenMP}.
+Las limitaciones {\it a-priori} que posee la infraestructura son en materia de portabilidad y aplicación. Por el lado de la portabilidad, sólo se soportan sistemas {\it GNU/Linux recientes}, siendo necesarias el conjunto de utilidades de soporte especificadas anteriormente. Por el lado de la aplicación, sólo se soportan programan utilizando tecnología {\it OpenMP}.
 
 \section{Teoría de Operación}
 
@@ -1210,12 +1210,12 @@ Esta sección detalla el funcionamiento de la infraestructura relacionando los c
 
 \subsection{Arquitectura}
 
-A grandes rasgos el usuario utiliza la infrastructura para analizar un programa.
-La infrastructura ejercita el programa múltiples veces hasta obtener la información necesaria para generar un reporte resumiendo los resultados.
+A grandes rasgos el usuario utiliza la infraestructura para analizar un programa.
+La infraestructura ejercita el programa múltiples veces hasta obtener la información necesaria para generar un reporte resumiendo los resultados.
 
 \bigskip
 
-La interacción con la infrastructura se detalla en la Figura \ref{fig:hotspot-seq} a continuación.
+La interacción con la infraestructura se detalla en la Figura \ref{fig:hotspot-seq} a continuación.
 
 \begin{figure}[H]
 \begin{center}
@@ -1257,7 +1257,7 @@ Se recompila la aplicación con información extra de depuración y se obtiene i
 
 \section{Diseño de Alto Nivel}
 
-El diseño de la infrastructura refleja la interacción manual con el sistema. 
+El diseño de la infraestructura refleja la interacción manual con el sistema. 
 Se depende de la presencia de herramientas de línea de comando, del programa a analizar en particular, y de \LaTeX.
 Estos componentes se detallan en la Figura \ref{fig:hotspot-hld}.
 
@@ -1272,14 +1272,14 @@ Estos componentes se detallan en la Figura \ref{fig:hotspot-hld}.
 \begin{enumerate}
 \item{\bf Configuración}: el componente lee información de configuración y la deja disponible para los demás componentes.
 \item{\bf Reporte}: el componente guarda valores de variables que luego utiliza para generar el reporte final. 
-\item{\bf Infrastructura}: este componente utiliza información de configuración para generar ejercitar el programa y generar un reporte con los resultados.
+\item{\bf Infraestructura}: este componente utiliza información de configuración para generar ejercitar el programa y generar un reporte con los resultados.
 \end{enumerate}
 
-La siguiente sección revisa más en detalle como la infrastructura está compuesta internamente.
+La siguiente sección revisa más en detalle como la infraestructura está compuesta internamente.
 
 \section{Diseño de Bajo Nivel}
 
-La infrastructura se implementa mediante una jerarquía de clases bastante simple, siendo fácil de extender de ser necesario.
+La infraestructura se implementa mediante una jerarquía de clases bastante simple, siendo fácil de extender de ser necesario.
 Las diferentes clases disponibles se muestran en la Figura \ref{fig:hotspot-lld}.
 
 \begin{figure}[H]
@@ -1298,7 +1298,7 @@ A continuación se listan la totalidad de las clases junto con una descripción 
 \item {\it Singleton}: Patrón de Instancia Única. Es utilizado por otras clases para garantizar que solo existe una instancia única.
 \item {\it Tags}: Almacenamiento de Palabras Clave. Es utilizado para guardar palabras clave que son utilizadas para generar el reporte.
 \item {\it Log}: Generador de Mensajes. Es utilizado para estructurar los mensajes durante la ejecución.
-\item {\it Config}: Administración de la Configuracion. Es utilizado para leer y consultar la configuración.
+\item {\it Config}: Administración de la Configuración. Es utilizado para leer y consultar la configuración.
 \item {\it Section}: Sección del Reporte. Es utilizado como base de otras secciones.
 \item {\it HardwareSection}: Descripción del {\it Hardware}. Es utilizado para obtener información del {\it hardware} disponible.
 \item {\it ProgramSection}: Detalles sobre el Programa. Es utilizado para obtener información del programa a analizar.
@@ -1337,7 +1337,7 @@ Como referencia rápida, la ubicación de los archivos suele ser: \\ {\tt /usr/l
 
 \subsection{Configuración}
 
-El listado \ref{lst:hotspot-help} muestra la pantalla de ayuda de la infrastructura.
+El listado \ref{lst:hotspot-help} muestra la pantalla de ayuda de la infraestructura.
 La herramienta de línea de comando toma como parámetro principal un archivo de configuración donde se describen las características del programa a analizar. 
 
 \begin{lstlisting}[language=bash, caption={Ayuda de {\tt hotspot}}, label={lst:hotspot-help}]
@@ -1926,7 +1926,7 @@ Artículo {\it Optimizing Latency in Beowulf Clusters}. HPC Latam 2012 \cite{lat
 
 \includepdf[frame=true, pages=-, scale=0.75, pagecommand={}]{v15n3p03.pdf}
 
-\section{{\it Lessons Learned from Contrasting BLAS Kernel Implementations}}
+\subsection{{\it Lessons Learned from Contrasting BLAS Kernel Implementations}}
 
 Artículo {\it Lessons Learned from Contrasting BLAS Kernel Implementations} - XIII Workshop Procesamiento Distribuido y Paralelo (WPDP), 2013 \cite{lessons}.
 
@@ -1938,7 +1938,7 @@ Artículo {\it Lessons Learned from Contrasting BLAS Kernel Implementations} - X
 
 Agradecimiento incluído de los autores por el borrador de los capítulos sobre {\it Intel Cluster Checker} e {\it Intel Cluster Ready}.
 
-\section{Reseña del Libro {\it Intel Xeon Phi Coprocessor High Performance Programming}}
+\subsection{Reseña del Libro {\it Intel Xeon Phi Coprocessor High Performance Programming}}
 
 Reseña del Libro {\it Intel Xeon Phi Coprocessor High Performance Programming} - JCS\&T Vol 13 N 2 Octubre 2013 \footnote{\href{http://journal.info.unlp.edu.ar/journal/journal36/papers/JCST-Oct13-BR1.pdf}{JCS\&T Vol. 13 No. 2}}.
 
