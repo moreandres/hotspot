@@ -1891,6 +1891,207 @@ Por último, aunque la generación de un documento portable en formato PDF es si
 
 \appendix
 
+\chapter{Salida de Ejemplo}
+
+\begin{lstlisting}[caption={Salida de Ejemplo},basicstyle=\tiny,label={lst:log}]
+20150330-170552: DEBUG: Logging to /home/amore/.hotspot/matrix/20150330-170552
+20150330-170552: INFO: Starting hotspot
+20150330-170552: INFO: Creating hardware section
+20150330-170553: DEBUG: Run which lshw >/dev/null && lshw -short -sanitize
+processor   Intel(R) Core(TM) i5-3320M CPU @ 2.60GHz
+...
+20150330-170553: DEBUG: Returning tags from hardware section
+20150330-170553: INFO: Creating program section
+20150330-170553: DEBUG: Returning tags from program section
+20150330-170553: INFO: Creating software section
+20150330-170553: DEBUG: Run which gcc >/dev/null && gcc --version for gcc (Ubuntu 4.8.2-19ubuntu1) 4.8.2
+Copyright (C) 2013 Free Software Foundation, Inc.
+...
+20150330-170553: DEBUG: Dumping /home/amore/.hotspot/matrix/software.1.output
+20150330-170553: DEBUG: Run /lib/x86_64-linux-gnu/libc.so.6 for GNU C Library
+Copyright (C) 2014 Free Software Foundation, Inc.
+...
+20150330-170553: DEBUG: Returning tags from software section
+20150330-170553: INFO: Creating sanity section
+20150330-170553: DEBUG: Dumping /home/amore/.hotspot/matrix/sanity.0.output
+20150330-170558: DEBUG: Run cd /home/amore/hotspot/tests/examples/matrix && CFLAGS='-O3' make
+ in 4.91553783417
+20150330-170558: DEBUG: Returning tags from sanity section
+20150330-170558: INFO: Creating footprint section
+20150330-170558: DEBUG: Dumping /home/amore/.hotspot/matrix/footprint.0.output
+20150330-170558: DEBUG: Run make clean && CFLAGS='-O3 -g' make for  in 0.0740978717804
+20150330-170558: DEBUG: Run file matrix for matrix: ELF 64-bit LSB  executable, x86-64,
+ in 0.00443410873413
+20150330-170558: DEBUG: Run which pahole >/dev/null && pahole matrix for struct _IO_FILE {
+	int                        _flags;               /*     0     4 */
+...
+20150330-170558: DEBUG: Footprint report completed
+20150330-170558: DEBUG: Returning tags from footprint section
+20150330-170558: INFO: Creating benchmark section
+20150330-170734: DEBUG: Run which mpirun >/dev/null && which hpcc >/dev/null && mpirun -np 2 `which hpcc`
+>>> cannot open file hpccinf.txt <<<
+...
+20150330-170734: DEBUG: System baseline completed
+20150330-170734: DEBUG: Returning tags from benchmark section
+20150330-170734: INFO: Creating workload section
+20150330-170738: DEBUG: Run cd /home/amore/hotspot/tests/examples/matrix && OMP_NUM_THREADS=2 N=1024 ./matrix
+ in 4.35692501068
+20150330-170738: INFO: Control 0 took 4.36 seconds
+20150330-170743: DEBUG: Run cd /home/amore/hotspot/tests/examples/matrix && OMP_NUM_THREADS=2 N=1024 ./matrix
+ in 5.14309000969
+20150330-170743: INFO: Control 1 took 5.14 seconds
+20150330-170748: DEBUG: Run cd /home/amore/hotspot/tests/examples/matrix && OMP_NUM_THREADS=2 N=1024 ./matrix
+ in 4.63894510269
+20150330-170748: INFO: Control 2 took 4.64 seconds
+20150330-170752: DEBUG: Run cd /home/amore/hotspot/tests/examples/matrix && OMP_NUM_THREADS=2 N=1024 ./matrix
+ in 4.29476809502
+20150330-170752: INFO: Control 3 took 4.29 seconds
+20150330-170757: DEBUG: Run cd /home/amore/hotspot/tests/examples/matrix && OMP_NUM_THREADS=2 N=1024 ./matrix
+ in 4.77419805527
+20150330-170757: INFO: Control 4 took 4.77 seconds
+20150330-170802: DEBUG: Run cd /home/amore/hotspot/tests/examples/matrix && OMP_NUM_THREADS=2 N=1024 ./matrix
+ in 5.09612584114
+20150330-170802: INFO: Control 5 took 5.10 seconds
+20150330-170807: DEBUG: Run cd /home/amore/hotspot/tests/examples/matrix && OMP_NUM_THREADS=2 N=1024 ./matrix
+ in 4.48241996765
+20150330-170807: INFO: Control 6 took 4.48 seconds
+20150330-170812: DEBUG: Run cd /home/amore/hotspot/tests/examples/matrix && OMP_NUM_THREADS=2 N=1024 ./matrix
+ in 5.05654096603
+20150330-170812: INFO: Control 7 took 5.06 seconds
+20150330-170812: INFO: Deviation: gmean 4.72 std 0.32
+20150330-170812: DEBUG: Plotted histogram
+20150330-170812: DEBUG: Returning tags from workload section
+20150330-170812: INFO: Creating scaling section
+20150330-170812: DEBUG: Run cd /home/amore/hotspot/tests/examples/matrix; make clean; CFLAGS='-O3 -Wall -Wextra' make for  in 0.0691559314728
+20150330-170817: DEBUG: Run cd /home/amore/hotspot/tests/examples/matrix && OMP_NUM_THREADS=2 N=1024 ./matrix
+ in 4.2927801609
+20150330-170817: INFO: Problem at 1024 took 4.29 seconds
+20150330-170821: DEBUG: Run cd /home/amore/hotspot/tests/examples/matrix && OMP_NUM_THREADS=2 N=1280 ./matrix
+ in 4.30518698692
+20150330-170821: INFO: Problem at 1280 took 4.31 seconds
+20150330-170831: DEBUG: Run cd /home/amore/hotspot/tests/examples/matrix && OMP_NUM_THREADS=2 N=1536 ./matrix
+ in 10.3319211006
+20150330-170831: INFO: Problem at 1536 took 10.33 seconds
+20150330-170842: DEBUG: Run cd /home/amore/hotspot/tests/examples/matrix && OMP_NUM_THREADS=2 N=1792 ./matrix
+ in 10.7062511444
+20150330-170842: INFO: Problem at 1792 took 10.71 seconds
+20150330-170932: DEBUG: Run cd /home/amore/hotspot/tests/examples/matrix && OMP_NUM_THREADS=2 N=2048 ./matrix
+ in 50.0601859093
+20150330-170932: INFO: Problem at 2048 took 50.06 seconds
+20150330-170932: DEBUG: Plotted problem scaling
+20150330-170932: DEBUG: Returning tags from scaling section
+20150330-170932: INFO: Creating threading section
+20150330-171042: DEBUG: Run OMP_NUM_THREADS=1 N=2048 ./matrix for  in 69.9276690483
+20150330-171042: INFO: Threads at 1 took 69.93 seconds
+20150330-171042: DEBUG: Dumping /home/amore/.hotspot/matrix/threading.1.output
+20150330-171132: DEBUG: Run OMP_NUM_THREADS=2 N=2048 ./matrix for  in 50.0171101093
+20150330-171132: INFO: Threads at 2 took 50.02 seconds
+20150330-171132: DEBUG: Computed scaling laws
+20150330-171132: DEBUG: Plotted thread scaling
+20150330-171132: DEBUG: Returning tags from threading section
+20150330-171132: INFO: Creating optimizations section
+20150330-171749: DEBUG: Run CFLAGS='-O0' make && OMP_NUM_THREADS=2 N=2048 ./matrix for  in 376.509689093
+20150330-171749: INFO: Optimizations at 0 took 376.51 seconds
+20150330-172025: DEBUG: Run CFLAGS='-O1' make && OMP_NUM_THREADS=2 N=2048 ./matrix for  in 156.686037064
+20150330-172025: INFO: Optimizations at 1 took 156.69 seconds
+20150330-172129: DEBUG: Run CFLAGS='-O2' make && OMP_NUM_THREADS=2 N=2048 ./matrix for  in 64.02125597
+20150330-172129: INFO: Optimizations at 2 took 64.02 seconds
+20150330-172220: DEBUG: Run CFLAGS='-O3' make && OMP_NUM_THREADS=2 N=2048 ./matrix for  in 50.6308100224
+20150330-172220: INFO: Optimizations at 3 took 50.63 seconds
+20150330-172220: DEBUG: Plotted optimizations
+20150330-172220: DEBUG: Returning tags from optimizations section
+20150330-172220: INFO: Creating profile section
+20150330-172311: DEBUG: Run CFLAGS='-O3 -g -pg' make && OMP_NUM_THREADS=2 N=2048 ./matrix && which gprof >/dev/null && gprof -l -b matrix
+Each sample counts as 0.01 seconds.
+...
+20150330-172311: DEBUG: Profiling report completed
+20150330-172311: DEBUG: Returning tags from profile section
+20150330-172311: INFO: Creating resources section
+20150330-172403: DEBUG: Run OMP_NUM_THREADS=2 N=2048 ./matrix& which pidstat >/dev/null && pidstat -s -r -d -u -h -p $! 1
+1427761393,1000,20581,199.00,0.00,0.00,199.00,0,0.00,0.00,65968,50424
+...
+20150330-172403: DEBUG: Resource usage plotting completed
+20150330-172403: DEBUG: Returning tags from resources section
+20150330-172403: INFO: Creating annotated section
+20150330-172540: DEBUG: Run CFLAGS='-O3 -g' make && which perf >/dev/null && echo "OMP_NUM_THREADS=2 N=2048  perf record -q -- ./matrix"
+...
+20150330-172540: DEBUG: Source annotation completed
+20150330-172540: DEBUG: Returning tags from annotated section
+20150330-172540: INFO: Creating vectorization section
+20150330-172540: DEBUG: Run CFLAGS='-O3 -ftree-vectorizer-verbose=2' make 2>&1 | grep -v "^$" for Analyzing loop at matrix.c:26
+matrix.c:26: note: not vectorized: multiple nested loops.
+...
+20150330-172540: DEBUG: Vectorization report completed
+20150330-172540: DEBUG: Returning tags from vectorization section
+20150330-172540: INFO: Creating counters section
+20150330-172924: DEBUG: Run which perf >/dev/null && N=2048 perf stat -r 3 ./matrix for 
+ Performance counter stats for './matrix' (3 runs):
+...
+20150330-172924: DEBUG: Hardware counters gathering completed
+20150330-172924: DEBUG: Showing counters section
+matrix.c:26: note: not vectorized: multiple nested loops.
+...
+20150330-172924: DEBUG: Returning tags from counters section
+20150330-172924: INFO: Generating report
+20150330-172924: DEBUG: Replacing macro amdalah with 2.32267
+20150330-172924: DEBUG: Replacing macro annotation with          :	#pragma omp parallel for shared(a,b,c) 
+         :	  for (i = 0; i < size; ++i) {
+...
+20150330-172924: DEBUG: Replacing macro average with 4.73038
+20150330-172924: DEBUG: Replacing macro build with CFLAGS='{0}' make
+20150330-172924: DEBUG: Replacing macro cflags with -O3 -Wall -Wextra
+20150330-172924: DEBUG: Replacing macro clean with make clean
+20150330-172924: DEBUG: Replacing macro compiler with gcc (Ubuntu 4.8.2-19ubuntu1) 4.8.2
+20150330-172924: DEBUG: Replacing macro cores with 2
+20150330-172924: DEBUG: Replacing macro count with 8
+20150330-172924: DEBUG: Replacing macro counters with 
+ Performance counter stats for './matrix' (3 runs):
+...
+20150330-172924: DEBUG: Replacing macro cwd with /home/amore/hotspot/tests/examples/matrix
+20150330-172924: DEBUG: Replacing macro distro with Ubuntu, 14.04, trusty
+20150330-172924: DEBUG: Replacing macro first with 1024
+20150330-172924: DEBUG: Replacing macro geomean with 4.71964
+20150330-172924: DEBUG: Replacing macro gustafson with 583.55915
+20150330-172924: DEBUG: Replacing macro hardware with memory      3953MiB System memory
+processor   Intel(R) Core(TM) i5-3320M CPU @ 2.60GHz
+...
+20150330-172924: DEBUG: Replacing macro host with ubuntu
+20150330-172924: DEBUG: Replacing macro hpcc-dgemm with 1.79842 GFlops
+20150330-172924: DEBUG: Replacing macro hpcc-fft with 2.03598 GFlops
+20150330-172924: DEBUG: Replacing macro hpcc-hpl with 0.00385463 TFlops
+20150330-172924: DEBUG: Replacing macro hpcc-ptrans with 1.8496 GBs
+20150330-172924: DEBUG: Replacing macro hpcc-random with 0.0523812 GUPs
+20150330-172924: DEBUG: Replacing macro hpcc-stream with 6.96329 MBs
+20150330-172924: DEBUG: Replacing macro hpcc-success with 1 None
+20150330-172924: DEBUG: Replacing macro increment with 256
+20150330-172924: DEBUG: Replacing macro last with 2048
+20150330-172924: DEBUG: Replacing macro libc with GNU C Library (Ubuntu EGLIBC 2.19-0ubuntu6.6) stable release version 2.19
+20150330-172924: DEBUG: Replacing macro log with /home/amore/.hotspot/matrix/20150330-170552
+20150330-172924: DEBUG: Replacing macro max with 5.14309
+20150330-172924: DEBUG: Replacing macro min with 4.29477
+20150330-172924: DEBUG: Replacing macro pahole with struct _IO_FILE {
+	int                        _flags;               /*     0     4 */
+...
+20150330-172924: DEBUG: Replacing macro parallel with 0.56946
+20150330-172924: DEBUG: Replacing macro platform with Linux-3.16.0-30-generic-x86_64-with-Ubuntu-14.04-trusty
+20150330-172924: DEBUG: Replacing macro profile with Flat profile:
+Each sample counts as 0.01 seconds.
+...
+20150330-172924: DEBUG: Replacing macro program with matrix
+20150330-172924: DEBUG: Replacing macro range with [1024, 1280, 1536, 1792]
+20150330-172924: DEBUG: Replacing macro resources with 1427761392,1000,20581,184.00,1.00,0.00,185.00,0,914.00,0.00,65968,50424,1.25
+...
+20150330-172924: DEBUG: Replacing macro run with OMP_NUM_THREADS={0} N={1} ./{2}
+20150330-172924: DEBUG: Replacing macro serial with 0.43054
+20150330-172924: DEBUG: Replacing macro stddev with 0.31849
+20150330-172924: DEBUG: Replacing macro strip with matrix: ELF 64-bit LSB  executable, x86-64, version 1 (SYSV), dynamically linked (uses shared libs)
+20150330-172924: DEBUG: Replacing macro timestamp with 20150330-170552
+20150330-172924: DEBUG: Replacing macro vectorizer with Analyzing loop at matrix.c:26
+matrix.c:26: note: not vectorized: multiple nested loops.
+...
+20150330-172925: INFO: Completed execution in 1412.88 seconds
+\end{lstlisting}
+
 \chapter{Reporte de Ejemplo} \label{examples}
 
 \section{Multiplicación de Matrices}  \label{example-matrix}
