@@ -131,7 +131,7 @@ En base al problema y a los objetivos establecidos previamente, la metodología 
 \item Identificar que tipos de gráficos y tablas pueden resumir la información obtenida de modo de facilitar su utilización.
 \item Dada una propuesta de procedimiento sistemático de análisis de rendimiento, automatizarlo y analizar potenciales mejoras de utilidad.
 \item Aplicar la infraestructura sobre núcleos de cómputo conocidos para poder focalizar los esfuerzos en la mejora del reporte.
-\item Documentación de la experiencia
+\item Documentación de la experiencia.
 \end{enumerate}
 
 \section{Estructura}
@@ -145,7 +145,8 @@ herramientas de soporte y pruebas de rendimiento.
 discusión de como debería ser una infraestructura de soporte.
 \item Capitulo \ref{Propuesta de Solucion}: muestra la propuesta de solución. El procedimiento general propuesto, los comandos a utilizar, y la arquitectura y diseño de la solución implementada junto con una descripción de las diferentes secciones generadas por la herramienta en el reporte final.
 \item Capitulo \ref{Casos de Aplicacion}: aplica la solución a casos de estudio. Se incluyen los resultados de tres ejemplos.
-\item Capítulo \ref{Conclusiones y Trabajo Futuro}: concluye reflejando los objetivos y proponiendo líneas de trabajo futuro. 
+\item Capítulo \ref{Conclusiones y Trabajo Futuro}: concluye reflejando aportes y proponiendo trabajo futuro. 
+\item Apéndice \ref{chapter:output}: incluye la salida en consola de la infrastructura.
 \item Apéndice \ref{examples}: muestra los reportes completos de los casos de aplicación.
 \item Apéndice \ref{contributions}: contiene las publicaciones realizadas durante el transcurso de la carrera.
 
@@ -994,9 +995,12 @@ altas prestaciones.
 
 \subsection{Problemas Usuales}
 
+Los desafíos usuales que se enfrentan durante el análisis de rendimiento de un programa son: interacción humana, manejo de herramientas, recopilación de datos y su representación resumida,
+optimización temprana e implementación teórica de algoritmos.
+
 \subsubsection{Interacción Humana}
 
-La interacción humana siempre es fuente de errores involuntarios, además de malgastar el tiempo de un investigador o desarrollador en tareas factibles de ser automatizadas. Usualmente una persona es requerida para ejecutar los programas, tabular los resultados y generar gráficos para su resumen.
+La interacción humana siempre es fuente de errores involuntarios, además de malgastar el tiempo de un investigador o desarrollador en tareas factibles de ser automatizadas. Usualmente una persona es requerida para ejecutar los programas, tabular los resultados y generar gráficos para su resumen. A continuación se detalla cada uno en particular.
 
 \bigskip
 
@@ -1033,7 +1037,7 @@ Los métodos usuales de optimización de un programa que ya utiliza un algoritmo
 \item[Ejecución:] se analiza el código a nivel de ensamblador para comprobar el uso de instrucciones livianas o vectoriales, y además tratando de reducir el uso de registros.
 \item[Memoria:] se analiza las estructuras de datos para incrementar la tasa de transferencia a memoria, minimizar fallas de cache, alinear datos y mejorar la localidad del acceso a los mismos.
 \item[Precarga:] se analiza el uso de instrucciones de {\it hardware} para precargar datos en cache cuando los algoritmos predictivos no son suficientes.
-\item[Punto Flotante:] se considera el relajamiento de las reglas de redondeo y representación según los estándares, intercambiando un mayor error acumulado por mejor velocidad de procesamiento
+\item[Punto Flotante:] se considera el relajamiento de las reglas de redondeo y representación según los estándares, intercambiando un mayor error acumulado por mejor velocidad de procesamiento.
 \end{description}
 
 \section{Infrastructura de Soporte}
@@ -1043,7 +1047,7 @@ Los problemas usuales durante el análisis de rendimiento listados anteriormente
 \subsection{Reusabilidad}
 
 La infastructura debe ser aplicable a un gran rango de programas, no requiriendo su modificación.
-Su instalación solo debe depender de la existencia previa de las mismas herramientas que un usuario podría ejecutar para obtener información relacionada al rendimiento de un programa. La infrastructura debe ser eficiente, no debe requerir ejecutar pruebas largas y tediosas cuando la información puede ser reusada.
+Su instalación solo debe depender de la existencia previa de las mismas herramientas que un usuario podría ejecutar para obtener información relacionada al rendimiento de un programa. La infrastructura debe ser eficiente, no debe requerir ejecutar pruebas largas y tediosas sin un objetivo concreto.
 
 \subsection{Configurabilidad}
 
@@ -1069,6 +1073,12 @@ Debe ser posible completar un reporte entre un día de trabajo y otro sin la int
 Este capítulo muestra la propuesta de solución, incluyendo el diseño de la misma a diferentes niveles.
 
 \section{Procedimiento}
+
+Un procedimiento de análisis de rendimiento debe ser iterativo de modo de garantizar un progreso continuo asociado a la cantidad de tiempo dedicado.
+Se propone entonces un proceso que empieza analizando las capacidades del sistema en uso, y luego incluye múltiples ciclos de recabado de resultados,
+identificación de cuellos de botella y la inclusión de alguna optimización para mejorar el rendimiento.
+
+\bigskip
 
 La Figura \ref{fig:procedure} muestra a grandes rasgos las etapas del proceso a automatizar.
 
@@ -1322,12 +1332,21 @@ A continuación se listan la totalidad de las clases junto con una descripción 
 La implementación se desarrolló sobre una plataforma {\it GNU/Linux}, utilizando la distribución {\tt Ubuntu 14.04.1 LTS}.
 El lenguaje utilizado {\tt Python 2.7.6}, publicado en {\it Python Software Foundation Package Index} como {\tt hotspot} versión 0.3.
 El repositorio de código también se encuentra disponible \footnote{\href{https://github.com/moreandres/hotspot}{https://github.com/moreandres/hotspot}}.
-La licencia del código fuente es GPLv2. Se reutilizan librerías como {\tt matplotlib.pyplot} \cite{matplotlib} y {\tt numpy} \cite{numpy} para gráficar los resultados obtenidos durante las pruebas de rendimiento.
+La licencia del código fuente es GPLv2 de modo de fomentar la colaboración de sus usuarios.
+
+\bigskip
+
+Se reutilizan librerías como {\tt matplotlib.pyplot} \cite{matplotlib} y {\tt numpy} \cite{numpy} para gráficar los resultados obtenidos durante las pruebas de rendimiento.
+El código fuente sigue convenciones estandares del lenguaje, el analizador estático {\tt pylint} da un puntaje de {\tt 8.4} sobre {\tt 10} en cuanto a buenas prácticas.
 
 \subsection{Archivos}
 
 Una vez instalado el paquete en el sistema, cualquier modificación es posible ya que se utiliza un lenguaje interpretado. 
 Como referencia rápida, la ubicación de los archivos suele ser: \\ {\tt /usr/local/lib/python2.7/dist-packages/hotspot-0.0.2-py2.7.egg}.
+
+\bigskip
+
+Los archivos más importantes según su contenido son los siguientes:
 
 \begin{description}
 \item[Lógica Principal]: La lógica que obtiene información para ser incluida en el reporte se puede encontrar en {\tt hotspot/hotspot.py}.
@@ -1362,7 +1381,7 @@ Entre las características necesarias se incluye la forma de compilar la aplicac
 
 \bigskip
 
-El archivo de configuración requerido se muestra en el listado \ref{lst:hotspot-config}.
+Un ejemplo del archivo de configuración requerido se muestra en el listado \ref{lst:hotspot-config}.
 
 \begin{lstlisting}[language=bash, caption={Configuración de {\tt hotspot}}, label={lst:hotspot-config}]
 # hotspot configuration file
@@ -1392,7 +1411,8 @@ count=16
 \section{Reporte Generado}
 
 A continuación se explica el contenido de cada sección del reporte generado en particular.
-En el Apéndice \ref{examples} se adjuntan ejemplos utilizando núcleos de cómputo conocidos.
+En el Apéndice \ref{examples} se adjuntan ejemplos utilizando núcleos de cómputo conocidos como la múltiplicación de matrices, 
+la distribución de calor en dos dimensiones y la generación de fractales.
 
 \subsection{Consideraciones Generales}
 
@@ -1411,7 +1431,8 @@ Las consideraciones generales tenidas en cuenta en todas las secciones fueron la
 
 \subsubsection{Resumen}
 
-El resumen incluído en la primer página introduce el reporte junto con información sobre la infrastructura utilizada y la ubicación de la información de ejecución.
+El resumen incluído en la primer página introduce el reporte junto con información sobre la infrastructura utilizada y la ubicación específica de la información de ejecución para su consulta
+de ser necesaria.
 
 \subsubsection{Contenido}
 
@@ -1419,20 +1440,24 @@ Contiene un índice de secciones en formato reducido de dos columnas con hiperv�
 
 \subsubsection{Programa}
 
-Se incluyen detalles sobre el programa bajo análisis. Esto permite recordar la versión del programa, la fecha y hora exacta del análisis, y los parámetros de entrada utilizados.
+Se incluyen detalles sobre el programa bajo análisis. Esto permite recordar la versión del programa, la fecha y hora exacta del análisis, y los parámetros de entrada utilizados con el mismo.
 
 \subsubsection{Capacidad del Sistema}
 
 Se incluyen detalles sobre la configuración de {\it hardware} y {\it software} del sistema.
+En cuanto a {\it hardware} se detallan cantidad de memoria, modelo de CPU, y además la descripción de los controladores de placa madre, almacenamiento y red existentes.
+En cuanto a {\it software} se detallan la versión del sistema operativo y su núcleo, junto con las versiones del compilador y librería principal del sistema predeterminados.
 Esto permite comparar los resultados contra sistemas similares, o validar que una distinta configuración impacta o no en la ejecución del programa.
 
 \bigskip
 
-Además se incluye información de referencia obtenida de la prueba de rendimiento {\it HPCC}. Esto permite rápidamente entender las capacidades del sistema en núcleos de cómputo conocidos.
+Además se incluye información de referencia obtenida de la prueba de rendimiento {\it HPCC}, detallando las pruebas individuales realizadas por la misma.
+Esto permite rápidamente entender las capacidades del sistema en núcleos de cómputo conocidos.
 
 \subsubsection{Carga de Trabajo}
 
-Se incluye información sobre el caso de prueba ejecutado. Se detalla el tamaño del mismo en memoria y la composición de sus estructuras ya que esto impacta directamente sobre la utilización de la jerarquía de memoria del sistema.
+Se incluye información sobre el caso de prueba ejecutado.
+Se detalla el tamaño del mismo en memoria y la composición de sus estructuras ya que esto impacta directamente sobre la utilización de la jerarquía de memoria del sistema.
 
 \bigskip
 
@@ -1447,11 +1472,11 @@ Esto permite entender el grado de optimización que ya posee un programa en mate
 \subsubsection{Escalabilidad}
 
 Se incluyen gráficos resumiendo la escalabilidad del programa al aumento el tamaño del problema y también por separado la cantidad de unidades de cómputo. 
-Esto permite entender el grado de optimización del programa.
+Se superpone el escalamiento ideal como punto de comparación. Esto permite entender el grado de optimización del programa.
 
 \bigskip
 
-Se estima la proporción paralelo/lineal del programa, y junto con ellas se calculan mejoras teóricas máximas bajo las leyes de {\it Amdalah} y {\it Gustafson}.
+Se estima la proporción paralelo/lineal del programa de los datos de escalabilidad, y junto con ello se calculan mejoras teóricas máximas bajo las leyes de {\it Amdalah} y {\it Gustafson}.
 Este dato es importante para entender el tope de mejora posible.
 
 \subsubsection{Perfil de Ejecución}
@@ -1461,7 +1486,7 @@ Esto nos focaliza explícitamente los futuros esfuerzos de optimización, ya que
 
 \bigskip
 
-Se incluyen gráficos sobre el uso de los recursos del sistema durante una ejecución del programa. Incluyendo utilización de CPU, memoria y lectura/escritura de disco.
+En una sección aparte se incluyen gráficos sobre el uso de los recursos del sistema durante una ejecución del programa. Incluyendo utilización de CPU, memoria y lectura/escritura de disco.
 
 \bigskip
 
@@ -1891,7 +1916,7 @@ Por último, aunque la generación de un documento portable en formato PDF es si
 
 \appendix
 
-\chapter{Salida de Ejemplo}
+\chapter{Salida de Ejemplo} \label{chapter:output}
 
 \begin{lstlisting}[caption={Salida de Ejemplo},basicstyle=\tiny,label={lst:log}]
 20150330-170552: DEBUG: Logging to /home/amore/.hotspot/matrix/20150330-170552
