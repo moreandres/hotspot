@@ -34,7 +34,7 @@
   Director: Dr Fernando G. Tinetti - {\tt fernando@lidi.info.unlp.edu.ar}
 }
 
-\date{Abril de 2015}
+\date{Mayo de 2015}
 
 \maketitle
 
@@ -44,7 +44,7 @@ En el área del cómputo de altas prestaciones las aplicaciones son construidas 
 
 \bigskip
 
-Este trabajo revisa la construcción de una infraestructura que simplifica el análisis de rendimiento; incluyendo su aplicación mediante casos de estudio como etapa de validación. El objetivo es facilitar la tarea evitando la tediosa recolección de datos relevantes de modo manual, permitiendo más tiempo de experimentación para la optimización propiamente dicha.
+Esta tesis de maestría revisa la construcción de una infraestructura que simplifica el análisis de rendimiento; incluyendo su aplicación mediante casos de estudio como etapa de validación. El objetivo es facilitar la tarea evitando la tediosa recolección de datos relevantes de modo manual, permitiendo más tiempo de experimentación para la optimización propiamente dicha.
 
 \bigskip
 
@@ -53,7 +53,7 @@ el perfil de ejecución, sus cuellos de botella y la utilización de los recurso
 
 \bigskip
 
-En particular, este trabajo contribuye entonces con un generador automático de reportes de rendimiento para aplicaciones de cómputo de altas prestaciones utilizando tecnología {\it OpenMP} sobre sistemas {\it GNU/Linux}.
+En particular, esta tesis de maestría contribuye entonces con un generador automático de reportes de rendimiento para aplicaciones de cómputo de altas prestaciones utilizando tecnología {\it OpenMP} sobre sistemas {\it GNU/Linux}.
 
 \end{abstract}
 
@@ -65,22 +65,26 @@ En particular, este trabajo contribuye entonces con un generador automático de 
 
 \chapter{Introducción}
 
-Este capítulo introduce el tema bajo estudio, definiendo los objetivos principales, las contribuciones logradas durante la investigación, y detallando la estructura del resto del documento.
+Esta tesis de maestría se realiza como extensión al Trabajo Final Integrador {\it Herramientas para el Soporte de Análisis de Rendimiento} de la Especialización en Cómputo de Altas Prestaciones y Tecnología Grid \footnote{\href{http://sedici.unlp.edu.ar/handle/10915/29858}{http://sedici.unlp.edu.ar/handle/10915/29858}}.
+
+\bigskip
+
+Este capítulo introduce el tema bajo estudio, definiendo los objetivos principales, las contribuciones logradas durante la investigación, y concluye detallando la estructura del resto del documento.
 
 \section{Motivación}
 
 En el área de cómputo de altas prestaciones (o {\it HPC}, por las siglas en inglés de {\it High Performance Computing}) los desarrolladores son los mismos especialistas del dominio del
- problema a resolver. Las rutinas más demandantes de cálculo son en su mayoría científicas y su gran complejidad hace posible su correcta implementación sólo por los mismos investigadores.
-Estas cuestiones resultan en un tiempo reducido de análisis de resultados e impactan directamente en la productividad de los grupos de investigación y desarrollo.
+ problema a resolver. Las rutinas más demandantes de cálculo son en su mayoría científicas y su gran complejidad y grado de especialización hace que los mismos investigadores del área de aplicación sea quienes las implementan.
+Estas cuestiones resultan en una inversión no trivial en el análisis de rendimiento que impacta directamente en la productividad de los grupos de investigación y desarrollo.
 
 \bigskip
 
 Con mayor impacto que en otras áreas de la computación, el código optimizado correctamente puede ejecutarse órdenes de magnitud mejor que una implementación directa \cite{mm-tool}. 
-Esto implica que invertir en optimización de un programa puede tener un retorno interesante a largo plazo si las simulaciones a realizar son demasiadas.
+Esto implica que invertir en optimización de un programa puede tener una ganancia interesante a largo plazo si las simulaciones a realizar son demasiadas.
 
 \bigskip
 
-Se suele utiliza programación en paralelo para obtener una mejor utilización de la capacidad de cómputo disponible; aumentando por lo tanto la complejidad de implementación, depuración y
+Se suele utilizar programación en paralelo para obtener una mejor utilización de la capacidad de cómputo disponible; aumentando por lo tanto la complejidad de implementación, depuración y
 optimización con la que el experto en el dominio necesita trabajar en el día a día \cite{is-parallel-programming-hard}.
 
 \bigskip
@@ -92,7 +96,6 @@ optimizadas profundamente y con correctitud garantizada \cite{mklbook}.
 \section{Objetivos}
 
 La propuesta principal consiste en el desarrollo de una infraestructura de soporte para el análisis de aplicaciones de cómputo de altas prestaciones.
-Este trabajo se realiza como extensión al trabajo final {\it Herramientas para el Soporte de Análisis de Rendimiento} de la Especialización en Cómputo de Altas Prestaciones y Tecnología Grid.
 
 \bigskip
 
@@ -115,7 +118,7 @@ La siguiente lista enumera las diferentes publicaciones realizadas durante el cu
 \item Artículo {\it Optimizing Latency in Beowulf Clusters}. HPC Latam 2012 \cite{latency}.
 \item Comparación de Implementaciones de una Operación BLAS. Reporte técnico realizado como parte del curso {\it Programación GPU de Propósito General} dictado por la Dra {\it Margarita Amor}.
 \item Sección {\it Intel Cluster Ready} e {\it Intel Cluster Checker} en el libro {\it Programming Intel Xeon Phi}. Intel Press. 2013 \cite{xeonphi}.
-\item Reseña del Libro {\it Intel Xeon Phi Coprocessor High Performance Programming} - JCS\&T Vol 13 N 2 Octubre 2013 \footnote{\href{http://journal.info.unlp.edu.ar/journal/journal36/papers/JCST-Oct13-BR1.pdf}{JCS\&T Vol. 13 No. 2}}.
+\item Reseña del Libro {\it Intel Xeon Phi Coprocessor High Performance Programming} - \href{http://journal.info.unlp.edu.ar/journal/journal36/papers/JCST-Oct13-BR1.pdf}{JCS\&T Vol. 13 No. 2}.
 \item Artículo {\it Lessons Learned from Contrasting BLAS Kernel Implementations} - XIII Workshop Procesamiento Distribuido y Paralelo (WPDP), 2013 \cite{lessons}.
 \end{enumerate}
 
@@ -139,22 +142,21 @@ En base al problema y a los objetivos establecidos previamente, la metodología 
 El resto del documento se estructura de la siguiente manera:
 
 \begin{itemize}
-\item Capitulo \ref{Estado del Arte}: revisa el estado del arte de los temas incluidos dentro del análisis de rendimiento: paralelismo, leyes fundamentales, métricas, técnicas de análisis,
+\item Capítulo \ref{Estado del Arte}: revisa el estado del arte de los temas incluidos dentro del análisis de rendimiento: paralelismo, leyes fundamentales, métricas, técnicas de análisis,
 herramientas de soporte y pruebas de rendimiento.
-\item Capitulo \ref{Descripcion del Problema}: describe la cuestión a resolver como parte de esta tesis. Los problemas usuales del propio análisis, métodos de optimización a soportar, y una
-discusión de como debería ser una infraestructura de soporte.
-\item Capitulo \ref{Propuesta de Solucion}: muestra la propuesta de solución. El procedimiento general propuesto, los comandos a utilizar, y la arquitectura y diseño de la solución implementada junto con una descripción de las diferentes secciones generadas por la herramienta en el reporte final.
-\item Capitulo \ref{Casos de Aplicacion}: aplica la solución a casos de estudio. Se incluyen los resultados de tres ejemplos.
+\item Capítulo \ref{Descripcion del Problema}: describe la problemática a resolver como parte de esta tesis. Los problemas usuales del propio análisis, métodos de optimización a soportar, y una discusión de cómo debería ser una infraestructura de soporte.
+\item Capítulo \ref{Propuesta de Solucion}: muestra la propuesta de solución. El procedimiento general propuesto, las herramientas a utilizar, y la arquitectura y diseño de la solución implementada junto con una descripción de las diferentes secciones generadas por la herramienta en el reporte final.
+\item Capítulo \ref{Casos de Aplicacion}: aplica la solución a casos de estudio. Se incluyen los resultados de tres ejemplos ejercitando núcleos de cómputo conocidos.
 \item Capítulo \ref{Conclusiones y Trabajo Futuro}: concluye reflejando aportes y proponiendo trabajo futuro. 
-\item Apéndice \ref{chapter:output}: incluye la salida en consola de la infrastructura.
+\item Apéndice \ref{chapter:output}: incluye los resultados de la infrastructura.
 \item Apéndice \ref{examples}: muestra los reportes completos de los casos de aplicación.
-\item Apéndice \ref{contributions}: contiene las publicaciones realizadas durante el transcurso de la carrera.
+\item Apéndice \ref{contributions}: contiene las publicaciones realizadas durante el transcurso del trabajo de tesis.
 
 \end{itemize}
 
 \chapter{Estado del Arte} \label{Estado del Arte}
 
-Este capítulo revisa el estado del arte de los temas relevantes a este trabajo.
+Este capítulo revisa el estado del arte de los temas relevantes a esta tesis de maestría.
 
 \section{Análisis de Rendimiento}\label{chapter:analysis}
 
@@ -986,7 +988,7 @@ Este capítulo introduce el problema a resolver.
 
 \section{Análisis de Rendimiento}
 
-Este trabajo trata entonces de simplificar la tarea de análisis de rendimiento. 
+Esta tesis de maestría trata entonces de simplificar la tarea de análisis de rendimiento. 
 
 \bigskip
 
@@ -1874,7 +1876,7 @@ empezar a optimizar. Las mejoras pueden ser no significativas si son realizadas 
 
 \bigskip
 
-Este trabajo soporta los primeros pasos de análisis de rendimiento para expertos del dominio de un problema científico utilizando computación de altas prestaciones. Se provee una metodología de uso de herramientas de soporte para principiantes, que puede ser utilizada como una lista de pasos resumidos para usuarios casuales, e incluso como referencia de consulta diaria para expertos.
+Esta tesis de maestría soporta los primeros pasos de análisis de rendimiento para expertos del dominio de un problema científico utilizando computación de altas prestaciones. Se provee una metodología de uso de herramientas de soporte para principiantes, que puede ser utilizada como una lista de pasos resumidos para usuarios casuales, e incluso como referencia de consulta diaria para expertos.
 
 \bigskip
 

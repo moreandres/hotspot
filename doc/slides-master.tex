@@ -1,0 +1,492 @@
+\documentclass{beamer}
+
+\mode<presentation>
+{
+  \usetheme{Warsaw}
+  \setbeamercovered{transparent}
+}
+
+\usepackage[spanish]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+\usepackage{graphics,tikz}
+\usepackage{graphicx}
+
+\title{Infraestructura para el Análisis de Rendimiento}
+
+\author{Alumno: Andrés More - Director: Dr Fernando G. Tinetti}
+\institute{Magíster en Cómputo de Altas Prestaciones\\Universidad Nacional de La Plata\\Facultad de Informática}
+
+\date{Abril de 2015}
+
+\begin{document}
+
+\logo{
+\includegraphics[width=1cm]{unlp.jpg}
+}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}
+  \frametitle{Contenido}
+  \tableofcontents
+\end{frame}
+
+\begin{frame}
+  \frametitle{Resumen}
+  \framesubtitle{Resumen}
+
+    \begin{itemize}
+  \item
+    Las aplicaciones son construidas por especialistas en el dominio del problema.
+  \item
+    Infrastructura que simplifica el análisis de rendimiento, permitiendo más tiempo de experimentación y análisis.
+  \item
+    Información sobre programa, sistema, comportamiento, escalamiento, perfil de ejecución, cuellos de botella.
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Introducción}
+  \framesubtitle{Motivación}
+
+    \begin{itemize}
+  \item
+    En HPC los desarrolladores son los especialistas del dominio.
+  \item
+    Menos tiempo de experimentacion y analisis debido a la necesidad de optimización.
+  \item
+    El codigo optimizado puede ejecutarse ordenes de magnitud mejor que una implemnentación directa.
+  \end{itemize}
+  
+\end{frame}
+
+\begin{frame}
+  \frametitle{Introducción}
+  \framesubtitle{Objetivos}
+
+    \begin{itemize}
+  \item
+    Desarrollo de una infrastructura de soporte para analisis de rendimiento.
+  \item
+    Sistematizar y simplificar la tarea de optimización.
+  \item
+    Un informe detallado con datos estadísticos, gráficos comparativos y cuellos de botella.
+  \end{itemize}
+  
+\end{frame}
+
+\begin{frame}
+  \frametitle{Introducción}
+  \framesubtitle{Contribuciones}
+
+    \begin{itemize}
+  \item
+    Reportes técnicos
+  \item
+    Articulos
+  \item
+    Libro
+  \end{itemize}
+  
+\end{frame}
+
+\begin{frame}
+  \frametitle{Introducción}
+  \framesubtitle{Metodología}
+
+    \begin{itemize}
+  \item
+    Analizar estado de arte y teoría.
+  \item
+    Formular procedimiento y automatizarlo.
+  \item
+    Documentación.
+  \end{itemize}
+  
+\end{frame}
+
+\section{Análisis de Rendimiento}
+
+\subsection{Definición}
+
+\begin{frame}
+  \frametitle{Análisis de Rendimiento}
+  \framesubtitle{Definición}
+
+    \begin{itemize}
+  \item
+    Definición
+  \item
+    Paralelismo
+  \item
+    Leyes de Escalamiento
+  \item
+    Métricas
+  \item
+    Técnicas de Análisis
+  \end{itemize}
+  
+\end{frame}
+
+\subsection{Paralelismo}
+
+\begin{frame}
+  \frametitle{Análisis de Rendimiento}
+  \framesubtitle{Paralelismo}
+
+    \begin{itemize}
+  \item
+    Definición
+  \item
+    Paralelismo
+  \item
+    Leyes de Escalamiento
+  \item
+    Métricas
+  \item
+    Técnicas de Análisis
+  \end{itemize}
+  
+\end{frame}
+
+\subsection{Leyes de Escalamiento}
+
+\begin{frame}
+  \frametitle{Análisis de Rendimiento}
+  \framesubtitle{Leyes de Escalamiento}
+
+    \begin{itemize}
+  \item
+    Definición
+  \item
+    Paralelismo
+  \item
+    Leyes de Escalamiento
+  \item
+    Métricas
+  \item
+    Técnicas de Análisis
+  \end{itemize}
+  
+\end{frame}
+
+\subsection{Métricas}
+
+\begin{frame}
+  \frametitle{Análisis de Rendimiento}
+  \framesubtitle{Métricas}
+
+    \begin{itemize}
+  \item
+    Definición
+  \item
+    Paralelismo
+  \item
+    Leyes de Escalamiento
+  \item
+    Métricas
+  \item
+    Técnicas de Análisis
+  \end{itemize}
+  
+\end{frame}
+
+\section{Herramientas}
+
+\subsection{Pruebas de Rendimiento}
+
+\begin{frame}
+  \frametitle{Herramientas}
+  \framesubtitle{Pruebas de Rendimiento}
+
+    \begin{itemize}
+  \item
+    STREAM
+  \item
+    Linpack
+  \item
+    Intel MPI Benchmarks
+  \item
+    HPC Challenge
+  \end{itemize}
+  
+\end{frame}
+
+\subsection{Utilización}
+
+\begin{frame}
+  \frametitle{Herramientas}
+  \framesubtitle{Utilización}
+
+    \begin{itemize}
+  \item
+    X
+  \item
+    Y
+  \item
+    Z
+  \end{itemize}
+  
+\end{frame}
+
+\subsection{Tiempo de Ejecución}
+
+\begin{frame}
+  \frametitle{Herramientas}
+  \framesubtitle{Tiempo de Ejecución}
+
+    \begin{itemize}
+  \item
+    X
+  \item
+    Y
+  \item
+    Z
+  \end{itemize}
+  
+\end{frame}
+
+\subsection{Perfil de Ejecución}
+
+\begin{frame}
+  \frametitle{Herramientas}
+  \framesubtitle{Perfil de Ejecución Funcional}
+
+    \begin{itemize}
+  \item
+    X
+  \item
+    Y
+  \item
+    Z
+  \end{itemize}
+  
+\end{frame}
+
+\begin{frame}
+  \frametitle{Herramientas}
+  \framesubtitle{Perfil de Ejecución Asistido por {\it Hardware}}
+
+    \begin{itemize}
+  \item
+    X
+  \item
+    Y
+  \item
+    Z
+  \end{itemize}
+  
+\end{frame}
+
+\subsection{Reporte de Vectorización}
+
+\begin{frame}
+  \frametitle{Herramientas}
+  \framesubtitle{Reporte de Vectorización}
+
+    \begin{itemize}
+  \item
+    X
+  \item
+    Y
+  \item
+    Z
+  \end{itemize}
+  
+\end{frame}
+
+\section{Descripción del Problema}
+
+\subsection{Análisis de Rendimiento}
+
+\begin{frame}
+  \frametitle{Herramientas}
+  \framesubtitle{Reporte de Vectorización}
+
+    \begin{itemize}
+  \item
+    X
+  \item
+    Y
+  \item
+    Z
+  \end{itemize}
+  
+\end{frame}
+
+\subsection{Infraestructura de Soporte}
+
+\begin{frame}
+  \frametitle{Herramientas}
+  \framesubtitle{Reporte de Vectorización}
+
+    \begin{itemize}
+  \item
+    X
+  \item
+    Y
+  \item
+    Z
+  \end{itemize}
+  
+\end{frame}
+
+\section{Propuesta de Solución}
+
+\subsection{Procedimiento}
+
+\begin{frame}
+  \frametitle{Herramientas}
+  \framesubtitle{Reporte de Vectorización}
+
+    \begin{itemize}
+  \item
+    X
+  \item
+    Y
+  \item
+    Z
+  \end{itemize}
+  
+\end{frame}
+
+\subsection{Infraestructura}
+
+\begin{frame}
+  \frametitle{Herramientas}
+  \framesubtitle{Reporte de Vectorización}
+
+    \begin{itemize}
+  \item
+    X
+  \item
+    Y
+  \item
+    Z
+  \end{itemize}
+  
+\end{frame}
+
+\subsection{Teoría de Operación}
+
+\begin{frame}
+  \frametitle{Herramientas}
+  \framesubtitle{Reporte de Vectorización}
+
+    \begin{itemize}
+  \item
+    X
+  \item
+    Y
+  \item
+    Z
+  \end{itemize}
+  
+\end{frame}
+
+\subsection{Diseño}
+
+\begin{frame}
+  \frametitle{Herramientas}
+  \framesubtitle{Reporte de Vectorización}
+
+    \begin{itemize}
+  \item
+    X
+  \item
+    Y
+  \item
+    Z
+  \end{itemize}
+  
+\end{frame}
+
+\subsection{Reporte Generado}
+
+\begin{frame}
+  \frametitle{Herramientas}
+  \framesubtitle{Reporte de Vectorización}
+
+    \begin{itemize}
+  \item
+    X
+  \item
+    Y
+  \item
+    Z
+  \end{itemize}
+  
+\end{frame}
+
+\section{Casos de Aplicación}
+
+\subsection{Sistema bajo Prueba}
+
+\begin{frame}
+  \frametitle{Herramientas}
+  \framesubtitle{Reporte de Vectorización}
+
+    \begin{itemize}
+  \item
+    X
+  \item
+    Y
+  \item
+    Z
+  \end{itemize}
+  
+\end{frame}
+
+\subsection{Código de Prueba}
+
+\begin{frame}
+  \frametitle{Herramientas}
+  \framesubtitle{Reporte de Vectorización}
+
+    \begin{itemize}
+  \item
+    X
+  \item
+    Y
+  \item
+    Z
+  \end{itemize}
+  
+\end{frame}
+
+\begin{frame}
+  \frametitle{Conclusiones y Trabajo Futuro}
+  \framesubtitle{Conclusiones}
+
+    \begin{itemize}
+  \item
+    X
+  \item
+    Y
+  \item
+    Z
+  \end{itemize}
+  
+\end{frame}
+
+\begin{frame}
+  \frametitle{Conclusiones y Trabajo Futuro}
+  \framesubtitle{Trabajo Futuro}
+
+    \begin{itemize}
+  \item
+    X
+  \item
+    Y
+  \item
+    Z
+  \end{itemize}
+  
+\end{frame}
+
+\end{document}
