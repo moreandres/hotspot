@@ -34,7 +34,7 @@
   Director: Dr Fernando G. Tinetti - {\tt fernando@lidi.info.unlp.edu.ar}
 }
 
-\date{Enero de 2016}
+\date{Marzo de 2016}
 
 \maketitle
 
@@ -75,12 +75,13 @@ Estas cuestiones resultan en una inversión no trivial en el análisis de rendim
 
 \bigskip
 
-Con mayor impacto que en otras áreas de la computación, el código optimizado correctamente puede ejecutarse órdenes de magnitud mejor que una implementación directa. Esto implica que invertir en optimización de un programa puede tener una ganancia interesante a largo plazo si las simulaciones a realizar son demasiadas.
+Con mayor impacto que en otras áreas de la computación, el código optimizado correctamente puede ejecutarse órdenes de magnitud mejor que una implementación directa \cite{gpu-myth}. Esto implica que invertir en optimización de un programa puede tener una ganancia interesante a largo plazo si las simulaciones a realizar son demasiadas.
 
 \bigskip
 
-Los investigadores suelen utilizar programación en paralelo para obtener una mejor utilización de la capacidad de cómputo disponible. Esto aumenta por lo tanto la complejidad de implementación, depuración y
-optimización con la que el experto en el dominio necesita trabajar en el día a día \cite{is-parallel-programming-hard}.
+Los investigadores suelen utilizar programación en paralelo para obtener una mejor utilización de la capacidad de cómputo disponible.
+\cite{emergingmulticore}. Esto aumenta por lo tanto la complejidad de implementación, depuración y
+optimización con la que el experto en el dominio necesita trabajar en el día a día \cite{is-parallel-programming-hard} \cite{massiveparallel}.
 
 \bigskip
 
@@ -158,7 +159,7 @@ Este capítulo revisa el estado del arte de los temas relevantes a esta tesis. N
 
 Esta sección introduce el concepto de rendimiento y teoría básica sobre su análisis; además revisa las herramientas disponibles para ello.
 
-\subsection{Definición}
+\subsection{Rendimiento}
 
 El rendimiento se caracteriza por la cantidad de trabajo de cómputo que se logra en comparación con la cantidad de tiempo y los recursos ocupados.
 El rendimiento debe ser evaluado entonces de forma cuantificable, utilizando alguna métrica en particular de modo de poder comparar relativamente dos sistemas o
@@ -211,6 +212,7 @@ En el caso de tener un $ 95\% $ de paralelismo, la mejora no puede ser mayor a $
 \bigskip
 
 En el caso de conocer los tiempos de ejecución para distinto número de procesadores, la porción serial/paralelo puede ser aproximada.
+En procesadores modernos, la mejora es afectada por la sincronización interna de las unidades de cómputo \cite{amdahlmulticore}.
 
 \subsubsection{Ley de {\it Gustafson}}
 
@@ -293,8 +295,11 @@ A la hora de tomar decisiones, éstas deben estar basadas en datos concretos, ya
 \bigskip
 
 En el caso de tener problemas de desviación en los resultados medidos, es aconsejable obtener un gran número de muestras y utilizar un valor promedio para asegurarse de evitar errores de
-medición tanto como sea posible. También es preferible aumentar el tamaño del problema a resolver, o la definición de los resultados, para ejercitar por más tiempo y tener así un resultado más estable.
-Suponiendo una distribución normal de resultados, se suele controlar que haya menos de 3 desviaciones estándar de diferencia como prueba de normalidad \cite{stddevbook}.
+medición tanto como sea posible. También es preferible aumentar el tamaño del problema a resolver, o la definición de los resultados, para ejercitar por más tiempo y tener así un resultado más estable \cite{stddevbook}.
+
+\bigskip
+
+Suponiendo una distribución normal de resultados, se suele controlar que haya menos de 3 desviaciones estándar de diferencia como prueba de normalidad \cite{threesigmas}.
 Se busca que la mayoría de los resultados queden cerca de su promedio, como muestra la Figura \ref{fig:deviation}.
 
 \begin{figure}[H]
@@ -323,15 +328,6 @@ La raíz n-ésima de un número (para un $ n $ posiblemente muy grande), es una 
 \label{eq:geomean-log}
 G = 10 ^{( log _{10} (x_{1}) + \ldots + log _{10} (x_{n}) ) / n}
 \end{equation}
-
-\subsection{Trabajo Previo}
-
-Esta tesis se realiza como extensión al Trabajo Final Integrador {\it Herramientas para el Soporte de Análisis de Rendimiento} de la Especialización en Cómputo de Altas Prestaciones y Tecnología Grid \footnote{\href{http://sedici.unlp.edu.ar/handle/10915/29858}{http://sedici.unlp.edu.ar/handle/10915/29858}}.
-
-\bigskip
-
-Al ser un tema que es relevante en toda disciplina que realice simulaciones computarizadas, existen innumerables trabajos relacionados.
-Una introducción puede ser consultada en \cite{intro}. Una revisión general en \cite{overview}. Una propuesta de hacia donde va el estado del arte en \cite{future}. Patrones útiles para ser reusados en \cite{patterns}. Como capturar la información necesaria en \cite{capturing}. Un esfuerzo de optimización automática en \cite{automatic}. Más detalles del estado del arte del análisis del rendimiento en Cómputo de Altas Prestaciones en \cite{hybrid}.
 
 \section{Herramientas}
 
@@ -984,6 +980,15 @@ $ gcc -Wall -Wextra -O3 -ftree-vectorizer-verbose=4 -g queen.c
 queen.c:22: note: vectorized 0 loops in function.
 queen.c:35: note: vectorized 0 loops in function.
 \end{lstlisting}
+
+\section{Trabajo Previo}
+
+Esta tesis se realiza como extensión al Trabajo Final Integrador {\it Herramientas para el Soporte de Análisis de Rendimiento} de la Especialización en Cómputo de Altas Prestaciones y Tecnología Grid \footnote{\href{http://sedici.unlp.edu.ar/handle/10915/29858}{http://sedici.unlp.edu.ar/handle/10915/29858}}.
+
+\bigskip
+
+Al ser un tema que es relevante en toda disciplina que realice simulaciones computarizadas, existen innumerables trabajos relacionados.
+Una introducción puede ser consultada en \cite{intro}. Una revisión general en \cite{overview}. Una propuesta de hacia donde va el estado del arte en \cite{future}. Patrones útiles para ser reusados en \cite{patterns}. Como capturar la información necesaria en \cite{capturing}. Un esfuerzo de optimización automática en \cite{automatic}. Más detalles del estado del arte del análisis del rendimiento en Cómputo de Altas Prestaciones en \cite{hybrid}.
 
 \chapter{Descripción del Problema} \label{Descripcion del Problema}
 
