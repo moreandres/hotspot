@@ -341,9 +341,7 @@ También es posible garantizar que el sistema sigue en un mismo estado con el co
 
 \bigskip
 
-Las características deseables en un {\it benchmark} son portabilidad, simplicidad, estabilidad y reproducción de resultados. Esto permite que sean utilizadas para realizar
-mediciones cuantitativas y así realizar comparaciones de optimizaciones o entre sistemas de cómputo diferentes. También se pide que el tiempo de
-ejecución sea razonable y que el tamaño del problema sea ajustable para poder mantener su utilidad con el paso del tiempo y el avance de las tecnologías.
+Las características deseables en un {\it benchmark} son portabilidad, simplicidad, estabilidad y reproducción de resultados. Esto permite que sean utilizadas para realizar mediciones cuantitativas y así realizar comparaciones de optimizaciones o entre sistemas de cómputo diferentes. También se pide que el tiempo de ejecución sea razonable y que el tamaño del problema sea ajustable para poder mantener su utilidad con el paso del tiempo y el avance de las tecnologías. La estabilidad de resultados sirve además para evitar errores de interferencia en los sistemas de cómputo durante la ejecución de pruebas.
 
 \bigskip
 
@@ -1128,7 +1126,7 @@ $ cat hpccoutf.txt
 \item ¿La latencia y ancho de banda de la memoria es la esperada?
 \end{enumerate}
 
-\item Comprobar variación de resultados para conocer la estabilidad de los mismos. La desviación estándar debe ser menor a 3 desviaciones asumiendo distribución normal. 
+\item Comprobar variación de resultados para conocer la estabilidad de los mismos. 
 \item Establecer cuál es el promedio geométrico a usar como referencia para comparaciones futuras.
 
 \begin{lstlisting}[caption={Estabilidad de Resultados},label={lst:time}]
@@ -1137,7 +1135,7 @@ $ for i in `seq 1 32`; do /usr/bin/time -v ./program >> time.csv; done
 
 \begin{enumerate}
 \item ¿Son los resultados estables?
-\item ¿La desviación estándar es menor que 3?
+\item ¿La desviación estándar es significativa?
 \item ¿Cuál es el promedio geométrico para comparaciones futuras?
 \item ¿Es necesario incrementar el problema para mejorar la desviación?
 \item ¿Es posible reducir el tiempo sin afectar la desviación?
