@@ -34,17 +34,17 @@
   Director: Dr Fernando G. Tinetti - {\tt fernando@lidi.info.unlp.edu.ar}
 }
 
-\date{Junio de 2015}
+\date{Enero de 2016}
 
 \maketitle
 
 \begin{abstract}
 
-En el área del cómputo de altas prestaciones las aplicaciones son construidas por especialistas del dominio del problema, no siempre expertos en optimización de rendimiento. Se identifica entonces la necesidad de un método sistemático y automático para soportar el análisis de rendimiento.
+En el área del cómputo de altas prestaciones las aplicaciones son construidas por especialistas del dominio del problema, no siempre expertos en optimización de rendimiento. Se identifica entonces la necesidad de un método sistemático y automático para dar soporte al análisis de rendimiento.
 
 \bigskip
 
-Esta tesis de maestría revisa la construcción de una infraestructura que simplifica el análisis de rendimiento; incluyendo su aplicación mediante casos de estudio como etapa de validación. El objetivo es facilitar la tarea evitando la tediosa recolección de datos relevantes de modo manual, permitiendo más tiempo de experimentación para la optimización propiamente dicha.
+Esta tesis revisa la construcción de una infraestructura que simplifica el análisis de rendimiento; incluyendo su aplicación mediante casos de estudio como etapa de validación. El objetivo es facilitar la tarea evitando la tediosa recolección de datos relevantes de modo manual, permitiendo más tiempo de experimentación para la optimización propiamente dicha.
 
 \bigskip
 
@@ -53,7 +53,7 @@ el perfil de ejecución, sus cuellos de botella y la utilización de los recurso
 
 \bigskip
 
-En particular, esta tesis de maestría contribuye entonces con un generador automático de reportes de rendimiento para aplicaciones de cómputo de altas prestaciones utilizando tecnología {\it OpenMP} sobre sistemas {\it GNU/Linux}.
+En particular, esta tesis contribuye entonces con un generador automático de reportes de rendimiento para aplicaciones de cómputo de altas prestaciones utilizando tecnología {\it OpenMP} sobre sistemas {\it GNU/Linux}.
 
 \end{abstract}
 
@@ -65,10 +65,6 @@ En particular, esta tesis de maestría contribuye entonces con un generador auto
 
 \chapter{Introducción}
 
-Esta tesis de maestría se realiza como extensión al Trabajo Final Integrador {\it Herramientas para el Soporte de Análisis de Rendimiento} de la Especialización en Cómputo de Altas Prestaciones y Tecnología Grid \footnote{\href{http://sedici.unlp.edu.ar/handle/10915/29858}{http://sedici.unlp.edu.ar/handle/10915/29858}}.
-
-\bigskip
-
 Este capítulo introduce el tema bajo estudio, definiendo los objetivos principales, las contribuciones logradas durante la investigación, y concluye detallando la estructura del resto del documento.
 
 \section{Motivación}
@@ -79,12 +75,11 @@ Estas cuestiones resultan en una inversión no trivial en el análisis de rendim
 
 \bigskip
 
-Con mayor impacto que en otras áreas de la computación, el código optimizado correctamente puede ejecutarse órdenes de magnitud mejor que una implementación directa \cite{mm-tool}. 
-Esto implica que invertir en optimización de un programa puede tener una ganancia interesante a largo plazo si las simulaciones a realizar son demasiadas.
+Con mayor impacto que en otras áreas de la computación, el código optimizado correctamente puede ejecutarse órdenes de magnitud mejor que una implementación directa. Esto implica que invertir en optimización de un programa puede tener una ganancia interesante a largo plazo si las simulaciones a realizar son demasiadas.
 
 \bigskip
 
-Se suele utilizar programación en paralelo para obtener una mejor utilización de la capacidad de cómputo disponible; aumentando por lo tanto la complejidad de implementación, depuración y
+Los investigadores suelen utilizar programación en paralelo para obtener una mejor utilización de la capacidad de cómputo disponible. Esto aumenta por lo tanto la complejidad de implementación, depuración y
 optimización con la que el experto en el dominio necesita trabajar en el día a día \cite{is-parallel-programming-hard}.
 
 \bigskip
@@ -105,9 +100,22 @@ de varios casos de prueba bajo diferentes condiciones, además de la aplicación
 \bigskip
 
 La infraestructura desarrollada implementa un procedimiento de análisis de rendimiento ejecutando pruebas de referencia, herramientas de perfil de rendimiento y graficación de resultados.
-La infraestructura genera como etapa final un informe detallado que soporta la tarea de optimización con información cuantitativa.
+La infraestructura genera como etapa final un informe detallado que da soporte a la tarea de optimización con información cuantitativa.
 El reporte final incluye datos estadísticos de la aplicación y el sistema donde se ejecuta, además de gráficos de desviación de resultados, escalamiento de problema y cómputo, e identificación
 de cuellos de botella.
+
+\section{Metodología}
+
+En base al problema y a los objetivos establecidos previamente, la metodología adoptada es la siguiente:
+
+\begin{enumerate}
+\item Analizar el estado del arte del análisis de rendimiento y las herramientas utilizadas para ello.
+\item Formular la solución específica necesaria para simplificar la tarea.
+\item Identificar que tipos de gráficos y tablas pueden resumir la información obtenida de modo de facilitar su utilización.
+\item Dada una propuesta de procedimiento sistemático de análisis de rendimiento, automatizarlo y analizar potenciales mejoras de utilidad.
+\item Aplicar la infraestructura sobre núcleos de cómputo conocidos para poder focalizar los esfuerzos en la mejora del reporte.
+\item Documentación de la experiencia.
+\end{enumerate}
 
 \section{Contribuciones}
 
@@ -125,27 +133,14 @@ La siguiente lista enumera las diferentes publicaciones realizadas durante el cu
 
 Las publicaciones realizadas pueden encontrarse en el apéndice \ref{contributions}.
 
-\section{Metodología}
-
-En base al problema y a los objetivos establecidos previamente, la metodología adoptada es la siguiente:
-
-\begin{enumerate}
-\item Analizar el estado del arte del análisis de rendimiento y las herramientas utilizadas para ello.
-\item Formular la solución específica necesaria para simplificar la tarea.
-\item Identificar que tipos de gráficos y tablas pueden resumir la información obtenida de modo de facilitar su utilización.
-\item Dada una propuesta de procedimiento sistemático de análisis de rendimiento, automatizarlo y analizar potenciales mejoras de utilidad.
-\item Aplicar la infraestructura sobre núcleos de cómputo conocidos para poder focalizar los esfuerzos en la mejora del reporte.
-\item Documentación de la experiencia.
-\end{enumerate}
-
 \section{Estructura}
 
 El resto del documento se estructura de la siguiente manera:
 
 \begin{itemize}
-\item Capítulo \ref{Estado del Arte}: revisa el estado del arte de los temas incluidos dentro del análisis de rendimiento: paralelismo, leyes fundamentales, métricas, técnicas de análisis,
+\item Capítulo \ref{Trabajo Relacionado}: revisa el estado del arte de los temas incluidos dentro del análisis de rendimiento: paralelismo, leyes fundamentales, métricas, técnicas de análisis,
 herramientas de soporte y pruebas de rendimiento.
-\item Capítulo \ref{Descripcion del Problema}: describe la problemática a resolver como parte de esta tesis. Los problemas usuales del propio análisis, métodos de optimización a soportar, y una discusión de cómo debería ser una infraestructura de soporte.
+\item Capítulo \ref{Descripcion del Problema}: describe la problemática a resolver como parte de esta tesis. Los problemas usuales del propio análisis, métodos de optimización a dar soporte, y una discusión de cómo debería ser una infraestructura de soporte.
 \item Capítulo \ref{Propuesta de Solucion}: muestra la propuesta de solución. El procedimiento general propuesto, las herramientas a utilizar, y la arquitectura y diseño de la solución implementada junto con una descripción de las diferentes secciones generadas por la herramienta en el reporte final.
 \item Capítulo \ref{Casos de Aplicacion}: aplica la solución a casos de estudio. Se incluyen los resultados de tres ejemplos ejercitando núcleos de cómputo conocidos.
 \item Capítulo \ref{Conclusiones y Trabajo Futuro}: concluye reflejando aportes y proponiendo trabajo futuro. 
@@ -155,9 +150,9 @@ herramientas de soporte y pruebas de rendimiento.
 
 \end{itemize}
 
-\chapter{Estado del Arte} \label{Estado del Arte}
+\chapter{Trabajo Relacionado} \label{Trabajo Relacionado}
 
-Este capítulo revisa el estado del arte de los temas relevantes a esta tesis de maestría.
+Este capítulo revisa el estado del arte de los temas relevantes a esta tesis. Nos basaremos en una definición más teoría básica de análisis de rendimiento para dar contexto a los capítulos siguientes donde se aplican estos conceptos utilizando un procedimiento soportado por herramientas.
 
 \section{Análisis de Rendimiento}\label{chapter:analysis}
 
@@ -219,9 +214,7 @@ En el caso de conocer los tiempos de ejecución para distinto número de procesa
 
 \subsubsection{Ley de {\it Gustafson}}
 
-Desde un punto de vista más general, la ley de {\it Gustafson} \cite{gustafson} (Ecuación \ref{eq:gustafson}) establece que las aplicaciones que manejan problemas
-repetitivos con conjuntos de datos similares pueden ser fácilmente paralelizadas. En comparación, la ley anterior no escala el tamaño o
-resolución de problema cuando se incrementa la potencia de cálculo, es decir asume un tamaño de problema fijo. 
+Desde un punto de vista más general, la ley de {\it Gustafson} \cite{gustafson} (Ecuación \ref{eq:gustafson}) refleja que en la práctica el tamaño del problema es escalado junto con el número de procesadores. En comparación, la ley anterior no ajusta el tamaño o resolución del problema cuando se incrementa la potencia de cálculo, es decir asume un tamaño de problema fijo. 
 
 \begin{eqnarray}
 \label{eq:gustafson}
@@ -258,11 +251,10 @@ mientras menor sea $ e $ mayor se supone el nivel de paralelismo posible.
 
 \begin{eqnarray}
 \label{eq:karp-flatt}
- e = \frac{\frac{1}{\psi} - \frac{1}{p}}{1 - \frac{1}{p}} 
+ e = \frac{\frac{1}{\psi} - \frac{1}{P}}{1 - \frac{1}{P}} 
 \end{eqnarray}
 
-Para un problema de tamaño fijo, la eficiencia típicamente disminuye cuando el número de procesadores aumenta. 
-Se puede entonces proceder a determinar si esta disminución es debida a un paralelismo limitado, a un algoritmo no optimizado o un problema de arquitectura del sistema.
+Para un problema de tamaño fijo, la eficiencia típicamente disminuye cuando el número de procesadores aumenta. Se puede entonces proceder a determinar si esta disminución es debida a un paralelismo limitado, a un algoritmo no optimizado o un problema de arquitectura del sistema.
 
 \subsection{Métricas}
 
@@ -301,15 +293,14 @@ A la hora de tomar decisiones, éstas deben estar basadas en datos concretos, ya
 \bigskip
 
 En el caso de tener problemas de desviación en los resultados medidos, es aconsejable obtener un gran número de muestras y utilizar un valor promedio para asegurarse de evitar errores de
-medición tanto como sea posible. También es preferible aumentar el tamaño del problema a resolver, o la definición de los resultados, para ejercitar por más tiempo y tener así un resultado 
-más estable.
-Suponiendo una distribución normal de resultados, se suele controlar que haya menos de 3 desviaciones estándar de diferencia. 
+medición tanto como sea posible. También es preferible aumentar el tamaño del problema a resolver, o la definición de los resultados, para ejercitar por más tiempo y tener así un resultado más estable.
+Suponiendo una distribución normal de resultados, se suele controlar que haya menos de 3 desviaciones estándar de diferencia como prueba de normalidad \cite{stddevbook}.
 Se busca que la mayoría de los resultados queden cerca de su promedio, como muestra la Figura \ref{fig:deviation}.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=8cm]{deviation.png}
-\caption{Desviación en una distribución normal [Wikipedia]}
+\caption{Desviación en una distribución normal}
 \label{fig:deviation}
 \end{figure}
 
@@ -333,7 +324,11 @@ La raíz n-ésima de un número (para un $ n $ posiblemente muy grande), es una 
 G = 10 ^{( log _{10} (x_{1}) + \ldots + log _{10} (x_{n}) ) / n}
 \end{equation}
 
-\subsection{Trabajos Relacionados}
+\subsection{Trabajo Previo}
+
+Esta tesis se realiza como extensión al Trabajo Final Integrador {\it Herramientas para el Soporte de Análisis de Rendimiento} de la Especialización en Cómputo de Altas Prestaciones y Tecnología Grid \footnote{\href{http://sedici.unlp.edu.ar/handle/10915/29858}{http://sedici.unlp.edu.ar/handle/10915/29858}}.
+
+\bigskip
 
 Al ser un tema que es relevante en toda disciplina que realice simulaciones computarizadas, existen innumerables trabajos relacionados.
 Una introducción puede ser consultada en \cite{intro}. Una revisión general en \cite{overview}. Una propuesta de hacia donde va el estado del arte en \cite{future}. Patrones útiles para ser reusados en \cite{patterns}. Como capturar la información necesaria en \cite{capturing}. Un esfuerzo de optimización automática en \cite{automatic}. Más detalles del estado del arte del análisis del rendimiento en Cómputo de Altas Prestaciones en \cite{hybrid}.
@@ -344,7 +339,7 @@ Actualmente existen numerosas y diversas herramientas para el análisis de rendi
 
 \subsection{Pruebas de Rendimiento}
 
-Para medir el rendimiento se utilizan pruebas de referencia (en inglés, {\em benchmarks}); éstas pueden ser aplicaciones sintéticas construidas específicamente, o bien aplicaciones del mundo real computando un problema prefijado. Al tener valores de referencia se pueden caracterizar los sistemas de modo de predecir el rendimiento de una aplicación.
+Para medir el rendimiento se utilizan pruebas de referencia (en inglés, {\em benchmarks}); éstas pueden ser aplicaciones sintéticas construidas específicamente, o bien el núcleo de cómputo de aplicaciones del mundo real computando un problema prefijado. Al tener valores de referencia se pueden caracterizar los sistemas de modo de predecir el rendimiento de una aplicación.
 Los valores a los que se llegan con un {\it benchmark} suelen ser más prácticos y comparables que los teóricos de acuerdo a condiciones ideales de uso de recursos.
 También es posible garantizar que el sistema sigue en un mismo estado con el correr del tiempo y después de cambios de configuraciones en {\it hardware} o {\it software}.
 
@@ -356,7 +351,7 @@ ejecución sea razonable y que el tamaño del problema sea ajustable para poder 
 
 \bigskip
 
-A continuación se introducen algunas de las más utilizadas para cómputo de altas prestaciones (listadas en la tabla \ref{table:benchmark-list}),
+A continuación se introducen algunas de las {\it benchmarks} más utilizadas para cómputo de altas prestaciones (listadas en la tabla \ref{table:benchmark-list}),
 y posteriormente algunos detalles específicos e instancias de sus datos de salida para ser utilizados a manera de ejemplo.
 
 \begin{table}[H]
@@ -375,7 +370,7 @@ y posteriormente algunos detalles específicos e instancias de sus datos de sali
 \bigskip
 
 Los {\it benchmarks} pueden ser utilizados para diferentes propósitos. Primero, los valores reportados son usados como referencia para contrastar rendimiento.
-Segundo, su desviación demuestra que algo ha cambiado en el sistema (por lo tanto su no desviación indica que el sistema sigue saludable). Por último,
+Segundo, su desviación demuestra que algo ha cambiado en el sistema (por lo tanto su no desviación indica que el sistema sigue estable). Por último,
 un {\it benchmark} sintético implementando el cómputo que uno quiere realizar muestra el rendimiento máximo posible a obtener en la práctica.
 
 \subsubsection{STREAM}
@@ -499,7 +494,7 @@ red, sólo procesamiento intensivo de aritmética de punto flotante sobre la jer
 \subsubsection{Intel MPI Benchmarks}
 
 Es un conjunto de {\it benchmarks} cuyo objetivo es ejercitar las funciones más importantes del estándar para librerías de paso de mensajes
-(MPI, por las siglas de {\it Message Passing Interface} en inglés) \cite{mpi-standard}.
+(MPI, por la sigla de {\it Message Passing Interface} en inglés) \cite{mpi-standard}.
 El más conocido es el popular ping-pong, el cual ejercita la transmisión de mensajes ida y vuelta entre dos nodos de cómputo con diferentes tamaños de mensajes \cite{latency}.
 
 \bigskip
@@ -550,12 +545,11 @@ Transformadas de {\it Fourier} y otros más simples ejercitando la red de comuni
 \bigskip
 
 Este benchmark muestra diferentes resultados que son representativos y puestos en consideración de acuerdo al tipo de aplicación en discusión.
-La mejor máquina depende de la aplicación específica a ejecutar, ya que algunas aplicaciones necesitan mejor ancho de banda de memoria, mejor canal de comunicación, o
-simplemente la mayor capacidad de cómputo de operaciones flotantes posible.
+La mejor máquina depende de la aplicación específica a ejecutar, ya que algunas aplicaciones necesitan mejor ancho de banda de memoria, mejor canal de comunicación, o simplemente la mayor capacidad de cómputo de operaciones flotantes posible.
 
 \bigskip
 
-Una analogía interesante para entender cómo el {\it benchmark} se relaciona con diferentes núcleos de cómputo se muestra en la Figura \ref{fig:locality}. Por ejemplo al tener un problema que utiliza principalmente acceso a memoria local, se puede suponer que un sistema con buenos resultados de STREAM va ser útil.
+Una analogía interesante para entender cómo el {\it benchmark} se relaciona con diferentes núcleos de cómputo se muestra en la Figura \ref{fig:locality}. El eje de las $ X $ representa el grado de localidad espacial que posee un núcleo de cómputo. Esto se refiere a la concentración de las lecturas y escrituras en una región de memoria cercana. El eje de las $ Y $ representa el grado de localidad temporal que posee un núcleo de cómputo. Esto se refiere al reuso para lectura o escritura de una región de memoria dada.
 
 \begin{figure}[H]
 \begin{center}
@@ -565,12 +559,20 @@ Una analogía interesante para entender cómo el {\it benchmark} se relaciona co
 \end{center}
 \end{figure}
 
+El núcleo {\it FFT} realiza transformadas de {\it Fourier} donde los cálculos se realizan sobre una misma zona de memoria. El núcleo {\it RandomAccess} es aleatorio en cuanto a su caracterización de acceso. Los núcleos {\it DGEMM} y {\it HPL} realizan multiplicaciones de matrices. El núcleo {\it PTRANS} incluya una rotación de una matriz densa. El núcleo {\it STREAM} realiza operaciones vectoriales para ejercitar la jerarquia de memoria.
+
+\bigskip
+
+Por ejemplo al tener un problema que utiliza principalmente acceso a memoria local, se puede suponer que un sistema con buenos resultados de {\it STREAM} va ser una buena alternativa para su ejecución.
+
+\bigskip
+
 Para una mejor comparación de resultados de HPCC se utilizan diagramas de tipo radar denominados {\it kiviats}, un ejemplo se muestra en la Figura \ref{fig:kiviat}.
 Los resultados están normalizados hacia uno de los sistemas, en este ejemplo se puede identificar mejor rendimiento en FLOPs por poseer mejores DGEMM y HPL en comparación.
 
 \begin{figure}[H]
 \begin{center}
-\includegraphics[width=12cm]{kiviat.png}
+\includegraphics[width=7cm]{kiviat.png}
 \caption{Diagrama Kiviat [Top500]}
 \label{fig:kiviat}
 \end{center}
@@ -814,7 +816,7 @@ Esto permite visualizar el esquema de dependencias durante la ejecución.
 
 \bigskip
 
-A continuación en el listado \ref{debug} se muestra como realizar la compilación incluyendo información de depuración específica, además de un caso concreto contra una aplicación simulando el juego de la vida \cite{conway}.
+A continuación en el listado \ref{debug} se muestra cómo realizar la compilación incluyendo información de perfilado específica, además de un caso concreto contra una aplicación simulando el juego de la vida \cite{conway}.
 
 \begin{lstlisting}[caption={Compilación con Información de Depuración},label={debug}]
 $ gcc -g -pg program.c -o program
@@ -985,13 +987,11 @@ queen.c:35: note: vectorized 0 loops in function.
 
 \chapter{Descripción del Problema} \label{Descripcion del Problema}
 
-Este capítulo introduce el problema a resolver.
+Este capítulo introduce el problema a resolver. Se describen las dificultades enfrentadas al realizar análisis de rendimiento y el posterior esfuerzo de optimización. Se listan las capacidades que debe poseer una infraestructura que de soporte a estos procesos de forma automatica.
+
+% TBD resumen
 
 \section{Análisis de Rendimiento}
-
-Esta tesis de maestría trata entonces de simplificar la tarea de análisis de rendimiento. 
-
-\bigskip
 
 El problema concreto sobre el que se trabaja es brindar automatización para ahorrar esfuerzo y minimizar el nivel de conocimiento requerido durante el desarrollo de aplicaciones de cómputo de
 altas prestaciones.
@@ -1037,37 +1037,43 @@ Los métodos usuales de optimización de un programa que ya utiliza un algoritmo
 
 \begin{description}
 \item[Código:] se analiza el código fuente para mejorar la predicción de saltos, realizar {\it inlining} de rutinas muy utilizadas, alinear código y realizar {\it unrolling} de ciclos para posibilitar vectorización.
+
+Las posibles optimizaciones a nivel de código son diversas. Algunas pueden ser automáticamente introducidas por el compilador en casos donde es posible garantizar una mejora.
+
 \item[Ejecución:] se analiza el código a nivel de ensamblador para comprobar el uso de instrucciones livianas o vectoriales, y además tratando de reducir el uso de registros.
 \item[Memoria:] se analiza las estructuras de datos para incrementar la tasa de transferencia a memoria, minimizar fallas de cache, alinear datos y mejorar la localidad del acceso a los mismos.
+
+Estas optimizaciones pueden ser realizadas manualmente a nivel de código o automáticamente por el compilador.  
+  
 \item[Precarga:] se analiza el uso de instrucciones de {\it hardware} para precargar datos en cache cuando los algoritmos predictivos no son suficientes.
 \item[Punto Flotante:] se considera el relajamiento de las reglas de redondeo y representación según los estándares, intercambiando un mayor error acumulado por mejor velocidad de procesamiento.
 \end{description}
 
-\section{Infrastructura de Soporte}
+\section{Infraestructura de Soporte}
 
-Los problemas usuales durante el análisis de rendimiento listados anteriormente reflejan la necesidad de utilizar soporte automátíco para la ejecución de pruebas de rendimiento, la recopilación de métricas relevantes y la generación de un reporte con gráficos comparativos e información de contexto. Los siguientes requerimientos son los necesarios para una infrastructura de análisis de rendimiento.
+Los problemas usuales durante el análisis de rendimiento listados anteriormente reflejan la necesidad de utilizar soporte automátíco para la ejecución de pruebas de rendimiento, la recopilación de métricas relevantes y la generación de un reporte con gráficos comparativos e información de contexto. Los siguientes requerimientos son los necesarios para una infraestructura de análisis de rendimiento.
 
-\subsection{Reusabilidad}
+\subsection*{Reusabilidad}
 
-La infastructura debe ser aplicable a un gran rango de programas, no requiriendo su modificación.
-Su instalación solo debe depender de la existencia previa de las mismas herramientas que un usuario podría ejecutar para obtener información relacionada al rendimiento de un programa. La infrastructura debe ser eficiente, no debe requerir ejecutar pruebas largas y tediosas sin un objetivo concreto.
+La infraestructura debe ser aplicable a un gran rango de programas, no requiriendo su modificación.
+Preferentemente, su instalación solo debe depender de la existencia previa de las mismas herramientas que un usuario podría ejecutar para obtener información relacionada al rendimiento de un programa. La infraestructura debe ser eficiente, no debe requerir ejecutar pruebas largas y tediosas sin un objetivo concreto.
 
-\subsection{Configurabilidad}
+\subsection*{Configurabilidad}
 
-La aplicación de las herramientas debe ser configurable en su totalidad mediante un archivo de configuración.
+La aplicación de las herramientas debe ser configurable.
 Los parámetros a configurar deberían incluir entre otros: la forma de compilar y ejecutar un programa, el rango de valores de entrada, el número de repeticiones de las diferentes ejecuciones del programa.
 
-\subsection{Portabilidad}
+\subsection*{Portabilidad}
 
-La infrastructura debe ser implementada con un lenguaje portable, de ser posible basado en código abierto de forma que pueda ser revisada fácilmente por los usuarios para incluir nuevas fuentes de información o cambiar la forma en que las herramientas base son utilizadas.
+La infraestructura debe ser implementada con un lenguaje portable, de ser posible basado en código abierto de forma que pueda ser revisada fácilmente por los usuarios para incluir nuevas fuentes de información o cambiar la forma en que las herramientas base son utilizadas.
 
-\subsection{Extensibilidad}
+\subsection*{Extensibilidad}
 
-La infrastructura debe poseer un diseño de fácil extensión, la incorporación de nuevas herramientas, gráficos o secciones dentro de un reporte debe ser una tarea trivial asumiendo que ya se conoce la forma manual de obtener la información requerida para ello.
+La infraestructura debe poseer un diseño de fácil extensión, la incorporación de nuevas herramientas, gráficos o secciones dentro de un reporte debe ser una tarea trivial asumiendo que ya se conoce la forma manual de obtener la información requerida para ello.
 
-\subsection{Simplicidad}
+\subsection*{Simplicidad}
 
-La infrastructura debe reutilizar las mismas herramientas disponibles en el sistema, de tal forma el usuario puede continuar el análisis de forma directa.
+La infraestructura debe reutilizar las mismas herramientas disponibles en el sistema, de tal forma el usuario puede continuar el análisis de forma directa.
 También debe generar archivos de soporte con la información pura de los comandos ejecutados y su salida sin depurar.
 Debe ser posible completar un reporte entre un día de trabajo y otro sin la interacción con un usuario.
 
@@ -1079,7 +1085,7 @@ Este capítulo muestra la propuesta de solución, incluyendo el diseño de la mi
 
 Un procedimiento de análisis de rendimiento debe ser iterativo de modo de garantizar un progreso continuo asociado a la cantidad de tiempo dedicado.
 Se propone entonces un proceso que empieza analizando las capacidades del sistema en uso, y luego incluye múltiples ciclos de recabado de resultados,
-identificación de cuellos de botella y la inclusión de alguna optimización para mejorar el rendimiento.
+identificación de cuellos de botella y la inclusión de optimizaciones para mejorar el rendimiento.
 
 \bigskip
 
@@ -1098,7 +1104,7 @@ Luego se procede a trabajar en etapas iterativas asegurando en cada paso la esta
 \section{Paso a Paso}
 
 A continuación se muestran los pasos a realizar, junto con preguntas que guían el análisis de rendimiento de una aplicación.
-La infrastructura solo implementa los pasos específicos de ejecución de herramientas para la recolección de información.
+La infraestructura solo implementa los pasos específicos de ejecución de herramientas para la recolección de información.
 
 \subsection{Pruebas de Referencia}
 
@@ -1114,12 +1120,11 @@ $ cat hpccoutf.txt
 \begin{enumerate}
 \item ¿Los resultados reflejan las capacidades esperadas del sistema?
 \item ¿Los FLOPS se aproximan al rendimiento de un sistema similar?
-\item ¿El rendimiento es $ CORES \times CLOCK \times FLOPS/CYCLE $ ?
 \item ¿La latencia y ancho de banda de la memoria es la esperada?
 \end{enumerate}
 
-\item Comprobar variación de resultados para conocer la estabilidad de los mismos. La desviación estándar debe ser menor a 3 sigmas. 
-\item Establecer cual es el promedio geométrico a usar como referencia para comparaciones futuras.
+\item Comprobar variación de resultados para conocer la estabilidad de los mismos. La desviación estándar debe ser menor a 3 desviaciones asumiendo distribución normal. 
+\item Establecer cuál es el promedio geométrico a usar como referencia para comparaciones futuras.
 
 \begin{lstlisting}[caption={Estabilidad de Resultados},label={lst:time}]
 $ for i in `seq 1 32`; do /usr/bin/time -v ./program >> time.csv; done
@@ -1245,7 +1250,7 @@ Esta información puede ser usada para una comparación histórica de resultados
 
 \bigskip
 
-Inicialmente se ejecuta la aplicación múltiples veces para validar que los resultados poseen una desviación saludable. Se resume esta información con un histograma y se hace una aproximación
+Inicialmente se ejecuta la aplicación múltiples veces para validar que los resultados poseen una desviación estable. Se resume esta información con un histograma y se hace una aproximación
 a una distribución de resultados normales como comparación. Se toma como referencia la media geométrica de los resultados. La primer ejecución se descarta.
 
 \bigskip
@@ -1435,7 +1440,7 @@ Las consideraciones generales tenidas en cuenta en todas las secciones fueron la
 
 \subsubsection{Resumen}
 
-El resumen incluído en la primer página introduce el reporte junto con información sobre la infrastructura utilizada y la ubicación específica de la información de ejecución para su consulta
+El resumen incluído en la primer página introduce el reporte junto con información sobre la infraestructura utilizada y la ubicación específica de la información de ejecución para su consulta
 de ser necesaria.
 
 \subsubsection{Contenido}
@@ -1531,7 +1536,7 @@ conocidos contra los dominantes en nuestro programa bajo análisis.
 
 \section{Código de Prueba}
 
-Esta sección incluye una revisión de los resultados específicos obtenidos al aplicar la infrastructura a códigos de prueba.
+Esta sección incluye una revisión de los resultados específicos obtenidos al aplicar la infraestructura a códigos de prueba.
 
 \subsection{Multiplicación de Matrices}
 
@@ -1641,7 +1646,7 @@ Esto implica que los ciclos de cómputos no están siendo vectorizados, desaprov
 
 \end{enumerate}
 
-El reporte generado por la infrastructura puede consultarse en el apéndice \ref{example-matrix}.
+El reporte generado por la infraestructura puede consultarse en el apéndice \ref{example-matrix}.
 Una comparación de rendimiento de diferentes algoritmos de multiplicación de matrices puede encontrarse en \cite{mm-tool}.
 
 \subsection{Transmisión de Calor en 2 Dimensiones}
@@ -1765,7 +1770,7 @@ Algunas conclusiones que pueden obtenerse son:
 \item Los ciclos no están siendo vectorizados.
 \end{enumerate}
 
-El reporte generado por la infrastructura puede consultarse en el apéndice \ref{example-heat2d}.
+El reporte generado por la infraestructura puede consultarse en el apéndice \ref{example-heat2d}.
 
 \subsection{Conjunto de {\it Mandelbrot}}
 
@@ -1852,7 +1857,7 @@ count=8
 
 \bigskip
 
-Algunas conclusiones que pueden obtenerse al ejecutar la infrastructura desarrollada sobre una implementación básica son:
+Algunas conclusiones que pueden obtenerse al ejecutar la infraestructura desarrollada sobre una implementación básica son:
 
 \begin{enumerate}
 \item La estructura utilizada para representar números complejos está alineada y no posee huecos.
@@ -1878,7 +1883,7 @@ empezar a optimizar. Las mejoras pueden ser no significativas si son realizadas 
 
 \bigskip
 
-Esta tesis de maestría soporta los primeros pasos de análisis de rendimiento para expertos del dominio de un problema científico utilizando computación de altas prestaciones. Se provee una metodología de uso de herramientas de soporte para principiantes, que puede ser utilizada como una lista de pasos resumidos para usuarios casuales, e incluso como referencia de consulta diaria para expertos.
+Esta tesis soporta los primeros pasos de análisis de rendimiento para expertos del dominio de un problema científico utilizando computación de altas prestaciones. Se provee una metodología de uso de herramientas de soporte para principiantes, que puede ser utilizada como una lista de pasos resumidos para usuarios casuales, e incluso como referencia de consulta diaria para expertos.
 
 \bigskip
 
@@ -1892,16 +1897,16 @@ reportes de rendimiento.
 
 \bigskip
 
-Se desarrolló como estaba planeado una infrastructura de soporte que permite a un desarrollador especialista en el dominio de un problema obtener rápidamente información cuantitativa del comportamiento de un programa {\it OpenMP}, incluyendo utilización del recurso y cuellos de botella para dirigir los esfuerzos de optimización.
+Se desarrolló como estaba planeado una infraestructura de soporte que permite a un desarrollador especialista en el dominio de un problema obtener rápidamente información cuantitativa del comportamiento de un programa {\it OpenMP}, incluyendo utilización del recurso y cuellos de botella para dirigir los esfuerzos de optimización.
 
 \bigskip
 
-La infrastructura fue construída sobre los comandos que un desarrollador utilizaría. Realizar cualquier modificación es entonces trivial para contemplar nuevas herramientas
+La infraestructura fue construída sobre los comandos que un desarrollador utilizaría. Realizar cualquier modificación es entonces trivial para contemplar nuevas herramientas
 o agregar nuevas secciones en los reportes generados como etapa final.
 
 \section{Trabajo Futuro}
 
-Las posibilidades de extensión de esta infrastructura son muchas, cada sección del reporte final puede incluir información más detallada o utilizar otras herramientas. En particular la sección de contadores de {\it hardware} solo contiene una lista de contadores generalizada para cualquier arquitectura; si se asume una arquitectura dada, se puede fácilmente proveer información más especifica y por lo tanto más útil.
+Las posibilidades de extensión de esta infraestructura son muchas, cada sección del reporte final puede incluir información más detallada o utilizar otras herramientas. En particular la sección de contadores de {\it hardware} solo contiene una lista de contadores generalizada para cualquier arquitectura; si se asume una arquitectura dada, se puede fácilmente proveer información más especifica y por lo tanto más útil.
 
 \bigskip
 
