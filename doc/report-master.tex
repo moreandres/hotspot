@@ -34,7 +34,7 @@
   Director: Dr Fernando G. Tinetti - {\tt fernando@lidi.info.unlp.edu.ar}
 }
 
-\date{Marzo de 2016}
+\date{Mayo de 2016}
 
 \maketitle
 
@@ -309,9 +309,11 @@ Se busca que la mayoría de los resultados queden cerca de su promedio, como mue
 \label{fig:deviation}
 \end{figure}
 
-Los resultados deben también ser correctamente guardados para evitar problemas de datos. Si la configuración del sistema es dinámica entonces la
-reproducción de resultados es no trivial. En el caso de no tener una configuración de sistema estable en el tiempo, es recomendable siempre
-ejecutar una versión optimizada contra una versión de referencia en un mismo sistema de cómputo.
+Los resultados deben también ser correctamente guardados para evitar problemas de datos, tanto numéricos como de utilización de recursos. Idealmente el caso de prueba debería validar la correctitud de la respuesta. Si la configuración del sistema bajo prueba es dinámica entonces la reproducción de los mismos es no trivial.
+
+\bigskip
+
+En el caso de no tener una configuración de sistema estable en el tiempo, es recomendable siempre ejecutar una versión optimizada contra una versión de referencia a continuación. Deben compararse primero los resultados númericos para asegurar la correctitud de los algoritmos y luego comparar la utilización de recursos para determinar si mejoró el rendimiento.
 
 \bigskip
 
@@ -1521,12 +1523,12 @@ Esto permite a los usuarios del reporte conocer más de los puntos relevantes de
 
 \chapter{Casos de Aplicación} \label{Casos de Aplicacion}
 
-Este capítulo contiene casos de estudio mostrando los resultados de aplicar la infraestructura desarrollada a aplicaciones de cómputo de alto rendimiento conocidas.
+Este capítulo contiene casos de estudio mostrando los resultados de aplicar la infraestructura desarrollada a aplicaciones de cómputo de alto rendimiento conocidas. Los reportes generados estan incluidos en su totalidad dentro del apéndice.
 
 \section{Sistema de Prueba}
 
-La configuración del sistema obtenida es la correcta teniendo en cuenta que las pruebas fueron realizadas sobre {\it hardware} virtualizado. La identificación de la memoria, procesador,
-placa madre y almacenamiento pueden ser utilizados para buscar información de rendimiento publicada oficialmente por cada fabricante.
+La configuración del sistema obtenida es la adecuada teniendo en cuenta que las pruebas fueron realizadas sobre {\it hardware} virtualizado.
+a identificación de la memoria, procesador, placa madre y almacenamiento pueden ser utilizados para buscar información de rendimiento publicada oficialmente por cada fabricante.
 
 \bigskip
 
@@ -1534,8 +1536,7 @@ La identificación del {\it software} disponible en el sistema permite ser más 
 
 \bigskip
 
-La información de línea base de rendimiento obtenida luego de ejecutar el conjunto de pruebas de rendimiento contenido dentro de HPCC nos permite correlacionar núcleos de computo
-conocidos contra los dominantes en nuestro programa bajo análisis.
+La información de línea base de rendimiento obtenida luego de ejecutar el conjunto de pruebas de rendimiento contenido dentro de {\it HPCC} nos permite correlacionar núcleos de cómputo conocidos contra los dominantes en nuestro programa bajo análisis.
 
 \section{Código de Prueba}
 
@@ -1900,7 +1901,7 @@ reportes de rendimiento.
 
 \bigskip
 
-Se desarrolló como estaba planeado una infraestructura de soporte que permite a un desarrollador especialista en el dominio de un problema obtener rápidamente información cuantitativa del comportamiento de un programa {\it OpenMP}, incluyendo utilización del recurso y cuellos de botella para dirigir los esfuerzos de optimización.
+Se desarrolló como estaba planeado una infraestructura de soporte que permite a un desarrollador especialista en el dominio de un problema obtener rápidamente información cuantitativa del comportamiento de un programa {\it OpenMP}, incluyendo utilización de recursos y cuellos de botella para así dirigir los esfuerzos de optimización.
 
 \bigskip
 
@@ -1922,7 +1923,7 @@ Otra posibilidad consiste en incorporar soporte para programas basados en la lib
 
 \bigskip
 
-Por último, aunque la generación de un documento portable en formato PDF es simple y útil, se puede pensar como siguiente paso en utilizar una tecnología que permita la generación de reportes dinámicos que permitan a los expertos modificar la representación de la información. Por ejemplo, una implementación en HTML5 o en un formato compatible con planillas de cálculo utilizando tablas filtrables y gráficos configurables puede ser interesante y mejorar la calidad del análisis de rendimiento.
+Por último, aunque la generación de un documento portable en formato PDF es simple y útil, se puede pensar como siguiente paso en utilizar una tecnología que permita la generación de reportes dinámicos que posibiliten a los expertos modificar la representación de la información. Por ejemplo, una implementación en HTML5 o en un formato compatible con planillas de cálculo utilizando tablas filtrables y gráficos configurables puede ser interesante y mejorar la calidad del análisis de rendimiento.
 
 \bibliography{report}
 

@@ -22,7 +22,7 @@ Note: if PDF viewer SIGFAULTS, use mupdf as alternative.
 ## Configuration
 
 A configuration file is used to configure how to build and run the program.
-An anotated sample configuration file can be used as starting point.
+An annotated sample configuration file can be used as starting point.
 
 ```
 $ vim hotspot.cfg
