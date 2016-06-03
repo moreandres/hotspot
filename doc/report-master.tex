@@ -34,7 +34,7 @@
   Director: Dr Fernando G. Tinetti - {\tt fernando@lidi.info.unlp.edu.ar}
 }
 
-\date{Mayo de 2016}
+\date{Junio de 2016}
 
 \maketitle
 
@@ -347,7 +347,7 @@ Las características deseables en un {\it benchmark} son portabilidad, simplicid
 
 \bigskip
 
-A continuación se introducen algunas de las {\it benchmarks} más utilizadas para cómputo de altas prestaciones (listadas en la tabla \ref{table:benchmark-list}),
+A continuación se introducen algunos de los {\it benchmarks} más utilizados para cómputo de altas prestaciones (listados en la tabla \ref{table:benchmark-list}),
 y posteriormente algunos detalles específicos e instancias de sus datos de salida para ser utilizados a manera de ejemplo.
 
 \begin{table}[H]
@@ -1106,15 +1106,18 @@ La Figura \ref{fig:procedure} muestra a grandes rasgos las etapas del proceso a 
 Primero se establece una línea base de rendimiento del sistema utilizando pruebas de rendimiento conocidas.
 Luego se procede a trabajar en etapas iterativas asegurando en cada paso la estabilidad de los resultados, revisando la utilización de recursos y utilizando un perfil de ejecución para encontrar un punto de enfoque. Luego de optimizar y comprobar la mejora, se vuelve a repetir el ciclo.
 
-\section{Paso a Paso}
+\bigskip
 
-A continuación se muestran los pasos a realizar, junto con preguntas que guían el análisis de rendimiento de una aplicación.
+A continuación se detallan los pasos a realizar, junto con preguntas que guían el análisis de rendimiento de una aplicación.
 La infraestructura solo implementa los pasos específicos de ejecución de herramientas para la recolección de información.
 
-\subsection{Pruebas de Referencia}
+\bigskip
 
-\begin{enumerate}
-\item Ejecutar pruebas de rendimiento sobre el sistema a utilizar para poder entender sus capacidades máximas en contraste con las teóricas.
+{\bf Pruebas de Referencia}: el análisis de resultados de pruebas de referencia ayuda a dimensionar la capacidad máxima del sistema bajo prueba. Para ello se propone ejecutar pruebas de rendimiento sobre el sistema a utilizar para poder entender sus capacidades máximas en contraste con las teóricas.
+
+\bigskip
+
+Un ejemplo de los pasos a seguir se muestra continuación.
 
 \begin{lstlisting}[caption={Instalación de HPCC},label={lst:hpcc}]
 $ sudo apt-get install hpcc
@@ -1122,52 +1125,92 @@ $ mpirun -n `grep -c proc /proc/cpuinfo` ./hpcc
 $ cat hpccoutf.txt
 \end{lstlisting}
 
+Las interrogantes a resolver son las siguientes.
+
 \begin{enumerate}
 \item ¿Los resultados reflejan las capacidades esperadas del sistema?
 \item ¿Los FLOPS se aproximan al rendimiento de un sistema similar?
 \item ¿La latencia y ancho de banda de la memoria es la esperada?
 \end{enumerate}
 
-\item Comprobar variación de resultados para conocer la estabilidad de los mismos. 
-\item Establecer cuál es el promedio geométrico a usar como referencia para comparaciones futuras.
+\bigskip
+
+{\bf Compilación del Binario}: la compilación del programa a optimizar es una tarea no trivial ya que puede ser necesario instrumentar el mismo para obtener datos de depuración durante su ejecución para un análisis detallado de su comportamiento.
+
+\bigskip
+
+Un ejemplo se lista a continuación.
+
+\begin{lstlisting}[caption={Compilación del Binario},label={lst:compilation}]
+$ CFLAGS='-Wall -Wextra -O3 -g -pg' make
+\end{lstlisting}
+
+\bigskip
+
+{\bf Estabilidad de Resultados}: se debe comprobar la estabilidad de los resultados obtenidos para asegurarse de que las decisiones tomadas al comparar los mismos sean acertadas. De no ser así hay que revisar la configuración del sistema o el caso de prueba a utilizar como escenario principal de análisis.
+
+\bigskip
+
+Para ello se propone primero comprobar desviacion estándar de resultados para conocer la estabilidad de los mismos. Segundo, establecer cuál es el promedio geométrico a usar como referencia para comparaciones futuras.
+
+\bigskip
+
+Un ejemplo se lista a continuación.
 
 \begin{lstlisting}[caption={Estabilidad de Resultados},label={lst:time}]
 $ for i in `seq 1 32`; do /usr/bin/time -v ./program >> time.csv; done
 \end{lstlisting}
+
+Las interrogantes a resolver son entonces:
 
 \begin{enumerate}
 \item ¿Son los resultados estables?
 \item ¿La desviación estándar es significativa?
 \item ¿Cuál es el promedio geométrico para comparaciones futuras?
 \item ¿Es necesario incrementar el problema para mejorar la desviación?
-\item ¿Es posible reducir el tiempo sin afectar la desviación?
+\item ¿Es posible reducir la duración de cada prueba sin afectar la desviación?
 \end{enumerate}
 
-\item Escalar el problema para dimensionar la cantidad de trabajo según el tamaño del problema.
+{\bf Utilización de los Recursos}: se deben ejecutar disciplinadamente múltiples pruebas variando el tamaño del problema y la cantidad de unidades de cómputo para entender el patrón de escalamiento del programa.
+
+\bigskip
+
+Para ello se propone primero escalar el problema para dimensionar la cantidad de trabajo según el tamaño del problema. Segundo, escalar cómputo para luego calcular límite de mejoras según {\it Amdalah} y {\it Gustafson}.
+
+\bigskip
+
+Un ejemplo de los pasos a seguir se muestra continuación.
 
 \begin{lstlisting}[caption={Escalamiento de Problema},label={lst:size}]
 $ for size in `seq 1024 1024 10240`; do /usr/bin/time -v ./program $size >> size.log; done
 \end{lstlisting}
 
-\begin{enumerate}
-\item ¿Cuál es la relación entre el tiempo de las diferentes ejecuciones?
-\item ¿Es la incremento del tiempo de ejecución lineal o constante?
-\end{enumerate}
-
-\item Escalar cómputo para luego calcular límite de mejoras con {\it Amdalah} y {\it Gustafson}.
-
 \begin{lstlisting}[caption={Escalamiento de Cómputo},label={lst:proc}]
 $ for threads in `grep -c proc /proc/cpuinfo | xargs seq 1`; do OMP_NUM_THREADS=$threads ./program >> threads.log; done
 \end{lstlisting}
 
+Las interrogantes son entonces:
+
 \begin{enumerate}
+\item ¿Cuál es la relación entre el tiempo de las diferentes ejecuciones?
+\item ¿Es la incremento del tiempo de ejecución lineal o constante?
 \item ¿Cuál es la relación entre el tiempo de las diferentes ejecuciones?
 \item ¿Es la relación lineal o constante?
 \item ¿Qué porcentaje de la aplicación se estima paralelo?
 \item ¿Cual es la mejora máxima posible?
 \end{enumerate}
 
-\item Generar el perfil de llamadas a funciones dentro de la aplicación para revisar el diseño de la misma y los posibles cuellos de botella a resolver.
+\bigskip
+
+{\bf Perfil de Código}: la aplicación de herramientas de bajo nivel permiten entender con gran detalle el comportamiento del programa: ya sea la secuencia de llamadas que utiliza, el mapeo de porciones de código a utilización de recursos, y cuales optimizaciones automáticas se realizan.
+
+\bigskip
+
+Para ello se propone inicialmente generar el perfil de llamadas a funciones dentro de la aplicación para revisar el diseño de la misma y los posibles cuellos de botella a resolver. Luego utilizar el profiler a nivel de sistema y por último comprobar vectorizaciones.
+
+\bigskip
+
+Un ejemplo de los pasos a seguir se muestra continuación.
 
 \begin{lstlisting}[caption={Generación de Perfil de Rendimiento},label={lst:gprofall}]
 $ gcc -g -pg program.c -o program
@@ -1177,51 +1220,49 @@ $ gprof --flat-profile --graph --annotated-source app
 ...
 \end{lstlisting}
 
-\begin{enumerate}
-\item ¿Cómo está diseñada la aplicación?
-\item ¿Que dependencias en librerías externas tiene?
-\item ¿Implementa algún núcleo de cómputo conocido encuadrado dentro de librerías optimizadas como BLAS?
-\item ¿En que archivos, funciones y líneas se concentra la mayor cantidad de tiempo de cómputo?
-\end{enumerate}
-
-\item Utilizar el profiler a nivel de sistema
-
 \begin{lstlisting}[caption={Generación de Perfil de Sistema},label={lst:profall}]
 $ prof stat ./program
 $ prof record ./program
 $ prof report
 \end{lstlisting}
 
-\begin{enumerate}
-\item ¿Cómo se comporta el sistema durante la ejecución de la aplicación?
-\item ¿Son las métricas de contadores de {\it hardware} las esperadas?
-\item ¿Es la aplicación la gran concentradora de los recursos disponibles?
-\item ¿Qué instrucciones de {\it hardware} son las mayormente utilizadas?
-\end{enumerate}
-
-\item Comprobar vectorizaciones
-
 \begin{lstlisting}[caption={Información de Vectorización},label={lst:report}]
 $ gcc -Wall -Wextra -O3 --report-loop
 \end{lstlisting}
 
+Las interrogantes son entonces:
+
 \begin{enumerate}
+\item ¿Cómo está diseñada la aplicación?
+\item ¿Que dependencias en librerías externas tiene?
+\item ¿Implementa algún núcleo de cómputo conocido encuadrado dentro de librerías optimizadas como BLAS?
+\item ¿En que archivos, funciones y líneas se concentra la mayor cantidad de tiempo de cómputo?
+\item ¿Cómo se comporta el sistema durante la ejecución de la aplicación?
+\item ¿Son las métricas de contadores de {\it hardware} las esperadas?
+\item ¿Es la aplicación la gran concentradora de los recursos disponibles?
+\item ¿Qué instrucciones de {\it hardware} son las mayormente utilizadas?
 \item ¿Hay ciclos que no pueden ser automáticamente vectorizados?
 \item ¿Pueden los ciclos no optimizados ser modificados?
 \end{enumerate}
 
-\end{enumerate}
+\bigskip
+
+{\bf Optimización}: este paso del proceso propuesto es el único que necesita intervención del investigador ya que la optimización es una tarea creativa imposible de automatizar en términos generales.
+
+\bigskip
+
+Luego de realizar cualquier optimización se reinicia el ciclo para mantener o descartar la optimización hecha.
 
 \section{Infraestructura}
 
 El procedimiento anterior se implementó como una infraestructura automática de generación de reportes de rendimiento denominada 
-{\tt hotspot} \footnote{El proyecto {\tt hotspot} está disponible en \href{https://github.com/moreandres/hotspot}{https://github.com/moreandres/hotspot}}.
+{\tt hotspot} por ser la traduccion de cuello de botella \footnote{El proyecto {\tt hotspot} está disponible en \href{https://github.com/moreandres/hotspot}{https://github.com/moreandres/hotspot}}.
 
 \bigskip
 
 La automatización se comporta del mismo modo que un usuario realizando un procedimiento sistemático de análisis de rendimiento.
 Es decir que ejecuta utilidades del sistema como {\tt gcc}, {\tt make}, {\tt prof}, {\tt gprof}, {\tt pidstat} para obtener la información relevante.
-\LaTeX se utiliza para la generación del reporte final.
+\LaTeX \, se utiliza para la generación del reporte final.
 
 \bigskip
 
