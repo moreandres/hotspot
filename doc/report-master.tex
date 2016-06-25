@@ -34,7 +34,7 @@
   Director: Dr Fernando G. Tinetti - {\tt fernando@lidi.info.unlp.edu.ar}
 }
 
-\date{Junio de 2016}
+\date{Julio de 2016}
 
 \maketitle
 
@@ -1572,7 +1572,11 @@ La configuración del sistema obtenida en todos los casos de aplicación es la m
 
 \bigskip
 
-La infrastructura obtuvo correctamente información de {\it hardware} del sistema incluyendo cantidad de memoria disponible (9784 MiB), modelo de la unidad de procesamiento (i5-320M @ 2.6 GHz), modelo del controlador de la interfaz de red (82540EM) y modelo de placa madre más sus componentes (440FX). Las especificaciones listadas de memoria, procesador, placa madre y almacenamiento pueden ser utilizadas para buscar información de rendimiento publicada oficialmente por cada fabricante \footnote{Por ejemplo el procesador utilizado posee 2 cores permitiendo 4 hilos corriendo en paralelo, con frecuencia base de 2.6 GHz y máxima de 3.3 GHz según \href{http://ark.intel.com/products/64896/Intel-Core-i5-3320M-Processor-3M-Cache-up-to-3\_30-GHz}{Automated Relational Knowledgebase} (ARK)}.
+La infrastructura obtuvo correctamente información de {\it hardware} del sistema incluyendo cantidad de memoria disponible (9784 MiB), modelo de la unidad de procesamiento (i5-320M @ 2.6 GHz), modelo del controlador de la interfaz de red (82540EM) y modelo de placa madre más sus componentes (440FX). Las especificaciones listadas de memoria, procesador, placa madre y almacenamiento pueden ser utilizadas para buscar información de rendimiento publicada oficialmente por cada fabricante.
+
+\bigskip
+
+Por ejemplo, el procesador utilizado posee 2 cores permitiendo 4 hilos corriendo en paralelo, con frecuencia base de 2.6 GHz y máxima de 3.3 GHz según \href{http://ark.intel.com/products/64896/Intel-Core-i5-3320M-Processor-3M-Cache-up-to-3\_30-GHz}{Automated Relational Knowledgebase} (ARK).
 
 \bigskip
 
@@ -1588,7 +1592,7 @@ Esta sección incluye una revisión de los resultados específicos obtenidos al 
 
 \subsection{Multiplicación de Matrices}
 
-La multiplicación de matrices es una operación fundamental en diversos campos de aplicación científica como la resolución de ecuaciones lineales y la representación de grafos y espacios dimensionales. Por ello existe abundante material sobre el tema. Se tomó como ejemplo una implementación utilizando OpenMP \footnote{\href{http://blog.speedgocomputing.com/2010/08/parallelizing-matrix-multiplication.html}{http://blog.speedgocomputing.com/2010/08/parallelizing-matrix-multiplication.html}.}. El código utilizado se muestra a continuación en el listado \ref{lst:matrix}, y la configuración del caso de prueba en el listado \ref{lst:cfg-matrix}.
+La multiplicación de matrices es una operación fundamental en diversos campos de aplicación científica como la resolución de ecuaciones lineales y la representación de grafos y espacios dimensionales. Por ello existe abundante material sobre el tema. Se tomó como ejemplo una implementación utilizando OpenMP de \href{http://blog.speedgocomputing.com/2010/08/parallelizing-matrix-multiplication.html}{SpeedGo Computing}. El código utilizado se muestra a continuación en el listado \ref{lst:matrix}, y la configuración del caso de prueba en el listado \ref{lst:cfg-matrix}.
 
 \bigskip
 
@@ -1626,7 +1630,7 @@ int main()
 }
 \end{lstlisting}
 
-\bigskip
+\newpage
 
 \begin{lstlisting}[caption={Caso de Prueba de Multiplicación de Matrices},label={lst:cfg-matrix}]
 # hotspot configuration file
@@ -1641,29 +1645,30 @@ count=8
 
 \bigskip
 
-El reporte generado por la infraestructura puede consultarse en el apéndice \ref{example-matrix}.
-
-\bigskip
-
-El reporte de rendimiento nos demuestra lo siguiente:
+El reporte generado por la infraestructura puede consultarse en el apéndice \ref{example-matrix}. El reporte de rendimiento nos ayuda a concluir lo siguiente:
 
 \begin{enumerate}
 
 \item El caso de prueba es muy estable, con una desviación estandar mucho menor a 1.
 
-\smallskip
+\includegraphics[width=4cm]{mm-01.png}
+\includegraphics[width=7cm]{mm-02.png}
 
 Esto implica que el tamaño de los datos de entrada son apropiados para realizar un análisis de rendimiento sin introducir datos aleatorios de ejecución.
 
 \item Las optimizaciones que realiza el compilador demuestran un impacto importante en el tiempo de ejecución.
 
-\smallskip
+\includegraphics[width=7cm]{mm-03.png}
 
 Esto implica que las optimizaciones automáticas realizadas por el compilador encuentran en el código oportunidades claras de optimización.
 
 \item Los tiempos de ejecución al escalar el problema descubren un pico que posiblemente implique un error de implementación de algoritmo.
 
+\includegraphics[width=7cm]{mm-04.png}
+  
 \item Los tiempos de ejecución al incrementar las unidades de cómputo revelan un problema ya que no muestra mejoras constantes.
+
+\includegraphics[width=7cm]{mm-05.png}
 
 \item Se estima un 75\% de paralelismo, con una mejora teórica máxima de 3.5 veces sin escalar el tamaño del problema si utilizamos el mismo algoritmo.
 
