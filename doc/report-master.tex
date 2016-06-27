@@ -1572,23 +1572,31 @@ La configuración del sistema obtenida en todos los casos de aplicación es la m
 
 \bigskip
 
-La infrastructura obtuvo correctamente información de {\it hardware} del sistema incluyendo cantidad de memoria disponible (9784 MiB), modelo de la unidad de procesamiento (i5-320M @ 2.6 GHz), modelo del controlador de la interfaz de red (82540EM) y modelo de placa madre más sus componentes (440FX). Las especificaciones listadas de memoria, procesador, placa madre y almacenamiento pueden ser utilizadas para buscar información de rendimiento publicada oficialmente por cada fabricante.
+La infraestructura obtuvo correctamente información de {\it hardware} del sistema incluyendo cantidad de memoria disponible (9784 MiB), modelo de la unidad de procesamiento (i5-320M @ 2.6 GHz), modelo del controlador de la interfaz de red (82540EM) y modelo de placa madre más sus componentes (440FX). Las especificaciones listadas en la Figura \ref{fig:hw} de memoria, procesador, placa madre y almacenamiento pueden ser utilizadas para buscar información de rendimiento publicada oficialmente por cada fabricante.
 
+\begin{figure}[H]
 \begin{center}
 \fbox{\includegraphics[width=7cm]{sp-00.png}}
+\caption{\it Hardware}
+\label{fig:hw}
 \end{center}
+\end{figure}
 
 De esta información podemos conocer por ejemplo, que el procesador utilizado posee 2 cores permitiendo 4 hilos corriendo en paralelo, con frecuencia base de 2.6 GHz y máxima de 3.3 GHz según \href{http://ark.intel.com/products/64896/Intel-Core-i5-3320M-Processor-3M-Cache-up-to-3\_30-GHz}{Automated Relational Knowledgebase} (ARK).
 
 \bigskip
 
-La infraestructura informó correctamente que el sistema corre un núcleo {\it Linux} versión 3.16.0 en un sistema {\it Ubuntu} versión 14.04, incluyendo un compilador {\it GCC} versión 4.8.2 y una librería {\it GNU C} versión 2.19. La identificación del {\it software} utilizado en el sistema permite ser más específicos al comparar los resultados obtenidos.
+La infraestructura informó correctamente un núcleo {\it Linux} versión 3.16.0 en un sistema {\it Ubuntu} versión 14.04, incluyendo un compilador {\it GCC} versión 4.8.2 y una librería {\it GNU C} versión 2.19. La identificación de la Figura \ref{fig:sw} del {\it software} utilizado en el sistema permite ser más específicos al comparar los resultados obtenidos.
 
+\begin{figure}[H]
 \begin{center}
 \fbox{\includegraphics[width=8cm]{sp-01.png}}
+\caption{\it Software}
+\label{fig:sw}
 \end{center}
+\end{figure}
 
-La infrastructura ejecutó exitosamente pruebas de rendimiento donde entre otras se incluyen {\it DGEMM} (con 1.8 mflops) y {\it STREAM} (con 7 MB/s). Estos datos sirven como límite de capacidad del sistema en la práctica ya que son núcleos de cómputo denso diseñados para obtener rendimiento en bruto.
+La infraestructura ejecutó exitosamente pruebas de rendimiento donde entre otras se incluyen {\it DGEMM} (con 1.8 mflops) y {\it STREAM} (con 7 MB/s). Estos datos sirven como límite de capacidad del sistema en la práctica ya que son núcleos de cómputo denso diseñados para obtener rendimiento en bruto.
 
 \begin{center}
 \fbox{\includegraphics[width=6cm]{sp-02.png}}
@@ -1596,7 +1604,7 @@ La infrastructura ejecutó exitosamente pruebas de rendimiento donde entre otras
 
 \section{Código de Prueba}
 
-Esta sección incluye una revisión de los resultados específicos obtenidos al aplicar la infraestructura a códigos de prueba. Se seleccionaron implementaciones de núcleos de cómputo simples pero suficientemente interesantes para demostrar las capacidades de la infrastructura. Entre ellos una implementación directa (no optimizada) de multiplicación de matrices, una simulación de transferencia de calor con un componente de ejecución serial significativo, y por último una implementación de cálculo de fractales sobre números complejos.
+Esta sección incluye una revisión de los resultados específicos obtenidos al aplicar la infraestructura a códigos de prueba. Se seleccionaron implementaciones de núcleos de cómputo simples pero suficientemente interesantes para demostrar las capacidades de la infraestructura. Entre ellos una implementación directa (no optimizada) de multiplicación de matrices, una simulación de transferencia de calor con un componente de ejecución serial significativo, y por último una implementación de cálculo de fractales sobre números complejos.
 
 \subsection{Multiplicación de Matrices}
 
@@ -1658,12 +1666,10 @@ El reporte generado por la infraestructura puede consultarse en el apéndice \re
 \item El caso de prueba es muy estable, con una desviación estandar mucho menor a 1 como puede verse en la Figura \ref{fig:est}. Esto implica que el tamaño de los datos de entrada son apropiados para realizar un análisis de rendimiento sin introducir datos aleatorios de ejecución. 
 
 \begin{figure}[H]
-\bigskip
 \fbox{\includegraphics[width=4cm]{mm-01.png}}
 \fbox{\includegraphics[width=6cm]{mm-02.png}}
 \caption{Estabilidad de la Multiplicación de Matrices}
 \label{fig:est}
-\bigskip
 \end{figure}
 
 \item Las optimizaciones que realiza el compilador demuestran un impacto importante en el tiempo de ejecución, como puede verse en la Figura \ref{fig:comp}. Esto implica que las optimizaciones automáticas realizadas por el compilador encuentran en el código oportunidades claras de optimización.
@@ -1694,7 +1700,7 @@ El reporte generado por la infraestructura puede consultarse en el apéndice \re
 \end{center}
 \end{figure}
 
-\item En la Figura \ref{fig:par} la infrastructura estima un 85\% de paralelismo, con una mejora teórica máxima de 7 veces sin escalar el tamaño del problema si utilizamos el mismo algoritmo.
+\item En la Figura \ref{fig:par} la infraestructura estima un 85\% de paralelismo, con una mejora teórica máxima de 7 veces sin escalar el tamaño del problema si utilizamos el mismo algoritmo.
 
 \begin{figure}[H]
 \begin{center}
@@ -1714,35 +1720,35 @@ El reporte generado por la infraestructura puede consultarse en el apéndice \re
 \end{center}
 \end{figure}
  
-\item No hay lecturas ni escrituras al disco, por lo que no se está perdiendo rendimiento al utilizar memoria virtual.
+\item La Figura \ref{fig:res} muestra que no hay escrituras al disco, por lo que no se está perdiendo rendimiento al utilizar memoria virtual. Esto implica que el tamaño elegido de problema puede ser cálculado integramente utilizando la memoria principal.
 
 \begin{figure}[H]
 \begin{center}
 \fbox{\includegraphics[width=10cm]{mm-08.png}}
+\caption{Escritura a Disco en la Multiplicación de Matrices}
+\label{fig:res}
 \end{center}
 \end{figure}
 
-Esto implica que el tamaño elegido de problema puede ser cálculado integramente utilizando la memoria principal.
-
-\item El cuello de botella principal utiliza la instrucción {\tt add}, la cual no es vectorial.
+\item El cuello de botella principal identificado en la Figura \ref{fig:wr} utiliza la instrucción {\tt add}, la cual no es vectorial. Esto implica que el código no está siendo totalmente vectorizado, desaprovechando la capacidad de cómputo disponible.
 
 \begin{figure}[H]
 \begin{center}
 \fbox{\includegraphics[width=8cm]{mm-09.png}}
+\caption{Instrucciones en la Multiplicación de Matrices}
+\label{fig:wr}
 \end{center}
 \end{figure}
 
-Esto implica que el código no está siendo totalmente vectorizado, desaprovechando la capacidad de cómputo disponible.
-
-\item Las vectorizaciones no son realizadas exitosamente por el compilador en ningún ciclo dentro del código.
+\item Las vectorizaciones no son realizadas exitosamente por el compilador en ningún ciclo dentro del código (Figura \ref{fig:vec}). Esto implica que los ciclos de cómputos del algoritmo no están siendo vectorizados, desaprovechando la capacidad de cómputo disponible. Una comparación de rendimiento de diferentes algoritmos de multiplicación de matrices puede encontrarse en \cite{mm-tool}.
 
 \begin{figure}[H]
 \begin{center}
 \fbox{\includegraphics[width=10cm]{mm-10.png}}
+\caption{Vectorización en la Multiplicación de Matrices}
+\label{fig:vec}
 \end{center}
 \end{figure}
-
-Esto implica que los ciclos de cómputos del algoritmo no están siendo vectorizados, desaprovechando la capacidad de cómputo disponible. Una comparación de rendimiento de diferentes algoritmos de multiplicación de matrices puede encontrarse en \cite{mm-tool}.
 
 \end{enumerate}
 
@@ -1841,65 +1847,97 @@ count=8
 
 \bigskip
 
-El reporte generado por la infraestructura puede consultarse en el apéndice \ref{example-heat2d}. Algunas conclusiones que pueden obtenerse son:
+El reporte generado por la infraestructura puede consultarse en el apéndice \ref{example-heat2d}. Algunas conclusiones que pueden obtenerse al revisar la información generada son:
 
 \begin{enumerate}
-\item El caso de prueba es estable.
+\item El caso de prueba es estable ya que la Figura \ref{fig:est2} muestra una desviación baja y el histograma de ejecuciones muestra agrupaciones.
 
-\smallskip
-  
+\begin{figure}[H]  
 \fbox{\includegraphics[width=4cm]{he-01.png}}
 \fbox{\includegraphics[width=7cm]{he-02.png}}
+\caption{Estabilidad en la Transferencia de Calor}
+\label{fig:est2}
+\end{figure}
 
-\smallskip
+\item Las optimizaciones del compilador tienen impacto acotado según demuestra la Figura \ref{fig:opt2}.
 
-\item Las optimizaciones del compilador tienen impacto acotado.
-
+\begin{figure}[H]  
 \begin{center}
 \fbox{\includegraphics[width=10cm]{he-03.png}}
+\caption{Optimizaciones en la Transferencia de Calor}
+\label{fig:opt2}
 \end{center}
+\end{figure}
 
-\item El tiempo de ejecución al incrementar el tamaño del problema no crece monotónicamente.
+\item El tiempo de ejecución al incrementar el tamaño del problema no crece monotónicamente, según lo muestra la Figura \ref{fig:prob2}.
 
+\begin{figure}[H]  
 \begin{center}
 \fbox{\includegraphics[width=10cm]{he-04.png}}
+\caption{Escalamiento del Problema en la Transferencia de Calor}
+\label{fig:prob2}
 \end{center}
+\end{figure}
   
-\item El tiempo de ejecución al sumar más unidades de cómputo no decrece sistemáticamente.
+\item El tiempo de ejecución al sumar más unidades de cómputo no decrece sistemáticamente como muestra la Figura \ref{fig:comp2}.
 
+\begin{figure}[H]  
 \begin{center}
 \fbox{\includegraphics[width=10cm]{he-05.png}}
+\caption{Escalamiento del Cómputo en la Transferencia de Calor}
+\label{fig:comp2}
 \end{center}
+\end{figure}
   
-\item El paralelismo en el programa solo alcanza el 65\%, por lo tanto el límite máximo de mejora es de 3 veces.
+\item El paralelismo en el programa solo alcanza el 65\%, por lo tanto el límite máximo de mejora es de 3 veces como lo muestra la Figura \ref{fig:paral2}.
 
+\begin{figure}[H]  
 \begin{center}
-\fbox{\includegraphics[width=10cm]{he-06.png}}
+\fbox{\includegraphics[width=8cm]{he-06.png}}
+\caption{Paralelismo en la Transferencia de Calor}
+\label{fig:paral2}
 \end{center}
+\end{figure}
   
-\item Hay dos cuellos de botella con un 25\% y un 15\% del tiempo de ejecución.
+\item Hay dos cuellos de botella con un 25\% y un 15\% del tiempo de ejecución, como demuestra la Figura \ref{fig:bot2}.
 
+\begin{figure}[H]
 \begin{center}
-\fbox{\includegraphics[width=10cm]{he-07.png}}
+\fbox{\includegraphics[width=8cm]{he-07.png}}
+\caption{Escalamiento del Problema en la Transferencia de Calor}
+\label{fig:bot2}
 \end{center}
+\end{figure}
 
-\item La utilización del CPU no es uniforme.
+\item La utilización del CPU no es uniforme, demostrado en la Figura \ref{fig:cpu2}.
 
+\begin{figure}[H]  
 \begin{center}
 \fbox{\includegraphics[width=10cm]{he-08.png}}
+\caption{Utilización del Procesador en la Transferencia de Calor}
+\label{fig:cpu2}
 \end{center}
+\end{figure}
   
-\item El 35\% del tiempo de ejecución lo ocupa la instrucción {\tt mov}.
-
+\item El 35\% del tiempo de ejecución lo ocupa la instrucción {\tt mov} según la Figura \ref{fig:ins2}. Esto refleja que la implementación invierte tiempo en mover datos en memoria y no tanto en cómputo puro.
+  
+\begin{figure}[H]
 \begin{center}
 \fbox{\includegraphics[width=10cm]{he-09.png}}
+\caption{Instrucciones en la Transferencia de Calor}
+\label{fig:ins2}
 \end{center}
+\end{figure}
   
-\item Los ciclos no están siendo vectorizados.
+\item Los ciclos no están siendo vectorizados de acuerdo a la salida del compilador como lo muestra la Figura \ref{fig:vec2}.
 
+\begin{figure}[H]
 \begin{center}
 \fbox{\includegraphics[width=10cm]{he-10.png}}
+\caption{Vectorización en la Transferencia de Calor}
+\label{fig:vec2}
 \end{center}
+\end{figure}
 
 \end{enumerate}
 
@@ -1982,39 +2020,57 @@ count=8
 
 \bigskip
 
-El reporte generado puede consultarse en el apéndice \ref{example-mandel}. Algunas conclusiones que pueden obtenerse al ejecutar la infraestructura desarrollada sobre una implementación básica son:
+El reporte generado puede consultarse en el apéndice \ref{example-mandel}. Algunas conclusiones que pueden obtenerse al analizar la información generada con la infraestructura desarrollada son:
 
 \begin{enumerate}
-\item La estructura utilizada para representar números complejos está alineada y no posee huecos.
+\item La estructura utilizada para representar números complejos está alineada y no posee huecos según la Figura \ref{fig:hole3}. Esto garantiza una buena utilización de la jerarquía de memoria.
 
+\begin{figure}[H]
 \begin{center}
 \fbox{\includegraphics[width=7cm]{mb-00.png}}
 \end{center}
+\caption{Estructuras en Conjuntos de {\it Mandelbrot}}
+\label{fig:hole3}
+\end{figure}
 
-\item El caso de prueba es muy estable.
+\item El caso de prueba es muy estable como lo demuestra la figura \ref{fig:est3}.
 
-\bigskip
+\begin{figure}[H]
 \fbox{\includegraphics[width=4cm]{mb-01.png}}
 \fbox{\includegraphics[width=6cm]{mb-02.png}}
-\bigskip
+\caption{Estabilidad en Conjuntos de {\it Mandelbrot}}
+\label{fig:est3}
+\end{figure}
   
-\item La proporción del trabajo en paralelo es demasiado alta e incluso mejor que un caso ideal. Esto refleja un problema ya que es imposible.
-
+\item La proporción del trabajo en paralelo es demasiado alta e incluso mejor que un caso ideal según la Figura \ref{fig:par3}. Lo cual implica que hay problemas de implementación.
+  
+\begin{figure}[H]
 \begin{center}
 \fbox{\includegraphics[width=7cm]{mb-03.png}}
 \end{center}
+\caption{Paralelismo en Conjuntos de {\it Mandelbrot}}
+\label{fig:par3}
+\end{figure}
 
-\item Cerca del 50\% del tiempo se invierte en una única línea de código.
-
+\item Cerca del 50\% del tiempo se invierte en una única línea de código, confirmado por la Figura \ref{fig:bot3}.
+  
+\begin{figure}[H]
 \begin{center}
 \fbox{\includegraphics[width=7cm]{mb-04.png}}
 \end{center}
+\caption{Cuellos de Botellas en Conjuntos de {\it Mandelbrot}}
+\label{fig:bot3}
+\end{figure}
 
-\item Algunos ciclos ya se encuentran optimizados, se identifica el uso de instrucciones vectoriales como {\tt movss, addss}.
+\item Algunos ciclos ya se encuentran optimizados, se identifica el uso de instrucciones vectoriales como {\tt movss, addss} en la Figura \ref{fig:vec3}.
 
+\begin{figure}[H]
 \begin{center}
 \fbox{\includegraphics[width=7cm]{mb-05.png}}
 \end{center}
+\caption{Vectorización en Conjuntos de {\it Mandelbrot}}
+\label{fig:vec3}
+\end{figure}
 
 \end{enumerate}
 
