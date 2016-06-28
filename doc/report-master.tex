@@ -1945,7 +1945,24 @@ El reporte generado por la infraestructura puede consultarse en el apéndice \re
 
 Los conjuntos de {\it Mandelbrot} resultan de un cálculo de una secuencia de operaciones sobre números complejos que no tienden a infinito.
 Si se supone que los componentes real y complejo corresponden a las coordenadas de un gráfico de dos dimensiones, las imágenes resultantes simulan figuras fractales \cite{mandel}.
-El código utilizado se incluye a continuación en el listado \ref{lst:mandel}, la configuración utilizada para el caso de prueba en el listado \ref{lst:cfg-mandel}.
+
+\bigskip
+
+El código utilizado se incluye a continuación en el listado \ref{lst:mandel}, la configuración utilizada para el caso de prueba en el listado \ref{lst:cfg-mandel}. El reporte generado puede consultarse en el apéndice \ref{example-mandel}.
+
+\begin{lstlisting}[caption={Caso de Prueba de Conjunto de Mandelbrot},label={lst:cfg-mandel}]
+[hotspot]
+range=16384,32768,1024
+cflags=-O3 -Wall -Wextra
+build=CFLAGS='{0}' make
+clean=make clean
+run=OMP_NUM_THREADS={0} N={1} ./{2}
+count=8
+\end{lstlisting}
+
+\bigskip
+
+Como en los casos anteriores, la configuración refleja que el programa toma un parámetro de una variable de ambiente {\tt N} y al implementar extensiones {\it OpenMP} se puede utilizar {\tt OMP\_NUM\_THREADS} para controlar la cantidad de hilos de ejecución dedicados. Además, la compilación se realiza con {\it GNU Make} y se seleccionaron 8 ejecuciones como las repeticiones deseadas para promediar resultados.
 
 \newpage
 
@@ -1982,45 +1999,28 @@ int main()
 	c.real = X_MIN + j * (X_MAX - X_MIN) / X_RESN;
 	c.imag = Y_MAX - i * (Y_MAX - Y_MIN) / Y_RESN;
 	k = 0;
-
-	do
-	  {
-	    temp = z.real * z.real - z.imag * z.imag + c.real;
-	    z.imag = 2.0 * z.real * z.imag + c.imag;
-	    z.real = temp;
-	    lensq = z.real * z.real + z.imag * z.imag;
-	    k++;
-	  }
+	do {
+	     temp = z.real * z.real - z.imag * z.imag + c.real;
+	     z.imag = 2.0 * z.real * z.imag + c.imag;
+	     z.real = temp;
+	     lensq = z.real * z.real + z.imag * z.imag;
+	     k++;
+	   }
 	while (lensq < 4.0 && k < iters);
 
 	if (k >= iters)
 	  res[i][j] = 0;
 	else
 	  res[i][j] = 1;
-
       }
-
   assert(res[0][0]);
-
   return 0;
 }
 \end{lstlisting}
 
 \bigskip
 
-\begin{lstlisting}[caption={Caso de Prueba de Conjunto de Mandelbrot},label={lst:cfg-mandel}]
-[hotspot]
-range=16384,32768,1024
-cflags=-O3 -Wall -Wextra
-build=CFLAGS='{0}' make
-clean=make clean
-run=OMP_NUM_THREADS={0} N={1} ./{2}
-count=8
-\end{lstlisting}
-
-\bigskip
-
-El reporte generado puede consultarse en el apéndice \ref{example-mandel}. Algunas conclusiones que pueden obtenerse al analizar la información generada con la infraestructura desarrollada son:
+Algunas conclusiones que pueden obtenerse al analizar la información generada con la infraestructura desarrollada son:
 
 \begin{enumerate}
 \item La estructura utilizada para representar números complejos está alineada y no posee huecos según la Figura \ref{fig:hole3}. Esto garantiza una buena utilización de la jerarquía de memoria.
