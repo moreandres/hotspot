@@ -24,7 +24,7 @@
 \begin{document}
 
 \logo{
-\includegraphics[width=1cm]{unlp.jpg}
+\includegraphics[width=1.25cm]{unlp.jpg}
 }
 
 \begin{frame}
@@ -44,44 +44,35 @@
 
     \begin{itemize}
   \item
-    Las aplicaciones son construidas por especialistas en el dominio del problema.
+    Las aplicaciones son construidas por especialistas en el dominio del problema, no expertos en rendimiento.
   \item
-    Infrastructura que simplifica el análisis de rendimiento, permitiendo más tiempo de experimentación y análisis.
+    Se desarrollo infrastructura que simplifica el análisis de rendimiento, permitiendo más tiempo de experimentación y análisis.
   \item
-    Información sobre programa, sistema, comportamiento, escalamiento, perfil de ejecución, cuellos de botella.
+    Soporte consiste en información sobre programa, sistema, comportamiento, escalamiento, perfil de ejecución y cuellos de botella entre otros.
   \end{itemize}
 
 \end{frame}
 
+\section{Introducción y Trabajo Relacionado}
+
+\subsection{Motivación y Objetivos}
+
 \begin{frame}
   \frametitle{Introducción}
-  \framesubtitle{Motivación}
+  \framesubtitle{Motivación y Objetivos}
 
     \begin{itemize}
   \item
-    En HPC los desarrolladores son los especialistas del dominio.
+    En HPC los desarrolladores son los especialistas del dominio, no son expertos en optimización.
   \item
-    Menos tiempo de experimentacion y analisis debido a la necesidad de optimización.
+    Menor tiempo de experimentación y análisis ya que el código optimizado puede ejecutarse órdenes de magnitud mejor que una implementación directa.
   \item
-    El codigo optimizado puede ejecutarse ordenes de magnitud mejor que una implemnentación directa.
+    La metodología consiste en analizar el estado del arte, formular e implementar una solución sistemática, aplicar lo implementado a casos de estudio y documentar la experiencia.
   \end{itemize}
   
 \end{frame}
 
-\begin{frame}
-  \frametitle{Introducción}
-  \framesubtitle{Objetivos}
-
-    \begin{itemize}
-  \item
-    Desarrollo de una infrastructura de soporte para analisis de rendimiento.
-  \item
-    Sistematizar y simplificar la tarea de optimización.
-  \item
-    Un informe detallado con datos estadísticos, gráficos comparativos y cuellos de botella.
-  \end{itemize}
-  
-\end{frame}
+\subsection{Contribuciones}
 
 \begin{frame}
   \frametitle{Introducción}
@@ -89,271 +80,88 @@
 
     \begin{itemize}
   \item
-    Reportes técnicos
+    {\bf Reportes técnicos}: Estudio de Multiplicación de Matrices, Comparación de Implementaciones de una Operación BLAS.
   \item
-    Articulos
+    {\bf Artículos}: Optimizing Latency in Beowulf Clusters, Lessons Learned from Contrasting BLAS Kernel Implementations, Hotspot: a Framework to Support Performance Optimization on Multiprocessors.
   \item
-    Libro
+    {\bf Libro}: Sección Intel Cluster Ready e Intel Cluster Checker en Programming Intel Xeon Phi. Rese\~na para JCS \& T.
   \end{itemize}
   
 \end{frame}
 
+\subsection{Teoría Básica}
+
 \begin{frame}
-  \frametitle{Introducción}
-  \framesubtitle{Metodología}
+  \frametitle{Trabajo Relacionado}
+  \framesubtitle{Teoría Básica}
 
     \begin{itemize}
   \item
-    Analizar estado de arte y teoría.
+    Rendimiento, Paralelismo y Métricas
   \item
-    Formular procedimiento y automatizarlo.
-  \item
-    Documentación.
-  \end{itemize}
-  
-\end{frame}
+    Leyes de Escalamiento (Amdahl y Gustafson)
 
-\section{Análisis de Rendimiento}
-
-\subsection{Definición}
-
-\begin{frame}
-  \frametitle{Análisis de Rendimiento}
-  \framesubtitle{Definición}
-
-    \begin{itemize}
-  \item
-    Definición
-  \item
-    Paralelismo
-  \item
-    Leyes de Escalamiento
-  \item
-    Métricas
+\includegraphics[width=3.5cm]{amdahl.png}
+\includegraphics[width=4cm]{gustafson.png}
+    
   \item
     Técnicas de Análisis
   \end{itemize}
   
 \end{frame}
 
-\subsection{Paralelismo}
+\subsection{Herramientas}
 
 \begin{frame}
-  \frametitle{Análisis de Rendimiento}
-  \framesubtitle{Paralelismo}
+  \frametitle{Trabajo Relacionado}
+  \framesubtitle{Herramientas}
 
     \begin{itemize}
   \item
-    Definición
+    Pruebas de Rendimiento (STREAM, Linpack, Intel MPI, HPCC)
   \item
-    Paralelismo
+    Utilización de las Herramientas
   \item
-    Leyes de Escalamiento
+    Tiempo de Ejecución
   \item
-    Métricas
+    Perfil de Ejecución Funcional y Asistido por Hardware
   \item
-    Técnicas de Análisis
+    Reporte de Vectorización
   \end{itemize}
   
 \end{frame}
 
-\subsection{Leyes de Escalamiento}
-
-\begin{frame}
-  \frametitle{Análisis de Rendimiento}
-  \framesubtitle{Leyes de Escalamiento}
-
-    \begin{itemize}
-  \item
-    Definición
-  \item
-    Paralelismo
-  \item
-    Leyes de Escalamiento
-  \item
-    Métricas
-  \item
-    Técnicas de Análisis
-  \end{itemize}
-  
-\end{frame}
-
-\subsection{Métricas}
-
-\begin{frame}
-  \frametitle{Análisis de Rendimiento}
-  \framesubtitle{Métricas}
-
-    \begin{itemize}
-  \item
-    Definición
-  \item
-    Paralelismo
-  \item
-    Leyes de Escalamiento
-  \item
-    Métricas
-  \item
-    Técnicas de Análisis
-  \end{itemize}
-  
-\end{frame}
-
-\section{Herramientas}
-
-\subsection{Pruebas de Rendimiento}
-
-\begin{frame}
-  \frametitle{Herramientas}
-  \framesubtitle{Pruebas de Rendimiento}
-
-    \begin{itemize}
-  \item
-    STREAM
-  \item
-    Linpack
-  \item
-    Intel MPI Benchmarks
-  \item
-    HPC Challenge
-  \end{itemize}
-  
-\end{frame}
-
-\subsection{Utilización}
-
-\begin{frame}
-  \frametitle{Herramientas}
-  \framesubtitle{Utilización}
-
-    \begin{itemize}
-  \item
-    X
-  \item
-    Y
-  \item
-    Z
-  \end{itemize}
-  
-\end{frame}
-
-\subsection{Tiempo de Ejecución}
-
-\begin{frame}
-  \frametitle{Herramientas}
-  \framesubtitle{Tiempo de Ejecución}
-
-    \begin{itemize}
-  \item
-    X
-  \item
-    Y
-  \item
-    Z
-  \end{itemize}
-  
-\end{frame}
-
-\subsection{Perfil de Ejecución}
-
-\begin{frame}
-  \frametitle{Herramientas}
-  \framesubtitle{Perfil de Ejecución Funcional}
-
-    \begin{itemize}
-  \item
-    X
-  \item
-    Y
-  \item
-    Z
-  \end{itemize}
-  
-\end{frame}
-
-\begin{frame}
-  \frametitle{Herramientas}
-  \framesubtitle{Perfil de Ejecución Asistido por {\it Hardware}}
-
-    \begin{itemize}
-  \item
-    X
-  \item
-    Y
-  \item
-    Z
-  \end{itemize}
-  
-\end{frame}
-
-\subsection{Reporte de Vectorización}
-
-\begin{frame}
-  \frametitle{Herramientas}
-  \framesubtitle{Reporte de Vectorización}
-
-    \begin{itemize}
-  \item
-    X
-  \item
-    Y
-  \item
-    Z
-  \end{itemize}
-  
-\end{frame}
-
-\section{Descripción del Problema}
+\section{Descripción del Problema y Propuesta de Solución}
 
 \subsection{Análisis de Rendimiento}
 
 \begin{frame}
-  \frametitle{Herramientas}
-  \framesubtitle{Reporte de Vectorización}
+  \frametitle{Descripción del Problema}
+  \framesubtitle{Análisis de Rendimiento}
 
     \begin{itemize}
   \item
-    X
+    Problemas: Interacción Humana, Manejo de Herramientas, Recopilación y Representación, Optimización Temprana, Implementación Teórica.
   \item
-    Y
+    Optimización: Código, Ejecución, Memoria, Precarga, Punto Flotante.
   \item
-    Z
+    Infraestructura: Reusabilidad, Configurabilidad, Portabilidad, Extensibilidad, Simplicidad.
   \end{itemize}
   
 \end{frame}
-
-\subsection{Infraestructura de Soporte}
-
-\begin{frame}
-  \frametitle{Herramientas}
-  \framesubtitle{Reporte de Vectorización}
-
-    \begin{itemize}
-  \item
-    X
-  \item
-    Y
-  \item
-    Z
-  \end{itemize}
-  
-\end{frame}
-
-\section{Propuesta de Solución}
 
 \subsection{Procedimiento}
 
 \begin{frame}
-  \frametitle{Herramientas}
-  \framesubtitle{Reporte de Vectorización}
+  \frametitle{Propuesta de Solución}
+  \framesubtitle{Procedimiento}
 
     \begin{itemize}
   \item
-    X
-  \item
-    Y
-  \item
-    Z
+    Procedimiento iterativo.
+
+\includegraphics[width=3cm]{procedure.png}
+    
   \end{itemize}
   
 \end{frame}
@@ -361,106 +169,121 @@
 \subsection{Infraestructura}
 
 \begin{frame}
-  \frametitle{Herramientas}
-  \framesubtitle{Reporte de Vectorización}
+  \frametitle{Propuesta de Solución}
+  \framesubtitle{Infraestructura}
 
     \begin{itemize}
   \item
-    X
+    hotspot
   \item
-    Y
+    gcc, make, prof, gprof, pidstat, latex.
   \item
-    Z
+    Arquitectura y dise\~no.
   \end{itemize}
   
 \end{frame}
 
-\subsection{Teoría de Operación}
+\subsection{Implementación}
 
 \begin{frame}
-  \frametitle{Herramientas}
-  \framesubtitle{Reporte de Vectorización}
+  \frametitle{Propuesta de Solución}
+  \framesubtitle{Implementación}
 
     \begin{itemize}
   \item
-    X
+    GNU/Linux, Ubuntu, Python, matplotlib, numpy.
   \item
-    Y
+    Configuración
   \item
-    Z
-  \end{itemize}
-  
-\end{frame}
-
-\subsection{Diseño}
-
-\begin{frame}
-  \frametitle{Herramientas}
-  \framesubtitle{Reporte de Vectorización}
-
-    \begin{itemize}
+    Reporte: Formato portable, hipervínculo, secciones y gráficos, tendencia, referencias, inglés.
   \item
-    X
-  \item
-    Y
-  \item
-    Z
-  \end{itemize}
-  
-\end{frame}
-
-\subsection{Reporte Generado}
-
-\begin{frame}
-  \frametitle{Herramientas}
-  \framesubtitle{Reporte de Vectorización}
-
-    \begin{itemize}
-  \item
-    X
-  \item
-    Y
-  \item
-    Z
+    Reporte: Resumen, Contenido, Programa, Capacidad del Sistema, Carga de Trabajo, Escalabilidad, Perfil de Ejecución, Bajo Nivel, Referencias.
   \end{itemize}
   
 \end{frame}
 
 \section{Casos de Aplicación}
 
-\subsection{Sistema bajo Prueba}
-
 \begin{frame}
-  \frametitle{Herramientas}
-  \framesubtitle{Reporte de Vectorización}
+  \frametitle{Casos de Aplicación}
+  \framesubtitle{Sistema de Prueba}
 
     \begin{itemize}
   \item
-    X
+    Hardware y Software
+
+\fbox{\includegraphics[width=7cm]{sp-00.png}}
+    
   \item
-    Y
-  \item
-    Z
+    Pruebas de Rendimiento
+
+\fbox{\includegraphics[width=8cm]{sp-01.png}}
+    
+\end{itemize}
+  
+\end{frame}
+
+\subsection{Multiplicación de Matrices}
+
+\begin{frame}
+  \frametitle{Casos de Aplicación}
+  \framesubtitle{Multiplicación de Matrices}
+
+    \begin{itemize}
+
+    \item Estabilidad
+      
+\fbox{\includegraphics[width=3cm]{mm-01.png}}
+\fbox{\includegraphics[width=4cm]{mm-02.png}}
+
+    \item Escalabilidad
+
+\fbox{\includegraphics[width=6cm]{mm-04.png}}
+
   \end{itemize}
   
 \end{frame}
 
-\subsection{Código de Prueba}
+\subsection{Transmisión de Calor en 2D}
 
 \begin{frame}
-  \frametitle{Herramientas}
-  \framesubtitle{Reporte de Vectorización}
+  \frametitle{Casos de Aplicación}
+  \framesubtitle{Transmisión de Calor en 2D}
 
     \begin{itemize}
-  \item
-    X
-  \item
-    Y
-  \item
-    Z
+    \item Utilización de recursos
+      
+      \fbox{\includegraphics[width=6cm]{he-08.png}}
+
+    \item Instrucciones
+      
+      \fbox{\includegraphics[width=6cm]{he-09.png}}
+
   \end{itemize}
   
 \end{frame}
+
+\subsection{Conjunto de Mandelbrot}
+
+\begin{frame}
+  \frametitle{Casos de Aplicación}
+  \framesubtitle{Conjunto de Mandelbrot}
+
+    \begin{itemize}
+  \item Estructuras
+
+    \fbox{\includegraphics[width=7cm]{mb-00.png}}
+
+\item
+    \fbox{\includegraphics[width=7cm]{mb-05.png}}
+
+  \end{itemize}
+  
+\end{frame}
+
+\section{Conclusiones y Trabajo Futuro}
+
+\subsection{Conclusiones}
 
 \begin{frame}
   \frametitle{Conclusiones y Trabajo Futuro}
@@ -468,14 +291,15 @@
 
     \begin{itemize}
   \item
-    X
+    La optimización requiere un análisis disciplinado para ser efectiva.
   \item
-    Y
-  \item
-    Z
+    Se provee una infraestructura automática que soporta el analísis.
+    
   \end{itemize}
   
 \end{frame}
+
+\subsection{Trabajo Futuro}
 
 \begin{frame}
   \frametitle{Conclusiones y Trabajo Futuro}
@@ -483,11 +307,11 @@
 
     \begin{itemize}
   \item
-    X
+    Extensión.
   \item
-    Y
+    Aplicación.
   \item
-    Z
+    Soporte MPI.
   \end{itemize}
   
 \end{frame}
