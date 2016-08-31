@@ -16,10 +16,10 @@
 
 \title{Infraestructura para el Análisis de Rendimiento}
 
-\author{Alumno: Andrés More - Director: Dr Fernando G. Tinetti}
+\author{Lic. Andrés More\\Director: Dr Fernando G. Tinetti}
 \institute{Magíster en Cómputo de Altas Prestaciones\\Universidad Nacional de La Plata\\Facultad de Informática}
 
-\date{Julio de 2016}
+\date{Septiembre de 2016}
 
 \begin{document}
 
@@ -46,9 +46,9 @@
   \item
     Las aplicaciones son construidas por especialistas en el dominio del problema, no expertos en rendimiento.
   \item
-    Se desarrollo infrastructura que simplifica el análisis de rendimiento, permitiendo más tiempo de experimentación y análisis.
+    Se desarrolló infraestructura que simplifica el análisis de rendimiento, permitiendo más tiempo de experimentación y análisis.
   \item
-    Soporte consiste en información sobre programa, sistema, comportamiento, escalamiento, perfil de ejecución y cuellos de botella entre otros.
+    El soporte consiste en información sobre programa, sistema, comportamiento, escalamiento, perfil de ejecución, cuellos de botella, uso de recursos.
   \end{itemize}
 
 \end{frame}
@@ -65,18 +65,16 @@
   \item
     En HPC los desarrolladores son los especialistas del dominio, no son expertos en optimización.
   \item
-    Menor tiempo de experimentación y análisis ya que el código optimizado puede ejecutarse órdenes de magnitud mejor que una implementación directa.
+    Menor tiempo de experimentación y análisis ya que el código optimizado puede ejecutarse órdenes de magnitud mejor que una implementación directa teórica.
   \item
     La metodología consiste en analizar el estado del arte, formular e implementar una solución sistemática, aplicar lo implementado a casos de estudio y documentar la experiencia.
   \end{itemize}
   
 \end{frame}
 
-\subsection{Contribuciones}
-
 \begin{frame}
   \frametitle{Introducción}
-  \framesubtitle{Contribuciones}
+  \framesubtitle{Contribuciones Realizadas}
 
     \begin{itemize}
   \item
@@ -101,10 +99,12 @@
   \item
     Leyes de Escalamiento (Amdahl y Gustafson)
 
-\includegraphics[width=3.5cm]{amdahl.png}
-\includegraphics[width=4cm]{gustafson.png}
+    \begin{tabular}{ccc}
+      \includegraphics[width=3.5cm]{amdahl.png} & &
+      \includegraphics[width=4cm]{gustafson.png}
+    \end{tabular}
     
-  \item
+\item
     Técnicas de Análisis
   \end{itemize}
   
@@ -118,13 +118,15 @@
 
     \begin{itemize}
   \item
-    Pruebas de Rendimiento (STREAM, Linpack, Intel MPI, HPCC)
+    Pruebas de Rendimiento (STREAM/HPL/Intel MPI/HPCC)
   \item
     Utilización de las Herramientas
   \item
     Tiempo de Ejecución
   \item
-    Perfil de Ejecución Funcional y Asistido por Hardware
+    Perfil de Ejecución Funcional
+  \item
+    Asistido por {\it Hardware}
   \item
     Reporte de Vectorización
   \end{itemize}
@@ -141,11 +143,11 @@
 
     \begin{itemize}
   \item
-    Problemas: Interacción Humana, Manejo de Herramientas, Recopilación y Representación, Optimización Temprana, Implementación Teórica.
+    {\bf Problemas}: Interacción Humana, Manejo de Herramientas, Recopilación y Representación, Optimización Temprana, Implementación Teórica.
   \item
-    Optimización: Código, Ejecución, Memoria, Precarga, Punto Flotante.
+    {\bf Optimización}: Código, Ejecución, Memoria, Precarga, Punto Flotante.
   \item
-    Infraestructura: Reusabilidad, Configurabilidad, Portabilidad, Extensibilidad, Simplicidad.
+    {\bf Infraestructura}: Reusabilidad, Configurabilidad, Portabilidad, Extensibilidad, Simplicidad.
   \end{itemize}
   
 \end{frame}
@@ -160,8 +162,20 @@
   \item
     Procedimiento iterativo.
 
-\includegraphics[width=3cm]{procedure.png}
-    
+    \begin{columns}
+      \column{0.6 \linewidth}
+      \begin{enumerate}
+      \item Se establece una línea base. \\
+      \item Se instrumenta el binario. \\
+      \item Se comprueba estabilidad. \\
+      \item Se comprueba uso de recursos. \\
+      \item Se realiza un perfil. \\
+      \item Se realiza una optimización. \\
+      \item Se comprueba y se itera.
+      \end{enumerate}
+      \column{0.4 \linewidth}
+      \includegraphics[width=3cm]{procedure.png}
+    \end{columns}
   \end{itemize}
   
 \end{frame}
@@ -171,19 +185,22 @@
 \begin{frame}
   \frametitle{Propuesta de Solución}
   \framesubtitle{Infraestructura}
-
+  \begin{columns}
+    \column{0.5 \linewidth}
     \begin{itemize}
+    \item
+      hotspot
   \item
-    hotspot
-  \item
-    gcc, make, prof, gprof, pidstat, latex.
+    Combina {\tt gcc}, {\tt make}, {\tt prof}, {\tt gprof}, {\tt pidstat}, {\tt latex}.
   \item
     Arquitectura y dise\~no.
-  \end{itemize}
-  
-\end{frame}
+    \end{itemize}
+    \column{0.6 \linewidth}
+    \includegraphics[width=4.5cm]{hotspot-seq.png} \\
+    \includegraphics[width=4.5cm]{hotspot-lld.png}
 
-\subsection{Implementación}
+  \end{columns}
+\end{frame}
 
 \begin{frame}
   \frametitle{Propuesta de Solución}
@@ -272,9 +289,7 @@
     \begin{itemize}
   \item Estructuras
 
-    \fbox{\includegraphics[width=7cm]{mb-00.png}}
-
-\item
+    \fbox{\includegraphics[width=7cm]{mb-00.png}} \\
     \fbox{\includegraphics[width=7cm]{mb-05.png}}
 
   \end{itemize}
